@@ -65,7 +65,14 @@ for (let index = 0; index < eventCount; index += 1) {
   const record = parseDetail(detail, calendarYear);
   if (record && !collected.some(item => item.id === record.id)) collected.push(record);
   const close = page.getByRole('button', { name: '關閉', exact: true });
-  if (await close.count()) await close.click();
+  if (await close.count()) {
+    try {
+      await close.last().click({ force: true, timeout: 2_000 });
+    } catch {
+      await page.keyboard.press('Escape');
+    }
+    await page.waitForTimeout(250);
+  }
 }
 
 await browser.close();
