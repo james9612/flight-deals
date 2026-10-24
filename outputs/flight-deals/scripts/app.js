@@ -12,7 +12,11 @@ const agencyClassMap = {
   '易飛網': 'agency-ezfly',
   '易飛網（ezfly）': 'agency-ezfly',
   'KKday': 'agency-kkday',
-  'KKday 機票自由行專區': 'agency-kkday'
+  'KKday 機票自由行專區': 'agency-kkday',
+  '東森旅遊': 'agency-ehs',
+  '東森購物網・東森旅遊館': 'agency-ehs',
+  '東南旅遊': 'agency-settour',
+  '東南旅遊（SETtour）機票館': 'agency-settour'
 };
 
 function renderPromos() {
@@ -84,11 +88,13 @@ function renderDeals() {
 
   let filtered = deals.filter(deal => {
     // Agency / Type filtering
-    if (activeFilter === 'lion' && !deal.source.includes('雄獅')) return false;
-    if (activeFilter === 'plynet' && !deal.source.includes('飛遊網')) return false;
-    if (activeFilter === 'cola' && !deal.source.includes('可樂')) return false;
-    if (activeFilter === 'ezfly' && !deal.source.includes('易飛網')) return false;
-    if (activeFilter === 'kkday' && !deal.source.includes('KKday') && !deal.agency?.includes('KKday')) return false;
+    if (activeFilter === 'lion' && !deal.source.includes('雄獅') && !deal.agency?.includes('雄獅')) return false;
+    if (activeFilter === 'plynet' && !deal.source.includes('飛遊網') && !deal.agency?.includes('飛遊網')) return false;
+    if (activeFilter === 'cola' && !deal.source.includes('可樂') && !deal.agency?.includes('可樂')) return false;
+    if (activeFilter === 'ezfly' && !deal.source.includes('易飛網') && !deal.agency?.includes('易飛網')) return false;
+    if (activeFilter === 'kkday' && !(deal.source || '').toLowerCase().includes('kkday') && !(deal.agency || '').toLowerCase().includes('kkday')) return false;
+    if (activeFilter === 'ehs' && !deal.source.includes('東森') && !deal.agency?.includes('東森')) return false;
+    if (activeFilter === 'settour' && !deal.source.includes('東南') && !deal.agency?.includes('東南')) return false;
     if (['japan', 'korea', 'asia'].includes(activeFilter) && deal.country !== activeFilter) return false;
 
     // Form criteria
@@ -219,7 +225,34 @@ document.addEventListener('DOMContentLoaded', () => {
       document.querySelectorAll('.pill').forEach(p => p.classList.remove('on'));
       pill.classList.add('on');
       activeFilter = pill.dataset.filter || 'all';
+
+      // If user clicks a specific agency filter, relax destination if it would yield 0 cards
+      if (['kkday', 'lion', 'cola', 'ezfly', 'ehs', 'plynet', 'settour'].includes(activeFilter)) {
+        const destEl = document.getElementById('dest');
+        if (destEl && destEl.value) {
+          const matchCount = deals.filter(d => {
+            const matchAgency = (activeFilter === 'kkday' && ((d.agency || '').toLowerCase().includes('kkday') || (d.source || '').toLowerCase().includes('kkday'))) ||
+              (activeFilter === 'ehs' && ((d.agency || '').includes('東森') || (d.source || '').includes('東森'))) ||
+              (activeFilter === 'settour' && ((d.agency || '').includes('東南') || (d.source || '').includes('東南'))) ||
+              (activeFilter === 'lion' && ((d.agency || '').includes('雄獅') || (d.source || '').includes('雄獅'))) ||
+              (activeFilter === 'plynet' && ((d.agency || '').includes('飛遊網') || (d.source || '').includes('飛遊網'))) ||
+              (activeFilter === 'cola' && ((d.agency || '').includes('可樂') || (d.source || '').includes('可樂'))) ||
+              (activeFilter === 'ezfly' && ((d.agency || '').includes('易飛網') || (d.source || '').includes('易飛網')));
+            return matchAgency && d.city.includes(destEl.value);
+          }).length;
+          if (matchCount === 0) {
+            destEl.value = ''; // Auto relax destination
+          }
+        }
+      }
+
       renderDeals();
+
+      // Smoothly scroll down to the deals section so user immediately sees cards change!
+      const dealsSection = document.getElementById('deals');
+      if (dealsSection) {
+        dealsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
     });
   });
 
@@ -241,18 +274,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Quick examples
   const examples = {
-    all: { origin: '', dest: '', depart: '', return: '' },
-    osaka: { origin: '台北', dest: '大阪', depart: '', return: '' },
-    okinawa: { origin: '台北', dest: '沖繩', depart: '', return: '' },
-    seoul: { origin: '台北', dest: '首爾', depart: '', return: '' }
+    all: { origin: '', dest: '', depart: '', return: '', filter: 'all' },
+    osaka: { origin: '台北', dest: '大阪', depart: '', return: '', filter: 'all' },
+    okinawa: { origin: '台北', dest: '沖繩', depart: '', return: '', filter: 'all' },
+    seoul: { origin: '台北', dest: '首爾', depart: '', return: '', filter: 'all' },
+    kkday: { origin: '台北', dest: '', depart: '', return: '', filter: 'kkday' },
+    ehs: { origin: '台北', dest: '', depart: '', return: '', filter: 'ehs' },
+    settour: { origin: '台北', dest: '', depart: '', return: '', filter: 'settour' }
   };
   document.querySelectorAll('[data-example]').forEach(button => {
     button.addEventListener('click', () => {
       const ex = examples[button.dataset.example];
       if (!ex) return;
       Object.entries(ex).forEach(([k, v]) => {
-        const input = document.getElementById(k);
-        if (input) input.value = v;
+        if (k === 'filter') {
+          activeFilter = v;
+          document.querySelectorAll('.pill').forEach(p => {
+            p.classList.toggle('on', p.dataset.filter === v);
+          });
+        } else {
+          const input = document.getElementById(k);
+          if (input) input.value = v;
+        }
       });
       renderDeals();
       document.getElementById('deals')?.scrollIntoView({ behavior: 'smooth' });

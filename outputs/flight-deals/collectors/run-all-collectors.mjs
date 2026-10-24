@@ -3,6 +3,8 @@ import { collectPlynet } from './collect-plynet.mjs';
 import { collectColatour } from './collect-colatour.mjs';
 import { collectEzfly } from './collect-ezfly.mjs';
 import { collectKkday } from './collect-kkday.mjs';
+import { collectEhs } from './collect-ehs.mjs';
+import { collectSettour } from './collect-settour.mjs';
 import { collectZeroPromos } from './collect-zero-promos.mjs';
 import { mergeCollected } from './merge-collected.mjs';
 
@@ -24,10 +26,16 @@ try {
   console.log('\n5. 正在整理【KKday】清艙機票與計畫票專區...');
   await collectKkday();
 
-  console.log('\n6. 正在抓取【各大航空公司】0 元機票與官方促銷特報...');
+  console.log('\n6. 正在爬取【東森旅遊／ETMall】計畫票與清艙專區...');
+  await collectEhs();
+
+  console.log('\n7. 正在整理【東南旅遊】計畫機票與清艙特惠專區...');
+  await collectSettour();
+
+  console.log('\n8. 正在抓取【各大航空公司】0 元機票與官方促銷特報...');
   await collectZeroPromos();
 
-  console.log('\n7. 正在執行多來源正規化、比價與去重整合管線...');
+  console.log('\n9. 正在執行多來源正規化、比價與去重整合管線...');
   await mergeCollected();
 
   console.log('\n=== [全部採集與聚合完成！] ===');

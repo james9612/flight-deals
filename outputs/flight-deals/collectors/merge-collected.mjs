@@ -8,6 +8,8 @@ const flytourFile = new URL('../data/collected/plynet-clearance.json', import.me
 const colatourFile = new URL('../data/collected/colatour-plan.json', import.meta.url);
 const ezflyFile = new URL('../data/collected/ezfly-plan.json', import.meta.url);
 const kkdayFile = new URL('../data/collected/kkday-plan.json', import.meta.url);
+const ehsFile = new URL('../data/collected/ehs-plan.json', import.meta.url);
+const settourFile = new URL('../data/collected/settour-plan.json', import.meta.url);
 const zeroPromosFile = new URL('../data/collected/zero-promos.json', import.meta.url);
 
 async function safeReadJson(fileUrl, fallback = []) {
@@ -50,9 +52,11 @@ export async function mergeCollected() {
   const colatourDeals = await safeReadJson(colatourFile);
   const ezflyDeals = await safeReadJson(ezflyFile);
   const kkdayDeals = await safeReadJson(kkdayFile);
+  const ehsDeals = await safeReadJson(ehsFile);
+  const settourDeals = await safeReadJson(settourFile);
   const zeroPromos = await safeReadJson(zeroPromosFile);
 
-  console.log(`讀取各來源筆數：雄獅 ${lionDeals.length} 筆，飛遊網 ${flytourDeals.length} 筆，可樂 ${colatourDeals.length} 筆，易飛網 ${ezflyDeals.length} 筆，KKday ${kkdayDeals.length} 筆，航空公司特報 ${zeroPromos.length} 筆`);
+  console.log(`讀取各來源筆數：雄獅 ${lionDeals.length} 筆，飛遊網 ${flytourDeals.length} 筆，可樂 ${colatourDeals.length} 筆，易飛網 ${ezflyDeals.length} 筆，KKday ${kkdayDeals.length} 筆，東森旅遊 ${ehsDeals.length} 筆，東南旅遊 ${settourDeals.length} 筆，航空公司特報 ${zeroPromos.length} 筆`);
 
   const allRawDeals = [
     ...lionDeals.map(d => ({
@@ -74,6 +78,16 @@ export async function mergeCollected() {
       ...d,
       agency: 'KKday',
       tag: 'KKday清艙特惠'
+    })),
+    ...ehsDeals.map(d => ({
+      ...d,
+      agency: '東森旅遊',
+      tag: '東森清艙特惠'
+    })),
+    ...settourDeals.map(d => ({
+      ...d,
+      agency: '東南旅遊',
+      tag: '東南計畫旅遊票'
     })),
     ...flytourDeals.map(d => {
       const city = d.city || d.destination || '精選航點';

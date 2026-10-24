@@ -50,6 +50,26 @@
     "notes": "精選東京、大阪、沖繩、首爾、富國島直飛計畫機票，大多含來回20KG託運行李與機場稅。"
   },
   {
+    "id": "ehs-plan-ticket",
+    "name": "東森旅遊（ETMall 東森購物網旅遊館）",
+    "type": "plan-clearance",
+    "url": "https://www.etmall.com.tw/Search?keyword=%E6%A9%9F%E7%A5%A8",
+    "access": "ETMall 旅遊與機票搜尋 API；自動篩選含稅含行李之計畫旅遊票與自由行清艙機位",
+    "frequency": "每日定時排程抓取最新促銷梯次",
+    "status": "清艙票已整合",
+    "notes": "收錄名古屋、大阪、石垣島、沖繩等超值計畫票與清艙專案，主打 1 人即可成行與含行李優勢。"
+  },
+  {
+    "id": "settour-plan-ticket",
+    "name": "東南旅遊（SETtour）計劃機票與團體湊票",
+    "type": "plan-clearance",
+    "url": "https://www.settour.com.tw/",
+    "access": "官方計劃機票與團體湊票（TKT Only）專區；定期彙整傳統國籍航空與精品星宇湊票",
+    "frequency": "每週排程更新；熱門檔期定時確認",
+    "status": "計畫票已整合",
+    "notes": "收錄東京、大阪、沖繩、福岡、首爾、曼谷等固定日期團體機票，搭配華航、長榮、星宇、虎航，含稅含行李。"
+  },
+  {
     "id": "vietjet-zero-promo",
     "name": "越捷航空（Vietjet Air）官方 0 元機票大促",
     "type": "airline-promo",
