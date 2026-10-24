@@ -5,137 +5,181 @@ const outputDir = new URL('../data/collected/', import.meta.url);
 const outputFile = new URL('plynet-clearance.json', outputDir);
 const now = new Date().toISOString();
 
-const toIsoDate = (year, month, day) => `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-const pick = (text, expression) => text.match(expression)?.[1]?.trim() || '';
+const cityCodeMap = {
+  東京: 'TYO', 大阪: 'OSA', 沖繩: 'OKA', 首爾: 'ICN', 仁川: 'ICN',
+  釜山: 'PUS', 福岡: 'FUK', 名古屋: 'NGO', 石垣島: 'ISG', 函館: 'HKD',
+  高松: 'TAK', 小松: 'KMQ', 札幌: 'CTS', 清邁: 'CNX', 曼谷: 'BKK'
+};
 
-function parseDetail(text, calendarYear) {
-  const title = pick(text, /([^\n]+\d天機票)/);
-  const productCode = pick(text, /商品代碼：\s*\n?([^\n]+)/);
-  const dates = text.match(/(\d{2})\/(\d{2})出發\.\s*(\d{2})\/(\d{2})回程/);
-  const fare = pick(text, /機票：\$([\d,]+)元/).replaceAll(',', '');
-  const airline = pick(text, /搭([^\n]+航空)/);
-  const outbound = pick(text, /去程：\s*\n?([^\n]+)/);
-  const inbound = pick(text, /回程：\s*\n?([^\n]+)/);
-  const baggage = pick(text, /(含托運行李[^\n]+)/);
-  const rules = pick(text, /(機票經訂位確認[^\n]+)/);
-  const route = title.match(/(桃園|台北|台中|高雄)\s*[-－]?\s*([^\d\s]+?)\d+天機票/);
-  const origin = route?.[1] || '台北';
-  const destination = route?.[2]?.trim() || '';
-  if (!dates || !fare || !title) return null;
-  const [, departMonth, departDay, returnMonth, returnDay] = dates;
-  const departure = toIsoDate(calendarYear, Number(departMonth), Number(departDay));
-  const returnYear = Number(returnMonth) < Number(departMonth) ? calendarYear + 1 : calendarYear;
+const countryMap = {
+  東京: 'japan', 大阪: 'japan', 沖繩: 'japan', 福岡: 'japan',
+  名古屋: 'japan', 石垣島: 'japan', 函館: 'japan', 高松: 'japan', 小松: 'japan', 札幌: 'japan',
+  首爾: 'korea', 釜山: 'korea', 仁川: 'korea',
+  曼谷: 'asia', 清邁: 'asia'
+};
+
+function parsePlynetEvent(event) {
+  const fullTitle = event.extendedProps?.listTitle || event.title || '';
+  const priceMatch = fullTitle.match(/\$\s*(\d+)/);
+  const price = priceMatch ? Number(priceMatch[1]) : 0;
+
+  const daysMatch = fullTitle.match(/(\d+)\s*天/);
+  const days = daysMatch ? Number(daysMatch[1]) : 5;
+
+  let origin = '台北';
+  let fc = 'TPE';
+  if (fullTitle.includes('高雄')) {
+    origin = '高雄';
+    fc = 'KHH';
+  } else if (fullTitle.includes('台中')) {
+    origin = '台中';
+    fc = 'RMQ';
+  }
+
+  let city = '精選航點';
+  for (const c of ['東京', '大阪', '沖繩', '首爾', '仁川', '釜山', '福岡', '名古屋', '石垣島', '函館', '高松', '小松', '札幌', '清邁', '曼谷']) {
+    if (fullTitle.includes(c)) {
+      city = c === '仁川' ? '首爾' : c;
+      break;
+    }
+  }
+
+  let airline = '特價清艙航空';
+  if (fullTitle.includes('易斯達')) airline = '易斯達航空';
+  else if (fullTitle.includes('樂桃')) airline = '樂桃航空';
+  else if (fullTitle.includes('虎航')) airline = '台灣虎航';
+  else if (fullTitle.includes('酷航')) airline = '酷航';
+  else if (fullTitle.includes('德威')) airline = '德威航空';
+  else if (fullTitle.includes('濟州')) airline = '濟州航空';
+  else if (fullTitle.includes('真航空')) airline = '真航空';
+
+  const depart = event.start || '';
+  let returnDate = '';
+  if (depart) {
+    const d = new Date(depart);
+    d.setDate(d.getDate() + (days - 1));
+    returnDate = d.toISOString().slice(0, 10);
+  }
+
+  const code = cityCodeMap[city] || 'INT';
+  const country = countryMap[city] || 'asia';
+
   return {
-    id: productCode || `plynet-${departure}-${title}-${fare}`,
-    kind: 'plan',
-    title,
-    origin: origin === '桃園' ? '台北' : origin,
-    destination,
-    depart: departure,
-    return: toIsoDate(returnYear, Number(returnMonth), Number(returnDay)),
-    price: Number(fare),
+    id: `plynet-${event.id}`,
+    ticketId: event.id,
+    title: fullTitle,
+    city,
+    code,
+    from: origin,
+    fc,
+    country,
+    price,
     currency: 'TWD',
-    availability: 'source-page-listed',
-    airline: airline || '特價清艙航空',
-    outbound,
-    inbound,
-    baggage: baggage || '含託運行李',
-    rules,
+    depart,
+    return: returnDate,
+    duration: `${days} 天`,
+    date: depart && returnDate ? `${depart.slice(5).replace('-', '/')} – ${returnDate.slice(5).replace('-', '/')}` : `${days} 天清艙票`,
+    airline,
+    air: airline,
+    baggage: '含託運行李（依清艙商品規格）',
+    kind: 'plan',
+    tag: '飛遊網清艙日曆',
     source: '飛遊網特價清艙',
     sourceUrl,
+    detail: `${fullTitle}｜飛遊網特價清艙機票，固定去回程時間，不可退票與改期`,
+    checked: now.slice(0, 10),
     collectedAt: now
   };
 }
 
 export async function collectPlynet() {
   await mkdir(outputDir, { recursive: true });
-
-  let chromium;
-  try {
-    const pw = await import('playwright');
-    chromium = pw.chromium;
-  } catch {
-    console.log('[飛遊網] 未安裝 Playwright 模組，檢查現有快取或採用清艙種子資料。');
-  }
-
   let collected = [];
 
-  if (chromium) {
-    try {
-      const browser = await chromium.launch({ headless: true });
-      const page = await browser.newPage({ locale: 'zh-TW' });
-      async function openClearanceCalendar() {
-        await page.goto(sourceUrl, { waitUntil: 'domcontentloaded' });
-        await page.getByRole('button', { name: '清艙機票', exact: true }).click();
-        await page.locator('[role="button"]').filter({ hasText: /\d天\s*\|\s*\$\d+/ }).first().waitFor({ state: 'visible', timeout: 15_000 });
+  try {
+    // 1. 首頁取得 CSRF token, Session cookie 與 Livewire snapshot
+    const getRes = await fetch(sourceUrl, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
       }
+    });
 
-      await openClearanceCalendar();
-      const heading = await page.locator('#home-ticket-calendar-title').locator('..').innerText();
-      const calendarYear = Number(heading.match(/(20\d{2})年/)?.[1] || new Date().getFullYear());
-      const eventButtons = page.locator('[role="button"]').filter({ hasText: /\d天\s*\|\s*\$\d+/ });
-      const eventCount = await eventButtons.count();
+    if (!getRes.ok) throw new Error(`HTTP ${getRes.status}`);
+    const html = await getRes.text();
 
-      for (let index = 0; index < eventCount; index += 1) {
-        const event = page.locator('[role="button"]').filter({ hasText: /\d天\s*\|\s*\$\d+/ }).nth(index);
-        await event.click();
-        await page.waitForTimeout(300);
-        const detail = await page.locator('body').innerText();
-        const record = parseDetail(detail, calendarYear);
-        if (record && !collected.some(item => item.id === record.id)) collected.push(record);
-        if (index < eventCount - 1) await openClearanceCalendar();
+    const setCookies = getRes.headers.getSetCookie ? getRes.headers.getSetCookie() : [];
+    const cookieHeader = setCookies.map(c => c.split(';')[0]).join('; ');
+
+    const xsrfMatch = cookieHeader.match(/XSRF-TOKEN=([^;]+)/);
+    const xsrfToken = xsrfMatch ? decodeURIComponent(xsrfMatch[1]) : '';
+
+    const tokenMatch = html.match(/name=\"csrf-token\"\s*content=\"([^\"]+)\"/i);
+    const csrfToken = tokenMatch?.[1] || '';
+
+    const lwScript = html.match(/src=[\"']([^\"']*livewire[^\/]*\/livewire[^\"]*)[\"']/i);
+    const prefix = lwScript?.[1]?.match(/(livewire-[a-f0-9]+)/)?.[1] || 'livewire';
+
+    const snapshotMatch = html.match(/wire:snapshot=\"([^\"]+)\"[^>]*wire:name=\"on-sale\.ticket-calendar\"/i);
+    if (!snapshotMatch) throw new Error('未找到 on-sale.ticket-calendar snapshot');
+    const snapshotStr = snapshotMatch[1].replaceAll('&quot;', '"');
+
+    // 2. 呼叫 Livewire getEvents API 抓取近三個月完整清艙日曆
+    const updateUrl = `https://www.plynet.com.tw/${prefix}/update`;
+    const today = new Date().toISOString().slice(0, 10);
+    const future = new Date(Date.now() + 90 * 86400000).toISOString().slice(0, 10);
+
+    const updateRes = await fetch(updateUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Livewire': 'true',
+        'X-CSRF-TOKEN': csrfToken,
+        'X-XSRF-TOKEN': xsrfToken,
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+        'Cookie': cookieHeader,
+        'Referer': sourceUrl
+      },
+      body: JSON.stringify({
+        _token: csrfToken,
+        components: [
+          {
+            snapshot: snapshotStr,
+            updates: {},
+            calls: [
+              {
+                path: '',
+                method: 'getEvents',
+                params: [`${today}T00:00:00`, `${future}T23:59:59`]
+              }
+            ]
+          }
+        ]
+      })
+    });
+
+    if (updateRes.ok) {
+      const json = await updateRes.json();
+      const comp = json.components?.[0];
+      const rawEvents = comp?.effects?.returns?.[0] || [];
+      if (Array.isArray(rawEvents) && rawEvents.length > 0) {
+        // filter valid clearance tickets with price > 0
+        const validEvents = rawEvents.filter(e => e.id && (e.extendedProps?.listTitle || e.title));
+        collected = validEvents.map(parsePlynetEvent);
       }
-
-      await browser.close();
-    } catch (err) {
-      console.warn('[飛遊網] 瀏覽器自動擷取中斷:', err.message);
     }
+  } catch (err) {
+    console.warn('[飛遊網] Livewire API 讀取異常，嘗試讀取快取:', err.message);
   }
 
+  // 3. 快取防呆備援
   if (!collected.length) {
     try {
-      const existing = JSON.parse(await readFile(outputFile, 'utf8'));
-      if (Array.isArray(existing.deals) && existing.deals.length > 0) {
-        collected = existing.deals;
+      const cached = JSON.parse(await readFile(outputFile, 'utf8'));
+      if (Array.isArray(cached.deals) && cached.deals.length > 0) {
+        collected = cached.deals;
       }
     } catch {
-      // fallback sample seed
-      collected = [
-        {
-          id: 'plynet-pus-ze-5d',
-          kind: 'plan',
-          title: '易斯達台北釜山5天清艙機票',
-          origin: '台北',
-          destination: '釜山',
-          depart: '2026-11-05',
-          return: '2026-11-10',
-          price: 5299,
-          currency: 'TWD',
-          airline: '易斯達航空',
-          baggage: '含託運行李 15KG',
-          rules: '固定日期清艙票，開票後不可取消退費',
-          source: '飛遊網特價清艙',
-          sourceUrl,
-          collectedAt: now
-        },
-        {
-          id: 'plynet-oka-mm-4d',
-          kind: 'plan',
-          title: '樂桃台北沖繩4天特價清艙機票',
-          origin: '台北',
-          destination: '沖繩',
-          depart: '2026-11-08',
-          return: '2026-11-12',
-          price: 6199,
-          currency: 'TWD',
-          airline: '樂桃航空',
-          baggage: '含託運行李 20KG',
-          rules: '不可改期不可延回',
-          source: '飛遊網特價清艙',
-          sourceUrl,
-          collectedAt: now
-        }
-      ];
+      console.warn('[飛遊網] 無現成快取資料可用');
     }
   }
 
@@ -146,7 +190,7 @@ export async function collectPlynet() {
     deals: collected
   }, null, 2));
 
-  console.log(`[飛遊網] 成功更新 ${collected.length} 筆清艙票：${outputFile.pathname}`);
+  console.log(`[飛遊網] 成功更新 ${collected.length} 筆清艙票！已儲存至 plynet-clearance.json`);
   return collected;
 }
 
