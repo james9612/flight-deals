@@ -58,18 +58,33 @@ const eventButtons = page.locator('[role="button"]').filter({ hasText: /\d天\s*
 const eventCount = await eventButtons.count();
 const collected = [];
 
+async function closeTicketModal() {
+  await page.keyboard.press('Escape').catch(() => {});
+
+  // Flytour keeps prior Livewire modal instances in the DOM.  Close each
+  // visible instance and wait for its overlay to disappear before continuing.
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    const visibleClose = page.locator('button:visible').filter({ hasText: /^(關閉|close)$/i });
+    if (!(await visibleClose.count())) break;
+    await visibleClose.first().click({ timeout: 3_000 }).catch(async () => {
+      await visibleClose.first().evaluate(button => button.click()).catch(() => {});
+    });
+    await page.waitForTimeout(500);
+  }
+  await page.waitForFunction(() => !Array.from(document.querySelectorAll('button')).some(button => {
+    const text = button.textContent?.trim() || '';
+    const style = window.getComputedStyle(button);
+    return /^(關閉|close)$/i.test(text) && style.display !== 'none' && style.visibility !== 'hidden';
+  }), null, { timeout: 5_000 }).catch(() => {});
+}
+
 for (let index = 0; index < eventCount; index += 1) {
-  const event = eventButtons.nth(index);
+  const event = page.locator('[role="button"]').filter({ hasText: /\d天\s*\|\s*\$\d+/ }).nth(index);
   await event.click();
   const detail = await page.locator('body').innerText();
   const record = parseDetail(detail, calendarYear);
   if (record && !collected.some(item => item.id === record.id)) collected.push(record);
-  await page.keyboard.press('Escape');
-  const close = page.getByRole('button', { name: /^(關閉|close)$/i });
-  if (await close.count()) {
-    await close.last().click({ force: true, timeout: 2_000 }).catch(() => {});
-  }
-  await page.waitForTimeout(250);
+  await closeTicketModal();
 }
 
 await browser.close();
