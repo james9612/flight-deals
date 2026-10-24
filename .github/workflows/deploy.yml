@@ -1,5 +1,9 @@
 name: Collect deals and deploy site
 
+concurrency:
+  group: flight-deals-deploy
+  cancel-in-progress: true
+
 on:
   push:
     branches: [main]

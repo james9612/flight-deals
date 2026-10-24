@@ -48,9 +48,13 @@ function parseDetail(text, calendarYear) {
 
 const browser = await chromium.launch({ headless: true });
 const page = await browser.newPage({ locale: 'zh-TW' });
-await page.goto(sourceUrl, { waitUntil: 'networkidle' });
-await page.getByRole('button', { name: '清艙機票', exact: true }).click();
-await page.waitForTimeout(800);
+async function openClearanceCalendar() {
+  await page.goto(sourceUrl, { waitUntil: 'domcontentloaded' });
+  await page.getByRole('button', { name: '清艙機票', exact: true }).click();
+  await page.waitForTimeout(700);
+}
+
+await openClearanceCalendar();
 
 const heading = await page.locator('#home-ticket-calendar-title').locator('..').innerText();
 const calendarYear = Number(heading.match(/(20\d{2})年/)?.[1] || new Date().getFullYear());
@@ -58,33 +62,14 @@ const eventButtons = page.locator('[role="button"]').filter({ hasText: /\d天\s*
 const eventCount = await eventButtons.count();
 const collected = [];
 
-async function closeTicketModal() {
-  await page.keyboard.press('Escape').catch(() => {});
-
-  // Flytour keeps prior Livewire modal instances in the DOM.  Close each
-  // visible instance and wait for its overlay to disappear before continuing.
-  for (let attempt = 0; attempt < 3; attempt += 1) {
-    const visibleClose = page.locator('button:visible').filter({ hasText: /^(關閉|close)$/i });
-    if (!(await visibleClose.count())) break;
-    await visibleClose.first().click({ timeout: 3_000 }).catch(async () => {
-      await visibleClose.first().evaluate(button => button.click()).catch(() => {});
-    });
-    await page.waitForTimeout(500);
-  }
-  await page.waitForFunction(() => !Array.from(document.querySelectorAll('button')).some(button => {
-    const text = button.textContent?.trim() || '';
-    const style = window.getComputedStyle(button);
-    return /^(關閉|close)$/i.test(text) && style.display !== 'none' && style.visibility !== 'hidden';
-  }), null, { timeout: 5_000 }).catch(() => {});
-}
-
 for (let index = 0; index < eventCount; index += 1) {
   const event = page.locator('[role="button"]').filter({ hasText: /\d天\s*\|\s*\$\d+/ }).nth(index);
   await event.click();
+  await page.waitForTimeout(300);
   const detail = await page.locator('body').innerText();
   const record = parseDetail(detail, calendarYear);
   if (record && !collected.some(item => item.id === record.id)) collected.push(record);
-  await closeTicketModal();
+  if (index < eventCount - 1) await openClearanceCalendar();
 }
 
 await browser.close();
