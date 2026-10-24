@@ -5,11 +5,12 @@ const flytourFile = new URL('../data/collected/plynet-clearance.json', import.me
 const base = JSON.parse(await readFile(baseFile, 'utf8'));
 const collected = JSON.parse(await readFile(flytourFile, 'utf8')).deals || [];
 const countryByDestination = { 東京: 'japan', 大阪: 'japan', 沖繩: 'japan', 名古屋: 'japan', 石垣島: 'japan', 函館: 'japan', 釜山: 'korea', 仁川: 'korea' };
+const codeByDestination = { 東京: 'TYO', 大阪: 'OSA', 沖繩: 'OKA', 名古屋: 'NGO', 石垣島: 'ISG', 函館: 'HKD', 釜山: 'PUS', 仁川: 'ICN', 曼谷: 'BKK', 香港: 'HKG', 新加坡: 'SIN' };
 const daysBetween = (depart, returnDate) => Math.max(1, Math.round((new Date(returnDate) - new Date(depart)) / 86400000));
 const normalized = collected.map(deal => ({
   id: deal.id,
   city: deal.destination || '未標示目的地',
-  code: '',
+  code: codeByDestination[deal.destination] || '',
   from: deal.origin === '桃園' ? '台北' : deal.origin,
   fc: deal.origin === '桃園' ? 'TPE' : '',
   country: countryByDestination[deal.destination] || 'asia',

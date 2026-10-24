@@ -19,7 +19,10 @@ function parseDetail(text, calendarYear) {
   const inbound = pick(text, /回程：\s*\n?([^\n]+)/);
   const baggage = pick(text, /(含托運行李[^\n]+)/);
   const rules = pick(text, /(機票經訂位確認[^\n]+)/);
-  const [origin = '', destination = ''] = (title.match(/(?:桃園|台中|高雄|台北)-([^\s\d]+)/)?.[0] || '').split('-');
+  // 例如「11/07易斯達桃園釜山5天機票」：飛遊網通常不會在城市間放連字號。
+  const route = title.match(/(桃園|台北|台中|高雄)\s*[-－]?\s*([^\d\s]+?)\d+天機票/);
+  const origin = route?.[1] || '';
+  const destination = route?.[2]?.trim() || '';
   if (!dates || !fare || !title) return null;
   const [, departMonth, departDay, returnMonth, returnDay] = dates;
   const departure = toIsoDate(calendarYear, Number(departMonth), Number(departDay));
