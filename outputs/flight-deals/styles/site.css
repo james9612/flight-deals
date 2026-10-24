@@ -340,14 +340,51 @@ h1 em:after {
   background: var(--green-hover);
 }
 
-/* 搜尋區塊 */
+/* 搜尋區塊（向上移動） */
 .search {
   background: white;
   border: 1px solid var(--line);
   border-radius: 18px;
-  padding: 24px;
-  box-shadow: 0 10px 30px rgba(15, 30, 23, 0.05);
+  padding: 20px 24px;
+  margin: 10px 0 16px;
+  box-shadow: 0 8px 24px rgba(15, 30, 23, 0.05);
 }
+.field.highlight-date {
+  border-color: #93c5fd;
+  background: #f8fafc;
+}
+.field.highlight-date label {
+  color: #1d4ed8;
+  font-weight: 800;
+}
+
+/* 0 元機票收折區塊 */
+.zero-promos-collapsible {
+  margin: 0 0 16px;
+  background: #fff;
+  border: 1px solid #fed7aa;
+  box-shadow: 0 4px 16px rgba(234, 88, 12, 0.06);
+}
+.zero-promos-collapsible .planner-toggle {
+  background: #fff7ed;
+  padding: 13px 20px;
+}
+.zero-promos-collapsible .planner-toggle:hover {
+  background: #ffedd5;
+}
+.planner-promo-badge {
+  background: #ea580c;
+  color: white;
+  font-size: 12px;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+.zero-promos-collapsible[open] .planner-toggle {
+  border-bottom: 1px solid #fed7aa;
+}
+
 .search-title {
   display: flex;
   justify-content: space-between;
@@ -463,9 +500,9 @@ h1 em:after {
   background: var(--green-hover);
 }
 
-/* 旅行社計畫票比價庫 */
+/* 旅行社計畫票比價庫（卡片向上移動） */
 .section {
-  padding: 44px 0 60px;
+  padding: 16px 0 44px;
 }
 .section .head h2 {
   font-size: 26px;

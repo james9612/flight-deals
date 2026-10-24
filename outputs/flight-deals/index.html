@@ -44,24 +44,11 @@
       </div>
     </section>
 
-    <!-- 0 元機票與航空公司促銷特報牆 -->
-    <section class="promos-section" id="zero-promos">
-      <div class="head">
-        <div>
-          <h2>🔥 0 元機票與各大航空公司促銷特報</h2>
-          <p>定時追蹤越捷每週 0 元大促、AirAsia Free Seats、虎航 Payday、樂桃 Sale，算清兩地機場稅費與含稅到手總價！</p>
-        </div>
-      </div>
-      <div class="promos-grid" id="promos-grid">
-        <!-- 由 app.js 動態渲染 -->
-      </div>
-    </section>
-
-    <!-- 搜尋與篩選區 -->
-    <section class="search" id="alerts" style="margin-top:35px">
+    <!-- 搜尋與篩選區（日期搜尋向上移動） -->
+    <section class="search" id="alerts">
       <div class="search-title">
         <div>
-          <h2>找一張適合你的旅行社計畫票</h2>
+          <h2>✈️ 搜尋各家旅行社計畫票</h2>
           <p>計畫票去回程日期與天數固定，但通常包含來回行李與稅金，價格極具優勢。</p>
         </div>
         <span class="search-count">正在載入聚合資料...</span>
@@ -109,12 +96,12 @@
               <option>澳門</option>
             </select>
           </div>
-          <div class="field">
-            <label>最早出發日 <small>可留空</small></label>
+          <div class="field highlight-date">
+            <label>📅 最早出發日 <small>可留空</small></label>
             <input id="depart" type="date">
           </div>
-          <div class="field">
-            <label>最晚回程日 <small>可留空</small></label>
+          <div class="field highlight-date">
+            <label>📅 最晚回程日 <small>可留空</small></label>
             <input id="return" type="date">
           </div>
           <div class="field">
@@ -137,6 +124,21 @@
         </div>
       </form>
     </section>
+
+    <!-- 0 元機票與各大航空公司促銷特報（預設收折） -->
+    <details class="planner zero-promos-collapsible" id="zero-promos">
+      <summary class="planner-toggle">
+        <span class="planner-promo-badge">🔥 0 元促銷</span>
+        <b>廉航 0 元機票與各大航空公司促銷特報牆（點擊展開 5 則促銷情報）</b>
+        <span>越捷每週 0 元大促、AirAsia Free Seats、虎航 Payday 到手總價試算</span>
+        <span class="toggle-icon">＋</span>
+      </summary>
+      <div class="planner-body">
+        <div class="promos-grid" id="promos-grid">
+          <!-- 由 app.js 動態渲染 -->
+        </div>
+      </div>
+    </details>
 
     <!-- 旅行社計畫票比價列表 -->
     <section class="section" id="deals">
@@ -268,6 +270,6 @@
     </footer>
   </div>
 
-  <script src="scripts/app.js?v=20261025-9" defer></script>
+  <script src="scripts/app.js?v=20261025-10" defer></script>
 </body>
 </html>

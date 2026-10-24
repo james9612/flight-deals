@@ -433,9 +433,16 @@ document.addEventListener('DOMContentLoaded', () => {
       const origin = document.getElementById('mistakeOrigin').value;
       const destination = document.getElementById('mistakeDestination').value.trim() || '全球／不限目的地';
       const threshold = document.getElementById('mistakeThreshold').value;
-      const result = document.getElementById('mistakeFareResult');
       result.innerHTML = `<strong>已建立異常票價偵測條件：${origin} ➔ ${destination}</strong><br>判定門檻：低於常態中位價 ${threshold}% 以上<br><span class="meta">偵測命中後需確認票規與是否包含稅金，並回到航空公司或出票方核驗。</span>`;
       result.hidden = false;
     });
   }
+
+  // Open 0-fare promos accordion if anchor link is clicked
+  document.querySelectorAll('a[href="#zero-promos"]').forEach(a => {
+    a.addEventListener('click', () => {
+      const el = document.getElementById('zero-promos');
+      if (el) el.open = true;
+    });
+  });
 });
