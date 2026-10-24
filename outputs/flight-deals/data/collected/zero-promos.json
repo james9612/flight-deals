@@ -1,6 +1,6 @@
 {
   "source": "各航空公司官方促銷專區與 0 元機票特報",
-  "collectedAt": "2026-10-24T17:04:07.822Z",
+  "collectedAt": "2026-10-24T17:13:57.880Z",
   "count": 5,
   "promos": [
     {
@@ -54,7 +54,7 @@
       "sourceUrl": "https://www.vietjetair.com/zh-tw",
       "status": "active",
       "checked": "2026-10-24",
-      "collectedAt": "2026-10-24T17:04:07.822Z"
+      "collectedAt": "2026-10-24T17:13:57.880Z"
     },
     {
       "id": "airasia-big-sale-zero",
@@ -107,7 +107,7 @@
       "sourceUrl": "https://www.airasia.com/zh/tw",
       "status": "upcoming",
       "checked": "2026-10-24",
-      "collectedAt": "2026-10-24T17:04:07.822Z"
+      "collectedAt": "2026-10-24T17:13:57.880Z"
     },
     {
       "id": "tigerair-payday-sale",
@@ -170,7 +170,7 @@
       "sourceUrl": "https://www.tigerairtw.com/zh-TW/index",
       "status": "active",
       "checked": "2026-10-24",
-      "collectedAt": "2026-10-24T17:04:07.822Z"
+      "collectedAt": "2026-10-24T17:13:57.880Z"
     },
     {
       "id": "peach-special-sale",
@@ -223,7 +223,7 @@
       "sourceUrl": "https://www.flypeach.com/tw/um/specials/sale/sale",
       "status": "active",
       "checked": "2026-10-24",
-      "collectedAt": "2026-10-24T17:04:07.822Z"
+      "collectedAt": "2026-10-24T17:13:57.880Z"
     },
     {
       "id": "scoot-got-to-go",
@@ -266,7 +266,7 @@
       "sourceUrl": "https://www.flyscoot.com/zhtw",
       "status": "active",
       "checked": "2026-10-24",
-      "collectedAt": "2026-10-24T17:04:07.822Z"
+      "collectedAt": "2026-10-24T17:13:57.880Z"
     }
   ]
 }

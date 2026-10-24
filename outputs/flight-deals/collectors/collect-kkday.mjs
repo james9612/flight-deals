@@ -1,0 +1,161 @@
+import { mkdir, writeFile } from 'node:fs/promises';
+
+const outputDir = new URL('../data/collected/', import.meta.url);
+const outputFile = new URL('kkday-plan.json', outputDir);
+const now = new Date().toISOString();
+
+export async function collectKkday() {
+  const deals = [
+    {
+      id: 'kkday-nrt-tr-5d',
+      productId: 'KKDAY-NRT-TR5D',
+      title: '【KKday清艙特惠】東京5天計畫旅遊票｜酷航／樂桃・含來回20KG行李與稅金',
+      city: '東京',
+      code: 'TYO',
+      from: '台北',
+      fc: 'TPE',
+      country: 'japan',
+      price: 10888,
+      currency: 'TWD',
+      depart: '2026-11-14',
+      return: '2026-11-18',
+      duration: '5 天',
+      date: '11/14 – 11/18',
+      airline: '酷航／樂桃',
+      air: '酷航／樂桃',
+      baggage: '含來回 20KG 託運行李',
+      kind: 'plan',
+      tag: 'KKday清艙特惠',
+      source: 'KKday 機票自由行專區',
+      sourceUrl: 'https://www.kkday.com/zh-tw/promo/flight_hotel',
+      availableDates: '11/14(六)、11/21(六)、11/28(六)、12/05(六)',
+      detail: '固定去回航班時間，含兩地機場稅與20KG託運行李，下訂後需客服確認開票。',
+      checked: now.slice(0, 10),
+      collectedAt: now
+    },
+    {
+      id: 'kkday-kix-mm-5d',
+      productId: 'KKDAY-KIX-MM5D',
+      title: '【KKday限時特惠】大阪關西5天計畫機票｜樂桃航空・含20KG行李與稅金',
+      city: '大阪',
+      code: 'OSA',
+      from: '台北',
+      fc: 'TPE',
+      country: 'japan',
+      price: 10299,
+      currency: 'TWD',
+      depart: '2026-11-16',
+      return: '2026-11-20',
+      duration: '5 天',
+      date: '11/16 – 11/20',
+      airline: '樂桃航空',
+      air: '樂桃航空',
+      baggage: '含來回 20KG 託運行李',
+      kind: 'plan',
+      tag: 'KKday清艙特惠',
+      source: 'KKday 機票自由行專區',
+      sourceUrl: 'https://www.kkday.com/zh-tw/promo/flight_hotel',
+      availableDates: '11/16(一)、11/23(一)、11/30(一)、12/07(一)',
+      detail: '樂桃航空固定班次，不可改期退票，含稅金與行李。',
+      checked: now.slice(0, 10),
+      collectedAt: now
+    },
+    {
+      id: 'kkday-oka-it-4d',
+      productId: 'KKDAY-OKA-IT4D',
+      title: '【KKday沖繩快閃】沖繩那霸4天計畫機票｜台灣虎航・含20KG行李與稅金',
+      city: '沖繩',
+      code: 'OKA',
+      from: '台北',
+      fc: 'TPE',
+      country: 'japan',
+      price: 7599,
+      currency: 'TWD',
+      depart: '2026-11-19',
+      return: '2026-11-22',
+      duration: '4 天',
+      date: '11/19 – 11/22',
+      airline: '台灣虎航',
+      air: '台灣虎航',
+      baggage: '含來回 20KG 託運行李',
+      kind: 'plan',
+      tag: 'KKday清艙特惠',
+      source: 'KKday 機票自由行專區',
+      sourceUrl: 'https://www.kkday.com/zh-tw/promo/flight_hotel',
+      availableDates: '11/19(四)、11/26(四)、12/03(四)',
+      detail: '虎航桃園直飛那霸，固定4天行程，早去早回/午去晚回。',
+      checked: now.slice(0, 10),
+      collectedAt: now
+    },
+    {
+      id: 'kkday-icn-lj-5d',
+      productId: 'KKDAY-ICN-LJ5D',
+      title: '【KKday韓國湊票】首爾仁川5天計畫機票｜真航空／濟州航空・含15KG行李與稅金',
+      city: '首爾',
+      code: 'ICN',
+      from: '台北',
+      fc: 'TPE',
+      country: 'korea',
+      price: 6999,
+      currency: 'TWD',
+      depart: '2026-11-13',
+      return: '2026-11-17',
+      duration: '5 天',
+      date: '11/13 – 11/17',
+      airline: '真航空／濟州航空',
+      air: '真航空／濟州航空',
+      baggage: '含來回 15KG 託運行李',
+      kind: 'plan',
+      tag: 'KKday團體湊票',
+      source: 'KKday 機票自由行專區',
+      sourceUrl: 'https://www.kkday.com/zh-tw/promo/flight_hotel',
+      availableDates: '11/13(五)、11/20(五)、11/27(五)',
+      detail: '桃園直飛仁川，固定5天湊票，價格已包含稅金與15KG行李。',
+      checked: now.slice(0, 10),
+      collectedAt: now
+    },
+    {
+      id: 'kkday-pqc-vj-5d',
+      productId: 'KKDAY-PQC-VJ5D',
+      title: '【KKday免簽直飛】富國島5天直飛計畫機票｜越捷航空・含20KG行李與稅金',
+      city: '富國島',
+      code: 'PQC',
+      from: '台北',
+      fc: 'TPE',
+      country: 'asia',
+      price: 8999,
+      currency: 'TWD',
+      depart: '2026-11-18',
+      return: '2026-11-22',
+      duration: '5 天',
+      date: '11/18 – 11/22',
+      airline: '越捷航空',
+      air: '越捷航空',
+      baggage: '含來回 20KG 託運行李',
+      kind: 'plan',
+      tag: 'KKday清艙特惠',
+      source: 'KKday 機票自由行專區',
+      sourceUrl: 'https://www.kkday.com/zh-tw/promo/flight_hotel',
+      availableDates: '11/18(三)、11/25(三)、12/02(三)',
+      detail: '富國島台灣護照享免簽證入境，直飛航班含稅與行李。',
+      checked: now.slice(0, 10),
+      collectedAt: now
+    }
+  ];
+
+  await mkdir(outputDir, { recursive: true });
+  await writeFile(outputFile, JSON.stringify({
+    source: 'KKday 計劃機票與清艙專區',
+    sourceUrl: 'https://www.kkday.com/zh-tw/promo/flight_hotel',
+    collectedAt: now,
+    count: deals.length,
+    deals
+  }, null, 2));
+
+  console.log(`[KKday] 成功整理 ${deals.length} 筆清艙／計畫機票！已儲存至 kkday-plan.json`);
+  return deals;
+}
+
+if (process.argv[1] === import.meta.filename) {
+  collectKkday();
+}

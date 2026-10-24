@@ -10,7 +10,9 @@ const agencyClassMap = {
   '可樂旅遊': 'agency-cola',
   '可樂旅遊（Colatour）': 'agency-cola',
   '易飛網': 'agency-ezfly',
-  '易飛網（ezfly）': 'agency-ezfly'
+  '易飛網（ezfly）': 'agency-ezfly',
+  'KKday': 'agency-kkday',
+  'KKday 機票自由行專區': 'agency-kkday'
 };
 
 function renderPromos() {
@@ -86,6 +88,7 @@ function renderDeals() {
     if (activeFilter === 'plynet' && !deal.source.includes('飛遊網')) return false;
     if (activeFilter === 'cola' && !deal.source.includes('可樂')) return false;
     if (activeFilter === 'ezfly' && !deal.source.includes('易飛網')) return false;
+    if (activeFilter === 'kkday' && !deal.source.includes('KKday') && !deal.agency?.includes('KKday')) return false;
     if (['japan', 'korea', 'asia'].includes(activeFilter) && deal.country !== activeFilter) return false;
 
     // Form criteria

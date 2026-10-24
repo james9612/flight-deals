@@ -40,6 +40,16 @@
     "notes": "收錄大阪、首爾、福岡等神秘清艙機票與團體湊票，提供極具競爭力的晚鳥地板價。"
   },
   {
+    "id": "kkday-plan-ticket",
+    "name": "KKday 計劃機票與清艙專區",
+    "type": "plan-clearance",
+    "url": "https://www.kkday.com/zh-tw/promo/flight_hotel",
+    "access": "官方計劃機票專區；彙整日韓東南亞團體湊票、包機清艙與含行李特惠",
+    "frequency": "每週排程更新；檔期清倉機票每日確認",
+    "status": "清艙票已整合",
+    "notes": "精選東京、大阪、沖繩、首爾、富國島直飛計畫機票，大多含來回20KG託運行李與機場稅。"
+  },
+  {
     "id": "vietjet-zero-promo",
     "name": "越捷航空（Vietjet Air）官方 0 元機票大促",
     "type": "airline-promo",

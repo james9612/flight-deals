@@ -2,6 +2,7 @@ import { collectLionTravel } from './collect-liontravel.mjs';
 import { collectPlynet } from './collect-plynet.mjs';
 import { collectColatour } from './collect-colatour.mjs';
 import { collectEzfly } from './collect-ezfly.mjs';
+import { collectKkday } from './collect-kkday.mjs';
 import { collectZeroPromos } from './collect-zero-promos.mjs';
 import { mergeCollected } from './merge-collected.mjs';
 
@@ -20,10 +21,13 @@ try {
   console.log('\n4. 正在整理【易飛網】神秘清艙與團體湊票...');
   await collectEzfly();
 
-  console.log('\n5. 正在抓取【各大航空公司】0 元機票與官方促銷特報...');
+  console.log('\n5. 正在整理【KKday】清艙機票與計畫票專區...');
+  await collectKkday();
+
+  console.log('\n6. 正在抓取【各大航空公司】0 元機票與官方促銷特報...');
   await collectZeroPromos();
 
-  console.log('\n6. 正在執行多來源正規化、比價與去重整合管線...');
+  console.log('\n7. 正在執行多來源正規化、比價與去重整合管線...');
   await mergeCollected();
 
   console.log('\n=== [全部採集與聚合完成！] ===');
