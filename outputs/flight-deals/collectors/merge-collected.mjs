@@ -25,6 +25,7 @@ async function safeReadJson(fileUrl, fallback = []) {
 const countryByDestination = {
   東京: 'japan', 成田: 'japan', 羽田: 'japan', 大阪: 'japan', 關西: 'japan',
   沖繩: 'japan', 名古屋: 'japan', 福岡: 'japan', 石垣島: 'japan', 函館: 'japan', 札幌: 'japan', 北海道: 'japan',
+  高松: 'japan', 小松: 'japan', 高知: 'japan',
   首爾: 'korea', 釜山: 'korea', 仁川: 'korea',
   曼谷: 'asia', 香港: 'asia', 新加坡: 'asia', 澳門: 'asia', 清邁: 'asia', 富國島: 'asia'
 };
@@ -32,6 +33,7 @@ const countryByDestination = {
 const codeByDestination = {
   東京: 'TYO', 成田: 'NRT', 羽田: 'HND', 大阪: 'OSA', 關西: 'KIX',
   沖繩: 'OKA', 名古屋: 'NGO', 福岡: 'FUK', 石垣島: 'ISG', 函館: 'HKD', 札幌: 'CTS', 北海道: 'CTS',
+  高松: 'TAK', 小松: 'KMQ', 高知: 'KCZ',
   首爾: 'ICN', 釜山: 'PUS', 仁川: 'ICN',
   曼谷: 'BKK', 香港: 'HKG', 新加坡: 'SIN', 澳門: 'MFM', 清邁: 'CNX', 富國島: 'PQC'
 };
@@ -66,29 +68,36 @@ export async function mergeCollected() {
       agency: '易飛網',
       tag: '易飛網清艙快閃'
     })),
-    ...flytourDeals.map(d => ({
-      id: d.id,
-      city: d.destination || '未標示目的地',
-      code: codeByDestination[d.destination] || 'INT',
-      from: d.origin === '桃園' ? '台北' : (d.origin || '台北'),
-      fc: 'TPE',
-      country: countryByDestination[d.destination] || 'asia',
-      price: d.price,
-      depart: d.depart,
-      return: d.return,
-      duration: `${daysBetween(d.depart, d.return)} 天`,
-      date: `${d.depart.slice(5).replace('-', '/')} – ${d.return.slice(5).replace('-', '/')}`,
-      airline: d.airline || '特價清艙航空',
-      air: [d.airline, d.outbound, d.inbound].filter(Boolean).join(' · '),
-      baggage: d.baggage || '含託運行李',
-      source: d.source || '飛遊網特價清艙',
-      sourceUrl: d.sourceUrl || 'https://plynet.com.tw/',
-      checked: d.collectedAt ? d.collectedAt.slice(0, 10) : new Date().toISOString().slice(0, 10),
-      tag: '飛遊網清艙日曆',
-      agency: '飛遊網',
-      kind: 'plan',
-      detail: [d.title, d.baggage, d.rules].filter(Boolean).join('｜')
-    }))
+    ...flytourDeals.map(d => {
+      const city = d.city || d.destination || '精選航點';
+      const from = d.from || (d.origin === '桃園' ? '台北' : (d.origin || '台北'));
+      const code = d.code || codeByDestination[city] || 'INT';
+      const fc = d.fc || (from === '高雄' ? 'KHH' : (from === '台中' ? 'RMQ' : 'TPE'));
+      const country = d.country || countryByDestination[city] || 'asia';
+      return {
+        id: d.id,
+        city,
+        code,
+        from,
+        fc,
+        country,
+        price: d.price,
+        depart: d.depart,
+        return: d.return,
+        duration: d.duration || `${daysBetween(d.depart, d.return)} 天`,
+        date: d.date || (d.depart && d.return ? `${d.depart.slice(5).replace('-', '/')} – ${d.return.slice(5).replace('-', '/')}` : '清艙特惠票'),
+        airline: d.airline || d.air || '特價清艙航空',
+        air: d.airline || d.air || '特價清艙航空',
+        baggage: d.baggage || '含託運行李',
+        source: d.source || '飛遊網特價清艙',
+        sourceUrl: d.sourceUrl || 'https://www.plynet.com.tw/',
+        checked: d.checked || (d.collectedAt ? d.collectedAt.slice(0, 10) : new Date().toISOString().slice(0, 10)),
+        tag: '飛遊網清艙日曆',
+        agency: '飛遊網',
+        kind: 'plan',
+        detail: d.detail || `${d.title || ''}｜飛遊網特價清艙，去回程固定不可改期`
+      };
+    })
   ];
 
   const byId = new Map();

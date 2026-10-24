@@ -1,7 +1,7 @@
 {
   "source": "易飛網國際機票與神秘清艙專區",
   "sourceUrl": "https://intl.ezfly.com/",
-  "collectedAt": "2026-10-24T16:58:29.525Z",
+  "collectedAt": "2026-10-24T17:04:07.822Z",
   "count": 3,
   "deals": [
     {
@@ -28,7 +28,7 @@
       "availableDates": "11/09(一)、11/16(一)、11/23(一)",
       "detail": "易飛網精選神秘清艙票，固定去回程時間，不可退票。",
       "checked": "2026-10-24",
-      "collectedAt": "2026-10-24T16:58:29.525Z"
+      "collectedAt": "2026-10-24T17:04:07.822Z"
     },
     {
       "id": "ezfly-icn-ze-5d",
@@ -54,7 +54,7 @@
       "availableDates": "11/07(六)、11/14(六)、11/21(六)",
       "detail": "桃園直飛仁川，固定團體湊票，含稅金與15kg行李。",
       "checked": "2026-10-24",
-      "collectedAt": "2026-10-24T16:58:29.525Z"
+      "collectedAt": "2026-10-24T17:04:07.822Z"
     },
     {
       "id": "ezfly-fuk-it-5d",
@@ -80,7 +80,7 @@
       "availableDates": "11/20(五)、11/27(五)",
       "detail": "直飛福岡機場，進市區僅15分鐘，固定航班不可改期。",
       "checked": "2026-10-24",
-      "collectedAt": "2026-10-24T16:58:29.525Z"
+      "collectedAt": "2026-10-24T17:04:07.822Z"
     }
   ]
 }

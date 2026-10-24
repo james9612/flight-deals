@@ -113,43 +113,69 @@ function renderDeals() {
 
     return `
       <article class="card">
-        <div class="cardtop">
-          <div>
-            <span class="agency-badge ${agencyClass}">${d.agency || d.source}</span>
-            <span class="tag">${d.tag}</span>
+        <div>
+          <div class="cardtop">
+            <div>
+              <span class="agency-badge ${agencyClass}">${d.agency || d.source}</span>
+              <span class="tag">${d.tag}</span>
+            </div>
+            <button class="heart" onclick="event.stopPropagation();this.textContent=this.textContent==='♡'?'♥':'♡'">♡</button>
           </div>
-          <button class="heart" onclick="event.stopPropagation();this.textContent=this.textContent==='♡'?'♥':'♡'">♡</button>
+
+          <div class="card-header-dest">
+            <span class="dest-city-large">${d.city}</span>
+            <span class="dest-duration-badge">${d.duration}</span>
+          </div>
+
+          <div class="flight-meta-row">
+            <span>📅 ${d.date}</span>
+            <span>·</span>
+            <span class="airline-highlight">✈ ${d.airline || d.air}</span>
+          </div>
+
+          <div><span class="baggage-pill">🧳 ${d.baggage || '含來回託運行李'}</span></div>
+
+          <div class="route-box">
+            <div class="route-endpoint">
+              <div class="route-iata">${d.fc}</div>
+              <div class="route-city-label">${d.from}</div>
+            </div>
+            <div class="route-center">
+              <div class="route-line"></div>
+              <span class="route-flight-type">來回直飛</span>
+            </div>
+            <div class="route-endpoint">
+              <div class="route-iata">${d.code}</div>
+              <div class="route-city-label">${d.city}</div>
+            </div>
+          </div>
+
+          ${datesPreview}
         </div>
 
-        <h3>${d.city}｜${d.duration}</h3>
-        <div class="meta">${d.date} · <b>${d.airline || d.air}</b></div>
-        <div><span class="baggage-pill">🧳 ${d.baggage || '含來回託運行李'}</span></div>
-
-        <div class="route">
-          <div class="airport">${d.fc}<small>${d.from}</small></div>
-          <div class="line"><span>固定來回</span></div>
-          <div class="airport">${d.code}<small>${d.city}</small></div>
-        </div>
-
-        ${datesPreview}
-
-        <div class="foot">
-          <div>
-            <b>旅行社固定日期計畫票</b>
-            含稅含行李 · 席次依預訂當下為準
+        <div>
+          <div class="card-foot-pricing">
+            <div class="foot-info">
+              <b>固定日期計畫機票</b>
+              含稅金與行李額度
+            </div>
+            <div class="fare-price-box">
+              <span class="fare-currency">NT$</span>
+              <span class="fare-amount">${d.price.toLocaleString()}</span>
+              <span class="fare-suffix">起</span>
+            </div>
           </div>
-          <div class="fare">NT$ ${d.price.toLocaleString()}<small> 起</small></div>
-        </div>
 
-        <div class="detail">
-          <p class="meta">${d.detail}</p>
-          <div class="source">
-            <span>來源：<b>${d.source}</b></span>
-            <span>更新：${d.checked}</span>
+          <div class="detail-section">
+            <p class="detail-text">${d.detail}</p>
+            <div class="source-info-bar">
+              <span>來源：<b>${d.source}</b></span>
+              <span>更新：${d.checked}</span>
+            </div>
+            <a class="card-booking-btn" href="${d.sourceUrl}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">
+              前往 ${d.agency || '旅行社'} 官網預訂 ↗
+            </a>
           </div>
-          <a class="source-link" href="${d.sourceUrl}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">
-            前往 ${d.agency || '旅行社'} 商品頁預訂 ↗
-          </a>
         </div>
       </article>
     `;

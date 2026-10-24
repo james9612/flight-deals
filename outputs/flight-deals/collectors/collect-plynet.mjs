@@ -8,12 +8,12 @@ const now = new Date().toISOString();
 const cityCodeMap = {
   東京: 'TYO', 大阪: 'OSA', 沖繩: 'OKA', 首爾: 'ICN', 仁川: 'ICN',
   釜山: 'PUS', 福岡: 'FUK', 名古屋: 'NGO', 石垣島: 'ISG', 函館: 'HKD',
-  高松: 'TAK', 小松: 'KMQ', 札幌: 'CTS', 清邁: 'CNX', 曼谷: 'BKK'
+  高松: 'TAK', 小松: 'KMQ', 札幌: 'CTS', 北海道: 'CTS', 高知: 'KCZ', 清邁: 'CNX', 曼谷: 'BKK'
 };
 
 const countryMap = {
   東京: 'japan', 大阪: 'japan', 沖繩: 'japan', 福岡: 'japan',
-  名古屋: 'japan', 石垣島: 'japan', 函館: 'japan', 高松: 'japan', 小松: 'japan', 札幌: 'japan',
+  名古屋: 'japan', 石垣島: 'japan', 函館: 'japan', 高松: 'japan', 小松: 'japan', 札幌: 'japan', 北海道: 'japan', 高知: 'japan',
   首爾: 'korea', 釜山: 'korea', 仁川: 'korea',
   曼谷: 'asia', 清邁: 'asia'
 };
@@ -37,7 +37,7 @@ function parsePlynetEvent(event) {
   }
 
   let city = '精選航點';
-  for (const c of ['東京', '大阪', '沖繩', '首爾', '仁川', '釜山', '福岡', '名古屋', '石垣島', '函館', '高松', '小松', '札幌', '清邁', '曼谷']) {
+  for (const c of ['東京', '大阪', '沖繩', '首爾', '仁川', '釜山', '福岡', '名古屋', '石垣島', '函館', '高松', '小松', '札幌', '北海道', '高知', '清邁', '曼谷']) {
     if (fullTitle.includes(c)) {
       city = c === '仁川' ? '首爾' : c;
       break;
