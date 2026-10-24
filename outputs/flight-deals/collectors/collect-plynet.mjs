@@ -64,6 +64,9 @@ function parsePlynetEvent(event) {
   const code = cityCodeMap[city] || 'INT';
   const country = countryMap[city] || 'asia';
 
+  const lineMsg = `您好，我想訂購飛遊網清艙機票：\n【${city} ${days}天機票】${fullTitle}\n出發日期：${depart || '依清艙排程'} ~ ${returnDate || ''}\n特惠價格：NT$ ${price.toLocaleString()}\n請問目前還有機位可預訂嗎？`;
+  const directBookingUrl = `https://line.me/R/oaMessage/%40msc8686z/?${encodeURIComponent(lineMsg)}`;
+
   return {
     id: `plynet-${event.id}`,
     ticketId: event.id,
@@ -85,8 +88,8 @@ function parsePlynetEvent(event) {
     kind: 'plan',
     tag: '飛遊網清艙日曆',
     source: '飛遊網特價清艙',
-    sourceUrl,
-    detail: `${fullTitle}｜飛遊網特價清艙機票，固定去回程時間，不可退票與改期`,
+    sourceUrl: directBookingUrl,
+    detail: `${fullTitle}｜飛遊網特價清艙機票，固定去回程時間，不可退票與改期。點擊預訂直達飛遊網官方專人在線開票！`,
     checked: now.slice(0, 10),
     collectedAt: now
   };

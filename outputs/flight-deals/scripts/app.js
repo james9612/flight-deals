@@ -1,6 +1,8 @@
 let deals = [];
 let promos = [];
 let activeFilter = 'all';
+let currentPage = 1;
+const PAGE_SIZE = 30;
 
 const agencyClassMap = {
   '雄獅旅遊': 'agency-lion',
@@ -77,6 +79,80 @@ function renderPromos() {
   }).join('');
 }
 
+function renderPagination(totalItems, totalPages) {
+  const container = document.getElementById('pagination');
+  if (!container) return;
+
+  if (totalItems <= PAGE_SIZE) {
+    container.innerHTML = '';
+    return;
+  }
+
+  const startItem = (currentPage - 1) * PAGE_SIZE + 1;
+  const endItem = Math.min(currentPage * PAGE_SIZE, totalItems);
+
+  let html = `
+    <div class="pagination-inner">
+      <div class="page-info">
+        第 <b>${currentPage}</b> / <b>${totalPages}</b> 頁（顯示第 ${startItem} – ${endItem} 筆，共 ${totalItems} 筆）
+      </div>
+      <div class="page-controls">
+  `;
+
+  // Previous button
+  const isFirst = currentPage <= 1;
+  html += `
+    <button type="button" class="page-btn page-nav" ${isFirst ? 'disabled' : ''} data-page="1" title="第一頁">« 首頁</button>
+    <button type="button" class="page-btn page-nav" ${isFirst ? 'disabled' : ''} data-page="${currentPage - 1}" title="上一頁">‹ 上一頁</button>
+  `;
+
+  // Numeric page buttons
+  const maxButtons = 5;
+  let startPage = Math.max(1, currentPage - 2);
+  let endPage = Math.min(totalPages, startPage + maxButtons - 1);
+  if (endPage - startPage < maxButtons - 1) {
+    startPage = Math.max(1, endPage - maxButtons + 1);
+  }
+
+  if (startPage > 1) {
+    html += `<button type="button" class="page-btn" data-page="1">1</button>`;
+    if (startPage > 2) html += `<span class="page-ellipsis">…</span>`;
+  }
+
+  for (let p = startPage; p <= endPage; p++) {
+    html += `<button type="button" class="page-btn ${p === currentPage ? 'active' : ''}" data-page="${p}">${p}</button>`;
+  }
+
+  if (endPage < totalPages) {
+    if (endPage < totalPages - 1) html += `<span class="page-ellipsis">…</span>`;
+    html += `<button type="button" class="page-btn" data-page="${totalPages}">${totalPages}</button>`;
+  }
+
+  // Next button
+  const isLast = currentPage >= totalPages;
+  html += `
+    <button type="button" class="page-btn page-nav" ${isLast ? 'disabled' : ''} data-page="${currentPage + 1}" title="下一頁">下一頁 ›</button>
+    <button type="button" class="page-btn page-nav" ${isLast ? 'disabled' : ''} data-page="${totalPages}" title="最末頁">末頁 »</button>
+  `;
+
+  html += `</div></div>`;
+  container.innerHTML = html;
+
+  container.querySelectorAll('.page-btn[data-page]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const p = Number(btn.dataset.page);
+      if (p && p !== currentPage && p >= 1 && p <= totalPages) {
+        currentPage = p;
+        renderDeals();
+        const dealsSection = document.getElementById('deals');
+        if (dealsSection) {
+          dealsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }
+    });
+  });
+}
+
 function renderDeals() {
   const container = document.getElementById('cards');
   if (!container) return;
@@ -89,15 +165,18 @@ function renderDeals() {
   const sortVal = document.getElementById('sort')?.value || 'price';
 
   let filtered = deals.filter(deal => {
+    const src = (deal.source || '').toLowerCase();
+    const agn = (deal.agency || '').toLowerCase();
+
     // Agency / Type filtering
     if (activeFilter === 'lion' && !deal.source.includes('雄獅') && !deal.agency?.includes('雄獅')) return false;
     if (activeFilter === 'plynet' && !deal.source.includes('飛遊網') && !deal.agency?.includes('飛遊網')) return false;
     if (activeFilter === 'cola' && !deal.source.includes('可樂') && !deal.agency?.includes('可樂')) return false;
     if (activeFilter === 'ezfly' && !deal.source.includes('易飛網') && !deal.agency?.includes('易飛網')) return false;
-    if (activeFilter === 'kkday' && !(deal.source || '').toLowerCase().includes('kkday') && !(deal.agency || '').toLowerCase().includes('kkday')) return false;
+    if (activeFilter === 'kkday' && !src.includes('kkday') && !agn.includes('kkday')) return false;
     if (activeFilter === 'ehs' && !deal.source.includes('東森') && !deal.agency?.includes('東森')) return false;
     if (activeFilter === 'settour' && !deal.source.includes('東南') && !deal.agency?.includes('東南')) return false;
-    if (activeFilter === 'funtime' && !deal.source.includes('FunTime') && !deal.agency?.includes('FunTime')) return false;
+    if (activeFilter === 'funtime' && !src.includes('funtime') && !agn.includes('funtime')) return false;
     if (['japan', 'korea', 'asia'].includes(activeFilter) && deal.country !== activeFilter) return false;
 
     // Form criteria
@@ -116,12 +195,34 @@ function renderDeals() {
     filtered.sort((a, b) => (a.depart || '').localeCompare(b.depart || ''));
   }
 
-  const emptyEl = document.getElementById('empty');
-  if (emptyEl) emptyEl.style.display = filtered.length ? 'none' : 'block';
+  const totalItems = filtered.length;
+  const totalPages = Math.ceil(totalItems / PAGE_SIZE) || 1;
+  if (currentPage > totalPages) currentPage = totalPages;
+  if (currentPage < 1) currentPage = 1;
 
-  container.innerHTML = filtered.map(d => {
+  const emptyEl = document.getElementById('empty');
+  if (emptyEl) emptyEl.style.display = totalItems ? 'none' : 'block';
+
+  // 30 items per page pagination
+  const paginated = filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
+
+  container.innerHTML = paginated.map(d => {
     const agencyClass = agencyClassMap[d.agency] || agencyClassMap[d.source] || 'agency-lion';
     const datesPreview = d.availableDates ? `<div class="dates-preview"><b>可售出發日預覽：</b>${d.availableDates}</div>` : '';
+
+    // Direct booking button text
+    let btnText = `前往 ${d.agency || '旅行社'} 商品頁預訂 ↗`;
+    if (d.sourceUrl && d.sourceUrl.includes('line.me')) {
+      btnText = `前往 飛遊網官方 LINE 即時開票 ↗`;
+    } else if ((d.agency || '').includes('FunTime')) {
+      btnText = `前往 FunTime 機票特惠預訂 ↗`;
+    } else if ((d.agency || '').includes('KKday')) {
+      btnText = `前往 KKday 官方機票預訂 ↗`;
+    } else if ((d.agency || '').includes('東南')) {
+      btnText = `前往 東南旅遊官方機位預訂 ↗`;
+    } else if ((d.agency || '').includes('東森')) {
+      btnText = `前往 東森旅遊官方商品頁 ↗`;
+    }
 
     return `
       <article class="card">
@@ -185,7 +286,7 @@ function renderDeals() {
               <span>更新：${d.checked}</span>
             </div>
             <a class="card-booking-btn" href="${d.sourceUrl}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">
-              前往 ${d.agency || '旅行社'} 官網預訂 ↗
+              ${btnText}
             </a>
           </div>
         </div>
@@ -193,8 +294,12 @@ function renderDeals() {
     `;
   }).join('');
 
+  renderPagination(totalItems, totalPages);
+
   const countEl = document.querySelector('.search-count');
-  if (countEl) countEl.textContent = `已聚合 ${deals.length} 筆旅行社計畫票（符合條件 ${filtered.length} 筆）`;
+  if (countEl) {
+    countEl.textContent = `已聚合 ${deals.length} 筆旅行社計畫票（符合條件 ${totalItems} 筆 · 第 ${currentPage}/${totalPages} 頁）`;
+  }
 }
 
 async function loadData() {
@@ -228,26 +333,18 @@ document.addEventListener('DOMContentLoaded', () => {
       document.querySelectorAll('.pill').forEach(p => p.classList.remove('on'));
       pill.classList.add('on');
       activeFilter = pill.dataset.filter || 'all';
+      currentPage = 1; // Always reset to page 1
 
-      // If user clicks a specific agency filter, relax destination if it would yield 0 cards
+      // When clicking a specific agency filter, clear conflicting inputs so user immediately sees that agency's complete inventory
       if (['kkday', 'lion', 'cola', 'ezfly', 'ehs', 'plynet', 'settour', 'funtime'].includes(activeFilter)) {
         const destEl = document.getElementById('dest');
-        if (destEl && destEl.value) {
-          const matchCount = deals.filter(d => {
-            const matchAgency = (activeFilter === 'kkday' && ((d.agency || '').toLowerCase().includes('kkday') || (d.source || '').toLowerCase().includes('kkday'))) ||
-              (activeFilter === 'ehs' && ((d.agency || '').includes('東森') || (d.source || '').includes('東森'))) ||
-              (activeFilter === 'settour' && ((d.agency || '').includes('東南') || (d.source || '').includes('東南'))) ||
-              (activeFilter === 'funtime' && ((d.agency || '').includes('FunTime') || (d.source || '').includes('FunTime'))) ||
-              (activeFilter === 'lion' && ((d.agency || '').includes('雄獅') || (d.source || '').includes('雄獅'))) ||
-              (activeFilter === 'plynet' && ((d.agency || '').includes('飛遊網') || (d.source || '').includes('飛遊網'))) ||
-              (activeFilter === 'cola' && ((d.agency || '').includes('可樂') || (d.source || '').includes('可樂'))) ||
-              (activeFilter === 'ezfly' && ((d.agency || '').includes('易飛網') || (d.source || '').includes('易飛網')));
-            return matchAgency && d.city.includes(destEl.value);
-          }).length;
-          if (matchCount === 0) {
-            destEl.value = ''; // Auto relax destination
-          }
-        }
+        if (destEl) destEl.value = '';
+        const departEl = document.getElementById('depart');
+        if (departEl) departEl.value = '';
+        const returnEl = document.getElementById('return');
+        if (returnEl) returnEl.value = '';
+        const originEl = document.getElementById('origin');
+        if (originEl) originEl.value = ''; // Show all departure cities for this agency
       }
 
       renderDeals();
@@ -265,6 +362,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (form) {
     form.addEventListener('submit', e => {
       e.preventDefault();
+      currentPage = 1;
       renderDeals();
       document.getElementById('deals')?.scrollIntoView({ behavior: 'smooth' });
     });
@@ -273,7 +371,12 @@ document.addEventListener('DOMContentLoaded', () => {
   // Inputs
   ['origin', 'dest', 'depart', 'return', 'budget', 'sort'].forEach(id => {
     const el = document.getElementById(id);
-    if (el) el.addEventListener('change', renderDeals);
+    if (el) {
+      el.addEventListener('change', () => {
+        currentPage = 1;
+        renderDeals();
+      });
+    }
   });
 
   // Quick examples
@@ -282,15 +385,16 @@ document.addEventListener('DOMContentLoaded', () => {
     osaka: { origin: '台北', dest: '大阪', depart: '', return: '', filter: 'all' },
     okinawa: { origin: '台北', dest: '沖繩', depart: '', return: '', filter: 'all' },
     seoul: { origin: '台北', dest: '首爾', depart: '', return: '', filter: 'all' },
-    kkday: { origin: '台北', dest: '', depart: '', return: '', filter: 'kkday' },
-    ehs: { origin: '台北', dest: '', depart: '', return: '', filter: 'ehs' },
-    settour: { origin: '台北', dest: '', depart: '', return: '', filter: 'settour' },
-    funtime: { origin: '台北', dest: '', depart: '', return: '', filter: 'funtime' }
+    kkday: { origin: '', dest: '', depart: '', return: '', filter: 'kkday' },
+    ehs: { origin: '', dest: '', depart: '', return: '', filter: 'ehs' },
+    settour: { origin: '', dest: '', depart: '', return: '', filter: 'settour' },
+    funtime: { origin: '', dest: '', depart: '', return: '', filter: 'funtime' }
   };
   document.querySelectorAll('[data-example]').forEach(button => {
     button.addEventListener('click', () => {
       const ex = examples[button.dataset.example];
       if (!ex) return;
+      currentPage = 1;
       Object.entries(ex).forEach(([k, v]) => {
         if (k === 'filter') {
           activeFilter = v;
