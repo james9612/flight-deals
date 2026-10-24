@@ -16,7 +16,9 @@ const agencyClassMap = {
   '東森旅遊': 'agency-ehs',
   '東森購物網・東森旅遊館': 'agency-ehs',
   '東南旅遊': 'agency-settour',
-  '東南旅遊（SETtour）機票館': 'agency-settour'
+  '東南旅遊（SETtour）機票館': 'agency-settour',
+  'FunTime': 'agency-funtime',
+  'FunTime旅遊比價網（localtour）': 'agency-funtime'
 };
 
 function renderPromos() {
@@ -95,6 +97,7 @@ function renderDeals() {
     if (activeFilter === 'kkday' && !(deal.source || '').toLowerCase().includes('kkday') && !(deal.agency || '').toLowerCase().includes('kkday')) return false;
     if (activeFilter === 'ehs' && !deal.source.includes('東森') && !deal.agency?.includes('東森')) return false;
     if (activeFilter === 'settour' && !deal.source.includes('東南') && !deal.agency?.includes('東南')) return false;
+    if (activeFilter === 'funtime' && !deal.source.includes('FunTime') && !deal.agency?.includes('FunTime')) return false;
     if (['japan', 'korea', 'asia'].includes(activeFilter) && deal.country !== activeFilter) return false;
 
     // Form criteria
@@ -227,13 +230,14 @@ document.addEventListener('DOMContentLoaded', () => {
       activeFilter = pill.dataset.filter || 'all';
 
       // If user clicks a specific agency filter, relax destination if it would yield 0 cards
-      if (['kkday', 'lion', 'cola', 'ezfly', 'ehs', 'plynet', 'settour'].includes(activeFilter)) {
+      if (['kkday', 'lion', 'cola', 'ezfly', 'ehs', 'plynet', 'settour', 'funtime'].includes(activeFilter)) {
         const destEl = document.getElementById('dest');
         if (destEl && destEl.value) {
           const matchCount = deals.filter(d => {
             const matchAgency = (activeFilter === 'kkday' && ((d.agency || '').toLowerCase().includes('kkday') || (d.source || '').toLowerCase().includes('kkday'))) ||
               (activeFilter === 'ehs' && ((d.agency || '').includes('東森') || (d.source || '').includes('東森'))) ||
               (activeFilter === 'settour' && ((d.agency || '').includes('東南') || (d.source || '').includes('東南'))) ||
+              (activeFilter === 'funtime' && ((d.agency || '').includes('FunTime') || (d.source || '').includes('FunTime'))) ||
               (activeFilter === 'lion' && ((d.agency || '').includes('雄獅') || (d.source || '').includes('雄獅'))) ||
               (activeFilter === 'plynet' && ((d.agency || '').includes('飛遊網') || (d.source || '').includes('飛遊網'))) ||
               (activeFilter === 'cola' && ((d.agency || '').includes('可樂') || (d.source || '').includes('可樂'))) ||
@@ -280,7 +284,8 @@ document.addEventListener('DOMContentLoaded', () => {
     seoul: { origin: '台北', dest: '首爾', depart: '', return: '', filter: 'all' },
     kkday: { origin: '台北', dest: '', depart: '', return: '', filter: 'kkday' },
     ehs: { origin: '台北', dest: '', depart: '', return: '', filter: 'ehs' },
-    settour: { origin: '台北', dest: '', depart: '', return: '', filter: 'settour' }
+    settour: { origin: '台北', dest: '', depart: '', return: '', filter: 'settour' },
+    funtime: { origin: '台北', dest: '', depart: '', return: '', filter: 'funtime' }
   };
   document.querySelectorAll('[data-example]').forEach(button => {
     button.addEventListener('click', () => {

@@ -50,7 +50,7 @@
     "sourceUrl": "https://www.vietjetair.com/zh-tw",
     "status": "active",
     "checked": "2026-10-24",
-    "collectedAt": "2026-10-24T17:41:34.252Z"
+    "collectedAt": "2026-10-24T17:49:38.825Z"
   },
   {
     "id": "airasia-big-sale-zero",
@@ -103,7 +103,7 @@
     "sourceUrl": "https://www.airasia.com/zh/tw",
     "status": "upcoming",
     "checked": "2026-10-24",
-    "collectedAt": "2026-10-24T17:41:34.252Z"
+    "collectedAt": "2026-10-24T17:49:38.825Z"
   },
   {
     "id": "tigerair-payday-sale",
@@ -166,7 +166,7 @@
     "sourceUrl": "https://www.tigerairtw.com/zh-TW/index",
     "status": "active",
     "checked": "2026-10-24",
-    "collectedAt": "2026-10-24T17:41:34.252Z"
+    "collectedAt": "2026-10-24T17:49:38.825Z"
   },
   {
     "id": "peach-special-sale",
@@ -219,7 +219,7 @@
     "sourceUrl": "https://www.flypeach.com/tw/um/specials/sale/sale",
     "status": "active",
     "checked": "2026-10-24",
-    "collectedAt": "2026-10-24T17:41:34.252Z"
+    "collectedAt": "2026-10-24T17:49:38.825Z"
   },
   {
     "id": "scoot-got-to-go",
@@ -262,6 +262,6 @@
     "sourceUrl": "https://www.flyscoot.com/zhtw",
     "status": "active",
     "checked": "2026-10-24",
-    "collectedAt": "2026-10-24T17:41:34.252Z"
+    "collectedAt": "2026-10-24T17:49:38.825Z"
   }
 ]
