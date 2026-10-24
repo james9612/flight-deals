@@ -1,0 +1,41 @@
+{
+  "source": "https://www.plynet.com.tw/",
+  "collectedAt": "2026-10-24T16:15:44.065Z",
+  "count": 2,
+  "deals": [
+    {
+      "id": "plynet-pus-ze-5d",
+      "kind": "plan",
+      "title": "易斯達台北釜山5天清艙機票",
+      "origin": "台北",
+      "destination": "釜山",
+      "depart": "2026-11-05",
+      "return": "2026-11-10",
+      "price": 5299,
+      "currency": "TWD",
+      "airline": "易斯達航空",
+      "baggage": "含託運行李 15KG",
+      "rules": "固定日期清艙票，開票後不可取消退費",
+      "source": "飛遊網特價清艙",
+      "sourceUrl": "https://www.plynet.com.tw/",
+      "collectedAt": "2026-10-24T16:12:08.719Z"
+    },
+    {
+      "id": "plynet-oka-mm-4d",
+      "kind": "plan",
+      "title": "樂桃台北沖繩4天特價清艙機票",
+      "origin": "台北",
+      "destination": "沖繩",
+      "depart": "2026-11-08",
+      "return": "2026-11-12",
+      "price": 6199,
+      "currency": "TWD",
+      "airline": "樂桃航空",
+      "baggage": "含託運行李 20KG",
+      "rules": "不可改期不可延回",
+      "source": "飛遊網特價清艙",
+      "sourceUrl": "https://www.plynet.com.tw/",
+      "collectedAt": "2026-10-24T16:12:08.719Z"
+    }
+  ]
+}

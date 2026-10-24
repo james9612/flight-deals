@@ -1,33 +1,260 @@
-let deals=[
-{city:'首爾',code:'ICN',from:'台北',fc:'TPE',country:'korea',price:5310,date:'03/25 – 03/31',depart:'2027-03-25',return:'2027-03-31',duration:'6 天',tag:'公開搜尋參考價',kind:'airline',source:'易遊網公開航班搜尋',sourceUrl:'https://flight.eztravel.com.tw/',checked:'2026/10/24',air:'酷航',detail:'來回搜尋結果。價格和座位可能即時變動，需在易遊網結帳頁重新確認包含項目與最終總價。'},
-{city:'沖繩',code:'OKA',from:'台北',fc:'TPE',country:'japan',price:5148,date:'11/08 – 11/14',depart:'2026-11-08',return:'2026-11-14',duration:'6 天',tag:'公開搜尋參考價',kind:'airline',source:'易遊網公開航班搜尋',sourceUrl:'https://flight.eztravel.com.tw/',checked:'2026/10/24',air:'泰國亞洲航空',detail:'來回搜尋結果。價格和座位可能即時變動，需在易遊網結帳頁重新確認包含項目與最終總價。'},
-{city:'釜山',code:'PUS',from:'台北',fc:'TPE',country:'korea',price:5119,date:'11/05 – 11/10',depart:'2026-11-05',return:'2026-11-10',duration:'5 天',tag:'公開搜尋參考價',kind:'airline',source:'易遊網公開航班搜尋',sourceUrl:'https://flight.eztravel.com.tw/',checked:'2026/10/24',air:'濟州航空',detail:'來回搜尋結果。價格和座位可能即時變動，需在易遊網結帳頁重新確認包含項目與最終總價。'},
-{city:'大阪',code:'KIX',from:'台北',fc:'TPE',country:'japan',price:6924,date:'11/01 – 11/05',depart:'2026-11-01',return:'2026-11-05',duration:'4 天',tag:'公開搜尋參考價',kind:'airline',source:'易遊網公開航班搜尋',sourceUrl:'https://flight.eztravel.com.tw/',checked:'2026/10/24',air:'泰國獅子航空',detail:'來回搜尋結果。價格和座位可能即時變動，需在易遊網結帳頁重新確認包含項目與最終總價。'},
-{city:'東京',code:'TYO',from:'台北',fc:'TPE',country:'japan',price:7862,date:'11/06 – 11/11',depart:'2026-11-06',return:'2026-11-11',duration:'5 天',tag:'公開搜尋參考價',kind:'airline',source:'易遊網公開航班搜尋',sourceUrl:'https://flight.eztravel.com.tw/',checked:'2026/10/24',air:'酷航',detail:'來回搜尋結果。價格和座位可能即時變動，需在易遊網結帳頁重新確認包含項目與最終總價。'}
-,{city:'東京',code:'NRT',from:'台北',fc:'TPE',country:'japan',price:11299,date:'10/28 – 11/01',depart:'2026-10-28',return:'2026-11-01',duration:'5 天',tag:'計畫票・可賣 1 席',kind:'plan',source:'雄獅旅遊／旅天下計畫票',sourceUrl:'https://travel.liontravel.com/detail?normgroupid=5257279c-9ff1-4958-b6ba-25cf896aa3a3',checked:'2026/10/24',air:'樂桃航空 MM626／MM625',detail:'固定日期：2026/10/28 出發、11/01 回程；含來回 20 公斤行李。商品頁顯示可賣 1 席、NT$11,299 起，且註明席次與可賣數會變動，須由旅行社最終確認。'}
-];let active='all';
-function render(){let data=deals.filter(d=>{let o=document.getElementById('origin').value,t=document.getElementById('dest').value,b=+document.getElementById('budget').value,k=document.getElementById('kind').value,dep=document.getElementById('depart').value,ret=document.getElementById('return').value;if(active==='flytour'){if(d.source!=='飛遊網特價清艙')return false}else if(active==='plan'||active==='airline'){if(d.kind!==active)return false}else if(['japan','korea','asia'].includes(active)&&d.country!==active)return false;if(k&&d.kind!==k||o&&d.from!==o||t&&!d.city.includes(t)||dep&&d.depart<dep||ret&&d.return>ret||d.price>b)return false;return true});if(document.getElementById('sort').value==='price')data.sort((a,b)=>a.price-b.price);document.getElementById('cards').innerHTML=data.map(d=>`<article class="card"><div class="cardtop"><span class="tag">${d.tag}</span><button class="heart" onclick="event.stopPropagation();this.textContent=this.textContent==='♡'?'♥':'♡'">♡</button></div><h3>${d.city}｜${d.duration}</h3><div class="meta">${d.date}　·　${d.air}</div><div class="route"><div class="airport">${d.fc}<small>${d.from}</small></div><div class="line"><span>來回</span></div><div class="airport">${d.code}<small>${d.city}</small></div></div><div class="foot"><div><b>${d.kind==='plan'?'固定日期計畫票':'公開比價搜尋結果'}</b>${d.kind==='plan'?'不可自行更改航班與日期':'票價與座位以原售票頁為準'}</div><div class="fare">${d.price.toLocaleString()}<small> TWD 起</small></div></div><div class="detail"><p class="meta">${d.detail}</p><div class="source"><span>來源：<b>${d.source}</b></span><span>確認：${d.checked}</span></div><a class="source-link" href="${d.sourceUrl}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">前往原始票價來源重新查詢 ↗</a></div></article>`).join('');document.getElementById('empty').style.display=data.length?'none':'block'}
-document.getElementById('form').addEventListener('submit',e=>{e.preventDefault();render();document.getElementById('deals').scrollIntoView({behavior:'smooth'})});document.querySelectorAll('.pill').forEach(x=>x.onclick=()=>{document.querySelector('.pill.on').classList.remove('on');x.classList.add('on');active=x.dataset.filter;render()});['kind','origin','dest','depart','return','budget','sort'].forEach(id=>document.getElementById(id).addEventListener('change',render));render();
+let deals = [];
+let promos = [];
+let activeFilter = 'all';
 
-document.getElementById('depart').addEventListener('change',e=>{const ret=document.getElementById('return');ret.min=e.target.value;if(ret.value&&ret.value<e.target.value)ret.value='';});
-async function loadPublishedDeals(){try{const response=await fetch('data/deals.json',{cache:'no-store'});if(!response.ok)return;const published=await response.json();if(!Array.isArray(published)||!published.length)return;deals=published.map(deal=>({city:deal.city||deal.destination||'未標示目的地',code:deal.code||'',from:deal.from||deal.origin||'未標示出發地',fc:deal.fc||'',country:deal.country||'asia',price:Number(deal.price)||0,date:deal.date||`${deal.depart||''} – ${deal.return||''}`,depart:deal.depart||'',return:deal.return||'',duration:deal.duration||`${Math.max(1,Math.round((new Date(deal.return)-new Date(deal.depart))/86400000))} 天`,tag:deal.tag||deal.priceType||'公開來源',kind:deal.kind||'airline',source:deal.source||'公開來源',sourceUrl:deal.sourceUrl||'#',checked:deal.checked||deal.collectedAt?.slice(0,10)||'',air:deal.air||deal.airline||'依原始來源確認',detail:deal.detail||deal.notes||deal.rules||'價格與可售狀態以原始來源為準。'}));render();document.querySelector('.search-count').textContent=`目前 ${deals.length} 筆公開參考價`}catch{}}
-loadPublishedDeals();
-const examples={all:{origin:'',dest:'',depart:'',return:''},okinawa:{origin:'台北',dest:'沖繩',depart:'2026-11-08',return:'2026-11-14'},seoul:{origin:'台北',dest:'首爾',depart:'2027-03-25',return:'2027-03-31'}};
-document.querySelectorAll('[data-example]').forEach(button=>button.addEventListener('click',()=>{const example=examples[button.dataset.example];Object.entries(example).forEach(([id,value])=>document.getElementById(id).value=value);document.getElementById('return').min=example.depart;render();document.getElementById('deals').scrollIntoView({behavior:'smooth'});}));
-const zeroFareForm=document.getElementById('zeroFareForm');
-zeroFareForm.addEventListener('submit',event=>{event.preventDefault();const origin=document.getElementById('zeroOrigin').value;const destination=document.getElementById('zeroDestination').value||'所有目的地';const type=document.getElementById('zeroType').value==='base'?'基本票價 0 元／超低價':'總價超低價';const result=document.getElementById('zeroFareResult');result.innerHTML=`<strong>已建立快報條件：${origin} → ${destination}</strong><br>追蹤類型：${type}<br><span class="meta">正式版會比對已授權或人工確認的公開促銷；結果必須顯示基本票價、稅費、售票期限與原始連結。</span>`;result.hidden=false;});
-document.getElementById('mistakeFareForm').addEventListener('submit',event=>{event.preventDefault();const origin=document.getElementById('mistakeOrigin').value;const destination=document.getElementById('mistakeDestination').value.trim()||'全球／不限目的地';const threshold=document.getElementById('mistakeThreshold').value;const result=document.getElementById('mistakeFareResult');result.innerHTML=`<strong>已建立異常票價偵測條件：${origin} → ${destination}</strong><br>候選門檻：比同類航線的近期中位總價低 ${threshold}% 以上<br><span class="meta">命中後必須重新確認票價、稅費與可售狀態，並標示為「疑似異常票價」直到來源驗證完成。</span>`;result.hidden=false;});
-document.getElementById('dualCityForm').addEventListener('submit',event=>{event.preventDefault();const start=document.getElementById('dualStart').value;const hub=document.getElementById('dualHub').value;const end=document.getElementById('dualEnd').value;const first=document.getElementById('dualFirstDate').value||'未指定日期';const second=document.getElementById('dualSecondDate').value||'未指定日期';const result=document.getElementById('dualCityResult');result.innerHTML=`<strong>雙城票候選條件</strong><br>第 1 段：${start} → ${hub}（${first}）<br>第 2 段：${hub} → ${end}（${second}）<br><span class="meta">後續以「同一張聯程票」優先查詢；系統需驗證可用日期、票規、稅費與兩段是否能分開使用。</span>`;result.hidden=false;});
-document.getElementById('fourSegmentForm').addEventListener('submit',event=>{event.preventDefault();const origin=document.getElementById('fourOrigin').value;const hub=document.getElementById('fourHub').value;const destination=document.getElementById('fourDestination').value;const outbound=document.getElementById('fourOutbound').value||'未指定日期';const inbound=document.getElementById('fourInbound').value||'未指定日期';const result=document.getElementById('fourSegmentResult');result.innerHTML=`<strong>四段聯程票候選條件</strong><br>第 1 段：${origin} → ${hub}（${outbound}）<br>第 2 段：${hub} → ${destination}（${outbound}）<br>第 3 段：${destination} → ${hub}（${inbound}）<br>第 4 段：${hub} → ${origin}（${inbound}）<br><span class="meta">以同一張聯程票為必要條件；實際航班、是否直飛、可否中點停留與總價都需由授權票價來源確認。</span>`;result.hidden=false;});
-document.getElementById('fourOutbound').addEventListener('change',event=>{const inbound=document.getElementById('fourInbound');inbound.min=event.target.value;if(inbound.value&&inbound.value<event.target.value)inbound.value='';});
-document.querySelector('.disclaimer').textContent='* 首批為公開搜尋結果的參考價，並非保留票價。價格、座位、稅費、行李與票規以原售票來源結帳頁為準。';
-document.querySelector('.search-count').textContent=`目前 ${deals.length} 筆公開參考價`;
+const agencyClassMap = {
+  '雄獅旅遊': 'agency-lion',
+  '雄獅旅遊（Lion Travel）': 'agency-lion',
+  '飛遊網': 'agency-plynet',
+  '飛遊網特價清艙': 'agency-plynet',
+  '可樂旅遊': 'agency-cola',
+  '可樂旅遊（Colatour）': 'agency-cola',
+  '易飛網': 'agency-ezfly',
+  '易飛網（ezfly）': 'agency-ezfly'
+};
 
-const cityChoices=[['台北','TPE'],['高雄','KHH'],['台中','RMQ'],['東京','TYO'],['大阪','OSA'],['沖繩','OKA'],['首爾','SEL'],['曼谷','BKK'],['新加坡','SIN'],['香港','HKG']];
-let itinerary=[{from:'台北',to:'東京',date:''},{from:'東京',to:'大阪',date:''},{from:'大阪',to:'台北',date:''}];
-function citySelect(value,cls,label){return `<div class="field"><label>${label}</label><select class="${cls}">${cityChoices.map(([name,code])=>`<option value="${name}" ${name===value?'selected':''}>${name} · ${code}</option>`).join('')}</select></div>`}
-function renderLegs(){document.getElementById('addLeg').disabled=itinerary.length>=4;document.getElementById('legs').innerHTML=itinerary.map((leg,i)=>`<div class="leg-row" data-index="${i}"><div class="leg-index">${String(i+1).padStart(2,'0')}</div>${citySelect(leg.from,'leg-from','出發地')}${citySelect(leg.to,'leg-to','目的地')}<div class="field date-field"><label>出發日期</label><input class="leg-date" type="date" value="${leg.date}" ${i?`min="${itinerary[i-1].date||''}"`:''}></div>${itinerary.length>2?`<button type="button" class="remove-leg" aria-label="移除航段" data-remove="${i}">移除</button>`:''}</div>`).join('');document.getElementById('legs').querySelectorAll('.leg-from,.leg-to,.leg-date').forEach(el=>el.addEventListener('change',syncLegs));document.querySelectorAll('[data-remove]').forEach(b=>b.addEventListener('click',()=>{itinerary.splice(+b.dataset.remove,1);renderLegs()}))}
-function syncLegs(){document.querySelectorAll('.leg-row').forEach((row,i)=>{itinerary[i]={from:row.querySelector('.leg-from').value,to:row.querySelector('.leg-to').value,date:row.querySelector('.leg-date').value}});itinerary.forEach((leg,i)=>{if(i>0&&!leg.date&&itinerary[i-1].date)document.querySelectorAll('.leg-date')[i].min=itinerary[i-1].date})}
-document.getElementById('addLeg').addEventListener('click',()=>{if(itinerary.length>=4)return;syncLegs();const last=itinerary[itinerary.length-1];itinerary.push({from:last.to,to:'台北',date:''});renderLegs();document.getElementById('addLeg').disabled=itinerary.length>=4});
-document.getElementById('multiForm').addEventListener('submit',e=>{e.preventDefault();syncLegs();const ticket=document.getElementById('ticketMode').value==='single'?'優先搜尋同一張聯程票':'可同時比較分段購票';const route=itinerary.map((leg,i)=>`${i+1}. ${leg.from} → ${leg.to}${leg.date?'（'+leg.date+'）':'（未選日期）'}`).join('<br>');const box=document.getElementById('itineraryResult');box.innerHTML=`<strong>${ticket} · ${itinerary.length} 段</strong><br>${route}<br><span class="meta">這是搜尋條件草稿；尚未取得航班、票價或可售狀態。</span>`;box.hidden=false});
-renderLegs();
+function renderPromos() {
+  const container = document.getElementById('promos-grid');
+  if (!container || !promos.length) return;
+
+  container.innerHTML = promos.map(p => {
+    const isZero = p.promoType === 'zero-fare';
+    const routesHtml = p.routes.map(r => `<span class="route-tag">${r.from} ➔ ${r.to}</span>`).join('');
+    return `
+      <article class="promo-card">
+        <div>
+          <span class="promo-badge ${isZero ? 'zero' : ''}">
+            ${isZero ? '🔥 0 元機票大促' : '⚡ 限時超低價閃購'} · ${p.badge}
+          </span>
+          <div class="promo-head">
+            <span class="promo-airline">${p.airline}</span>
+            <h3>${p.title}</h3>
+          </div>
+
+          <div class="promo-pricing">
+            <div class="price-row">
+              <span>促銷基本票價</span>
+              <b>${p.baseFare === 0 ? 'NT$ 0 (免票價)' : `NT$ ${p.baseFare.toLocaleString()} 起`}</b>
+            </div>
+            <div class="price-row">
+              <span>預估單程機場稅與手續費</span>
+              <span>約 NT$ ${p.estTax.toLocaleString()}</span>
+            </div>
+            <div class="price-row total">
+              <span>預估來回含稅到手總價</span>
+              <span class="sum ${isZero ? 'zero-sum' : ''}">NT$ ${p.estTotalRoundtrip.toLocaleString()} 起</span>
+            </div>
+          </div>
+
+          <div class="promo-routes">
+            <div class="promo-routes-title">涵蓋熱門航線：</div>
+            <div class="route-tags">${routesHtml}</div>
+          </div>
+
+          <div class="promo-period">
+            <b>開搶時間：</b>${p.salesPeriod}<br>
+            <b>搭乘期間：</b>${p.travelPeriod}
+          </div>
+
+          <div class="promo-tips">
+            💡 <b>搶票秘訣：</b>${p.promoTips}
+          </div>
+        </div>
+
+        <a class="promo-btn" href="${p.sourceUrl}" target="_blank" rel="noopener noreferrer">
+          前往官網搶票公告 ↗
+        </a>
+      </article>
+    `;
+  }).join('');
+}
+
+function renderDeals() {
+  const container = document.getElementById('cards');
+  if (!container) return;
+
+  const originVal = document.getElementById('origin')?.value || '';
+  const destVal = document.getElementById('dest')?.value || '';
+  const budgetVal = Number(document.getElementById('budget')?.value) || 999999;
+  const departVal = document.getElementById('depart')?.value || '';
+  const returnVal = document.getElementById('return')?.value || '';
+  const sortVal = document.getElementById('sort')?.value || 'price';
+
+  let filtered = deals.filter(deal => {
+    // Agency / Type filtering
+    if (activeFilter === 'lion' && !deal.source.includes('雄獅')) return false;
+    if (activeFilter === 'plynet' && !deal.source.includes('飛遊網')) return false;
+    if (activeFilter === 'cola' && !deal.source.includes('可樂')) return false;
+    if (activeFilter === 'ezfly' && !deal.source.includes('易飛網')) return false;
+    if (['japan', 'korea', 'asia'].includes(activeFilter) && deal.country !== activeFilter) return false;
+
+    // Form criteria
+    if (originVal && deal.from !== originVal) return false;
+    if (destVal && !deal.city.includes(destVal)) return false;
+    if (deal.price > budgetVal) return false;
+    if (departVal && deal.depart && deal.depart < departVal) return false;
+    if (returnVal && deal.return && deal.return > returnVal) return false;
+
+    return true;
+  });
+
+  if (sortVal === 'price') {
+    filtered.sort((a, b) => a.price - b.price);
+  } else if (sortVal === 'date') {
+    filtered.sort((a, b) => (a.depart || '').localeCompare(b.depart || ''));
+  }
+
+  const emptyEl = document.getElementById('empty');
+  if (emptyEl) emptyEl.style.display = filtered.length ? 'none' : 'block';
+
+  container.innerHTML = filtered.map(d => {
+    const agencyClass = agencyClassMap[d.agency] || agencyClassMap[d.source] || 'agency-lion';
+    const datesPreview = d.availableDates ? `<div class="dates-preview"><b>可售出發日預覽：</b>${d.availableDates}</div>` : '';
+
+    return `
+      <article class="card">
+        <div class="cardtop">
+          <div>
+            <span class="agency-badge ${agencyClass}">${d.agency || d.source}</span>
+            <span class="tag">${d.tag}</span>
+          </div>
+          <button class="heart" onclick="event.stopPropagation();this.textContent=this.textContent==='♡'?'♥':'♡'">♡</button>
+        </div>
+
+        <h3>${d.city}｜${d.duration}</h3>
+        <div class="meta">${d.date} · <b>${d.airline || d.air}</b></div>
+        <div><span class="baggage-pill">🧳 ${d.baggage || '含來回託運行李'}</span></div>
+
+        <div class="route">
+          <div class="airport">${d.fc}<small>${d.from}</small></div>
+          <div class="line"><span>固定來回</span></div>
+          <div class="airport">${d.code}<small>${d.city}</small></div>
+        </div>
+
+        ${datesPreview}
+
+        <div class="foot">
+          <div>
+            <b>旅行社固定日期計畫票</b>
+            含稅含行李 · 席次依預訂當下為準
+          </div>
+          <div class="fare">NT$ ${d.price.toLocaleString()}<small> 起</small></div>
+        </div>
+
+        <div class="detail">
+          <p class="meta">${d.detail}</p>
+          <div class="source">
+            <span>來源：<b>${d.source}</b></span>
+            <span>更新：${d.checked}</span>
+          </div>
+          <a class="source-link" href="${d.sourceUrl}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">
+            前往 ${d.agency || '旅行社'} 商品頁預訂 ↗
+          </a>
+        </div>
+      </article>
+    `;
+  }).join('');
+
+  const countEl = document.querySelector('.search-count');
+  if (countEl) countEl.textContent = `已聚合 ${deals.length} 筆旅行社計畫票（符合條件 ${filtered.length} 筆）`;
+}
+
+async function loadData() {
+  try {
+    const [dealsRes, promosRes] = await Promise.all([
+      fetch('data/deals.json', { cache: 'no-store' }),
+      fetch('data/promos.json', { cache: 'no-store' })
+    ]);
+
+    if (dealsRes.ok) {
+      deals = await dealsRes.json();
+    }
+    if (promosRes.ok) {
+      promos = await promosRes.json();
+    }
+
+    renderPromos();
+    renderDeals();
+  } catch (err) {
+    console.warn('載入資料發生問題，保留預設展示:', err);
+  }
+}
+
+// Event Listeners
+document.addEventListener('DOMContentLoaded', () => {
+  loadData();
+
+  // Filter pills
+  document.querySelectorAll('.pill').forEach(pill => {
+    pill.addEventListener('click', () => {
+      document.querySelectorAll('.pill').forEach(p => p.classList.remove('on'));
+      pill.classList.add('on');
+      activeFilter = pill.dataset.filter || 'all';
+      renderDeals();
+    });
+  });
+
+  // Search form
+  const form = document.getElementById('form');
+  if (form) {
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      renderDeals();
+      document.getElementById('deals')?.scrollIntoView({ behavior: 'smooth' });
+    });
+  }
+
+  // Inputs
+  ['origin', 'dest', 'depart', 'return', 'budget', 'sort'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('change', renderDeals);
+  });
+
+  // Quick examples
+  const examples = {
+    all: { origin: '', dest: '', depart: '', return: '' },
+    osaka: { origin: '台北', dest: '大阪', depart: '', return: '' },
+    okinawa: { origin: '台北', dest: '沖繩', depart: '', return: '' },
+    seoul: { origin: '台北', dest: '首爾', depart: '', return: '' }
+  };
+  document.querySelectorAll('[data-example]').forEach(button => {
+    button.addEventListener('click', () => {
+      const ex = examples[button.dataset.example];
+      if (!ex) return;
+      Object.entries(ex).forEach(([k, v]) => {
+        const input = document.getElementById(k);
+        if (input) input.value = v;
+      });
+      renderDeals();
+      document.getElementById('deals')?.scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+
+  // Zero Fare Alert form
+  const zeroFareForm = document.getElementById('zeroFareForm');
+  if (zeroFareForm) {
+    zeroFareForm.addEventListener('submit', event => {
+      event.preventDefault();
+      const origin = document.getElementById('zeroOrigin').value;
+      const destination = document.getElementById('zeroDestination').value || '所有航線';
+      const type = document.getElementById('zeroType').value === 'base' ? '基本票價 0 元／超低價' : '含稅總價超低價';
+      const result = document.getElementById('zeroFareResult');
+      result.innerHTML = `<strong>已建立 0 元機票快報條件：${origin} ➔ ${destination}</strong><br>追蹤類型：${type}<br><span class="meta">當越捷、AirAsia、虎航發布該航線 0 元大促時將自動推播；搶購時需備妥護照中英文名。</span>`;
+      result.hidden = false;
+    });
+  }
+
+  // Mistake Fare form
+  const mistakeForm = document.getElementById('mistakeFareForm');
+  if (mistakeForm) {
+    mistakeForm.addEventListener('submit', event => {
+      event.preventDefault();
+      const origin = document.getElementById('mistakeOrigin').value;
+      const destination = document.getElementById('mistakeDestination').value.trim() || '全球／不限目的地';
+      const threshold = document.getElementById('mistakeThreshold').value;
+      const result = document.getElementById('mistakeFareResult');
+      result.innerHTML = `<strong>已建立異常票價偵測條件：${origin} ➔ ${destination}</strong><br>判定門檻：低於常態中位價 ${threshold}% 以上<br><span class="meta">偵測命中後需確認票規與是否包含稅金，並回到航空公司或出票方核驗。</span>`;
+      result.hidden = false;
+    });
+  }
+});

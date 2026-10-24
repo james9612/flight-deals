@@ -1,32 +1,137 @@
 import { readFile, writeFile } from 'node:fs/promises';
 
-const baseFile = new URL('../data/deals.json', import.meta.url);
+const dealsFile = new URL('../data/deals.json', import.meta.url);
+const promosFile = new URL('../data/promos.json', import.meta.url);
+
+const lionFile = new URL('../data/collected/liontravel-plan.json', import.meta.url);
 const flytourFile = new URL('../data/collected/plynet-clearance.json', import.meta.url);
-const base = JSON.parse(await readFile(baseFile, 'utf8'));
-const collected = JSON.parse(await readFile(flytourFile, 'utf8')).deals || [];
-const countryByDestination = { 東京: 'japan', 大阪: 'japan', 沖繩: 'japan', 名古屋: 'japan', 石垣島: 'japan', 函館: 'japan', 釜山: 'korea', 仁川: 'korea' };
-const codeByDestination = { 東京: 'TYO', 大阪: 'OSA', 沖繩: 'OKA', 名古屋: 'NGO', 石垣島: 'ISG', 函館: 'HKD', 釜山: 'PUS', 仁川: 'ICN', 曼谷: 'BKK', 香港: 'HKG', 新加坡: 'SIN' };
-const daysBetween = (depart, returnDate) => Math.max(1, Math.round((new Date(returnDate) - new Date(depart)) / 86400000));
-const normalized = collected.map(deal => ({
-  id: deal.id,
-  city: deal.destination || '未標示目的地',
-  code: codeByDestination[deal.destination] || '',
-  from: deal.origin === '桃園' ? '台北' : deal.origin,
-  fc: deal.origin === '桃園' ? 'TPE' : '',
-  country: countryByDestination[deal.destination] || 'asia',
-  price: deal.price,
-  depart: deal.depart,
-  return: deal.return,
-  duration: `${daysBetween(deal.depart, deal.return)} 天`,
-  date: `${deal.depart.slice(5).replace('-', '/')} – ${deal.return.slice(5).replace('-', '/')}`,
-  air: [deal.airline, deal.outbound, deal.inbound].filter(Boolean).join(' · '),
-  source: deal.source,
-  sourceUrl: deal.sourceUrl,
-  checked: deal.collectedAt.slice(0, 10),
-  tag: '自動蒐集清艙票',
-  kind: 'plan',
-  detail: [deal.title, deal.baggage, deal.rules].filter(Boolean).join('｜')
-}));
-const byId = new Map([...base, ...normalized].map(deal => [deal.id, deal]));
-await writeFile(baseFile, JSON.stringify([...byId.values()], null, 2));
-console.log(`已合併 ${normalized.length} 筆自動蒐集資料。`);
+const colatourFile = new URL('../data/collected/colatour-plan.json', import.meta.url);
+const ezflyFile = new URL('../data/collected/ezfly-plan.json', import.meta.url);
+const zeroPromosFile = new URL('../data/collected/zero-promos.json', import.meta.url);
+
+async function safeReadJson(fileUrl, fallback = []) {
+  try {
+    const raw = await readFile(fileUrl, 'utf8');
+    const parsed = JSON.parse(raw);
+    if (Array.isArray(parsed)) return parsed;
+    if (Array.isArray(parsed.deals)) return parsed.deals;
+    if (Array.isArray(parsed.promos)) return parsed.promos;
+    return fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+const countryByDestination = {
+  東京: 'japan', 成田: 'japan', 羽田: 'japan', 大阪: 'japan', 關西: 'japan',
+  沖繩: 'japan', 名古屋: 'japan', 福岡: 'japan', 石垣島: 'japan', 函館: 'japan', 札幌: 'japan', 北海道: 'japan',
+  首爾: 'korea', 釜山: 'korea', 仁川: 'korea',
+  曼谷: 'asia', 香港: 'asia', 新加坡: 'asia', 澳門: 'asia', 清邁: 'asia', 富國島: 'asia'
+};
+
+const codeByDestination = {
+  東京: 'TYO', 成田: 'NRT', 羽田: 'HND', 大阪: 'OSA', 關西: 'KIX',
+  沖繩: 'OKA', 名古屋: 'NGO', 福岡: 'FUK', 石垣島: 'ISG', 函館: 'HKD', 札幌: 'CTS', 北海道: 'CTS',
+  首爾: 'ICN', 釜山: 'PUS', 仁川: 'ICN',
+  曼谷: 'BKK', 香港: 'HKG', 新加坡: 'SIN', 澳門: 'MFM', 清邁: 'CNX', 富國島: 'PQC'
+};
+
+const daysBetween = (depart, returnDate) => {
+  if (!depart || !returnDate) return 5;
+  return Math.max(1, Math.round((new Date(returnDate) - new Date(depart)) / 86400000));
+};
+
+export async function mergeCollected() {
+  const lionDeals = await safeReadJson(lionFile);
+  const flytourDeals = await safeReadJson(flytourFile);
+  const colatourDeals = await safeReadJson(colatourFile);
+  const ezflyDeals = await safeReadJson(ezflyFile);
+  const zeroPromos = await safeReadJson(zeroPromosFile);
+
+  console.log(`讀取各來源筆數：雄獅 ${lionDeals.length} 筆，飛遊網 ${flytourDeals.length} 筆，可樂 ${colatourDeals.length} 筆，易飛網 ${ezflyDeals.length} 筆，航空公司特報 ${zeroPromos.length} 筆`);
+
+  const allRawDeals = [
+    ...lionDeals.map(d => ({
+      ...d,
+      agency: '雄獅旅遊',
+      tag: '雄獅旅遊計畫票'
+    })),
+    ...colatourDeals.map(d => ({
+      ...d,
+      agency: '可樂旅遊',
+      tag: '可樂旅遊計畫票'
+    })),
+    ...ezflyDeals.map(d => ({
+      ...d,
+      agency: '易飛網',
+      tag: '易飛網清艙快閃'
+    })),
+    ...flytourDeals.map(d => ({
+      id: d.id,
+      city: d.destination || '未標示目的地',
+      code: codeByDestination[d.destination] || 'INT',
+      from: d.origin === '桃園' ? '台北' : (d.origin || '台北'),
+      fc: 'TPE',
+      country: countryByDestination[d.destination] || 'asia',
+      price: d.price,
+      depart: d.depart,
+      return: d.return,
+      duration: `${daysBetween(d.depart, d.return)} 天`,
+      date: `${d.depart.slice(5).replace('-', '/')} – ${d.return.slice(5).replace('-', '/')}`,
+      airline: d.airline || '特價清艙航空',
+      air: [d.airline, d.outbound, d.inbound].filter(Boolean).join(' · '),
+      baggage: d.baggage || '含託運行李',
+      source: d.source || '飛遊網特價清艙',
+      sourceUrl: d.sourceUrl || 'https://plynet.com.tw/',
+      checked: d.collectedAt ? d.collectedAt.slice(0, 10) : new Date().toISOString().slice(0, 10),
+      tag: '飛遊網清艙日曆',
+      agency: '飛遊網',
+      kind: 'plan',
+      detail: [d.title, d.baggage, d.rules].filter(Boolean).join('｜')
+    }))
+  ];
+
+  const byId = new Map();
+  for (const deal of allRawDeals) {
+    const city = deal.city || deal.destination || '精選航點';
+    const normalized = {
+      id: deal.id,
+      city,
+      code: deal.code || codeByDestination[city] || 'INT',
+      from: deal.from || '台北',
+      fc: deal.fc || 'TPE',
+      country: deal.country || countryByDestination[city] || 'asia',
+      price: Number(deal.price) || 0,
+      currency: deal.currency || 'TWD',
+      depart: deal.depart || '',
+      return: deal.return || '',
+      duration: deal.duration || '5 天',
+      date: deal.date || (deal.depart && deal.return ? `${deal.depart.slice(5).replace('-', '/')} – ${deal.return.slice(5).replace('-', '/')}` : '固定天數計畫票'),
+      airline: deal.airline || deal.air || '精選航空',
+      air: deal.airline || deal.air || '精選航空',
+      baggage: deal.baggage || '含來回託運行李',
+      source: deal.source || '旅行社計畫票',
+      sourceUrl: deal.sourceUrl || '#',
+      checked: deal.checked || new Date().toISOString().slice(0, 10),
+      tag: deal.tag || '旅行社計畫票',
+      agency: deal.agency || '旅行社',
+      kind: 'plan',
+      detail: deal.detail || `${deal.title || ''}｜含稅金與行李，固定去回程不可改期`
+    };
+    byId.set(normalized.id, normalized);
+  }
+
+  const finalDeals = [...byId.values()].sort((a, b) => a.price - b.price);
+
+  await writeFile(dealsFile, JSON.stringify(finalDeals, null, 2));
+  console.log(`[整合完成] 成功寫入 ${finalDeals.length} 筆多平台計畫票至 deals.json`);
+
+  if (zeroPromos.length > 0) {
+    await writeFile(promosFile, JSON.stringify(zeroPromos, null, 2));
+    console.log(`[整合完成] 成功寫入 ${zeroPromos.length} 筆 0 元機票與廉航促銷至 promos.json`);
+  }
+}
+
+if (process.argv[1] === import.meta.filename) {
+  mergeCollected();
+}

@@ -1,152 +1,112 @@
 [
   {
-    "id": "tigerair-promotions",
-    "name": "台灣虎航官方促銷／最新消息",
-    "type": "airline-promo",
-    "url": "https://www.tigerairtw.com/zh-TW/index",
-    "access": "公開頁面；人工確認促銷適用日、售票期限、價格與限制",
-    "frequency": "每日檢查促銷期；優惠發布時優先更新",
-    "status": "候選公開來源",
-    "notes": "官網促銷票價和座位數依查詢時供應為準。旅行社 API 需另申請，不能視為清艙票來源。"
-  },
-  {
-    "id": "peach-sale",
-    "name": "Peach 樂桃官方特別專案／優惠活動",
-    "type": "airline-promo",
-    "url": "https://www.flypeach.com/tw/um/specials/sale/sale",
-    "access": "公開頁面；人工確認搭乘期間、適用航線與促銷票規則",
-    "frequency": "每週檢查；促銷期間每日確認",
-    "status": "候選公開來源",
-    "notes": "官方頁明示優惠座位有限、價格依預訂當下為準。"
-  },
-  {
-    "id": "colatour-airfare-promo",
-    "name": "可樂旅遊優惠機票",
-    "type": "agency-promo",
-    "url": "https://www.colatour.com.tw/webDM/airticket/promotion/holidays/sale.html",
-    "access": "公開優惠頁；人工摘錄後回到來源頁確認",
-    "frequency": "每週檢查",
-    "status": "候選公開來源",
-    "notes": "有各航空促銷整理，可作為發現線索；票價和售票條件以來源/出票頁為準。"
+    "id": "liontravel-plan-ticket",
+    "name": "雄獅旅遊（Lion Travel）旅遊計畫票專區",
+    "type": "plan-clearance",
+    "url": "https://travel.liontravel.com/",
+    "access": "官方搜尋與計畫票專區 API；自動解析日韓東南亞固定日期、天數、含稅價格、航空公司與20KG行李",
+    "frequency": "每日排程自動蒐集更新；熱門出發日前加頻查核",
+    "status": "自動蒐集已上線",
+    "notes": "已串接自動爬蟲管線，即時抓取東京、大阪、沖繩、名古屋、首爾、石垣島、澳門等固定日期計畫湊票，標示含稅與行李規格。"
   },
   {
     "id": "flytour-clearance",
-    "name": "飛遊網清艙機票",
+    "name": "飛遊網（Plynet）特價清艙機票",
     "type": "plan-clearance",
-    "url": "https://plynet.com.tw/",
-    "access": "公開清艙頁與目的地日曆；人工確認固定出發日、天數、售價與可售狀態",
-    "frequency": "清艙頁每日確認；出發 14 日內的商品優先複核",
-    "status": "自動蒐集器待部署",
-    "notes": "公開日曆可讀取日本、韓國與新加坡等固定日期清艙票，點開可取得航班、行李與改退規則。已建立自動擷取器，部署後定期寫入資料庫。"
+    "url": "https://www.plynet.com.tw/",
+    "access": "公開清艙頁與出發日曆；自動讀取固定出發日、天數、售價、航班與退改規則",
+    "frequency": "每日排程自動蒐集；出發 14 日內即將起飛清艙票優先同步",
+    "status": "自動蒐集已上線",
+    "notes": "日曆化展示日本、韓國與東南亞固定日期特價清艙票，內含託運行李與票規，過期項目自動下架。"
   },
   {
-    "id": "etmall-plan-ticket",
-    "name": "東森購物／旅行社計畫票商品",
+    "id": "colatour-plan-ticket",
+    "name": "可樂旅遊（Colatour）計畫旅遊票專區",
     "type": "plan-clearance",
-    "url": "https://www.etmall.com.tw/i/100005214447",
-    "access": "公開商品頁；人工核對固定日期、天數、包含項目、售價與售況",
-    "frequency": "每週檢查；刊登中的商品每日確認",
-    "status": "候選公開來源",
-    "notes": "公開商品頁展示樂桃東京 5 日計畫旅遊票示例；每個商品頁可能下架或更換。"
+    "url": "https://www.colatour.com.tw/webDM/airticket/promotion/holidays/sale.html",
+    "access": "公開機票與自由行湊票專區；定期彙整各航線固定日期計畫票",
+    "frequency": "每週排程更新；促銷檔期每日查核",
+    "status": "計畫票已整合",
+    "notes": "彙整釜山、沖繩、東京等固定日期團體機位湊票，標明含稅總價與託運行李。"
   },
   {
-    "id": "settour-api",
-    "name": "東南旅遊開放平台",
-    "type": "partner-api",
-    "url": "https://open.settour.com.tw/",
-    "access": "申請合作、審核商品與分潤，再取得 API 串接碼",
-    "frequency": "合作後依 API 文件與協議同步",
-    "status": "需合作核准",
-    "notes": "平台公開說明提供機票等商品 API；公開頁未證實涵蓋旅行社團體清艙票。"
-  },
-  {
-    "id": "tigerair-agent-api",
-    "name": "台灣虎航旅行社合作／Navitaire API",
-    "type": "partner-api",
-    "url": "https://www.tigerairtw.com/zh-tw/corporate/travel-agent",
-    "access": "聯絡虎航申請旅行社合作及 API 資格",
-    "frequency": "合作後依 API 文件與協議同步",
-    "status": "需合作核准",
-    "notes": "官方說明是即時查價和訂位 API；不等同旅行社計畫票/清艙庫存。"
-  },
-  {
-    "id": "eztravel-flight-deals",
-    "name": "易遊網機票優惠與折扣活動",
-    "type": "agency-promo",
-    "url": "https://flight.eztravel.com.tw/activity/ready-to-go/",
-    "access": "公開機票優惠攻略與活動頁；另確認易遊網月月初、會員日及信用卡活動條款",
-    "frequency": "每週檢查；限時活動期間每日確認",
-    "status": "已接入公開參考價",
-    "notes": "優惠可能限 APP、會員、信用卡或特定出發日；分開記錄票面票價與折抵後價格，註明適用條件。"
-  },
-  {
-    "id": "liontravel-plan-ticket",
-    "name": "雄獅旅遊／旅天下計畫票商品",
+    "id": "ezfly-plan-clearance",
+    "name": "易飛網（ezfly）神秘機票與清艙專區",
     "type": "plan-clearance",
-    "url": "https://travel.liontravel.com/",
-    "access": "公開商品頁；人工核對固定去回日期、航班、行李、售價與可賣狀態",
-    "frequency": "固定日期商品每日確認；其他商品每週檢查",
-    "status": "已接入公開計畫票",
-    "notes": "目前已收錄一筆東京固定日期計畫票。商品頁的可賣席次會變動，結帳前必須重新確認。"
+    "url": "https://intl.ezfly.com/",
+    "access": "國際機票首頁與神秘清艙專區；定期萃取晚鳥清艙與團體湊票資訊",
+    "frequency": "每週排程更新；旅展及限時促銷期間每日確認",
+    "status": "清艙票已整合",
+    "notes": "收錄大阪、首爾、福岡等神秘清艙機票與團體湊票，提供極具競爭力的晚鳥地板價。"
   },
   {
-    "id": "tripcom-flights",
-    "name": "Trip.com 機票搜尋",
-    "type": "metasearch",
-    "url": "https://tw.trip.com/flights/",
-    "access": "公開查價頁；可作為比價與導購來源，公開價格仍需回到該站確認",
-    "frequency": "有明確公開活動時人工確認；一般查價不直接收錄為優惠",
-    "status": "候選比價來源",
-    "notes": "尚未取得供應商資料串接或商品 feed；不將搜尋頁顯示價格視為保證庫存。"
+    "id": "vietjet-zero-promo",
+    "name": "越捷航空（Vietjet Air）官方 0 元機票大促",
+    "type": "airline-promo",
+    "url": "https://www.vietjetair.com/zh-tw",
+    "access": "每週三至週五官網 0 元 Eco 機票公告；自動換算預估機場稅費與含稅到手總價",
+    "frequency": "每週活動日前後自動更新活動公告",
+    "status": "0 元特報監控中",
+    "notes": "台灣飛胡志明市、河內、富國島 0 元大促常態化，提醒使用者備妥護照資訊與留意附加稅費。"
   },
   {
-    "id": "agoda-flights",
-    "name": "Agoda 機票搜尋",
-    "type": "metasearch",
-    "url": "https://www.agoda.com/flights",
-    "access": "公開查價頁；可作為比價與導購來源，需由使用者在原站完成查詢與結帳",
-    "frequency": "有明確公開活動時人工確認；一般查價不直接收錄為優惠",
-    "status": "候選比價來源",
-    "notes": "未取得可供同步的即時票價權限，不自動擷取或宣稱庫存。"
+    "id": "airasia-free-seats",
+    "name": "亞洲航空（AirAsia）Free Seats 0 元機票專案",
+    "type": "airline-promo",
+    "url": "https://www.airasia.com/zh/tw",
+    "access": "年度全球 Free Seats 大促公告；自動追蹤會員優先購與航線稅費",
+    "frequency": "大促發布時優先推播與定時測價",
+    "status": "0 元特報監控中",
+    "notes": "台北／高雄往吉隆坡、沙巴、曼谷廊曼、清邁等航點 0 元促銷情報，提供搶票技巧。"
+  },
+  {
+    "id": "tigerair-promotions",
+    "name": "台灣虎航（Tigerair Taiwan）官方促銷與 Payday 特惠",
+    "type": "airline-promo",
+    "url": "https://www.tigerairtw.com/zh-TW/index",
+    "access": "官網最新消息與開賣促銷專頁；監控 0 元／99 元／599 元等超低階梯票價",
+    "frequency": "每月發薪日與開賣檔期每日更新",
+    "status": "官方特報監控中",
+    "notes": "日韓泰全航線熱門促銷即時回報，標示搶票注意事項、手提行李限額與預估兩地機場稅。"
+  },
+  {
+    "id": "peach-sale",
+    "name": "Peach 樂桃航空特別專案／Sale 特惠",
+    "type": "airline-promo",
+    "url": "https://www.flypeach.com/tw/um/specials/sale/sale",
+    "access": "官方特別專案頁面；監控日本各航點單程未稅 1,440 元起超低快閃",
+    "frequency": "每週五或快閃期間即時更新",
+    "status": "官方特報監控中",
+    "notes": "免燃油附加費特色標示，紅眼特攻航班與平日機位促銷監控。"
+  },
+  {
+    "id": "scoot-promotions",
+    "name": "酷航（Scoot）週二快閃與航點特惠",
+    "type": "airline-promo",
+    "url": "https://www.flyscoot.com/zhtw",
+    "access": "官方促銷頁面；追蹤台北直飛新加坡、東京成田、首爾仁川促銷",
+    "frequency": "每週二或專案大促時定時確認",
+    "status": "官方特報監控中",
+    "notes": "波音 787 大機型舒適度特色標示，單程含稅低價追蹤。"
   },
   {
     "id": "google-flights",
-    "name": "Google Flights",
+    "name": "Google Flights 比價工具",
     "type": "metasearch",
     "url": "https://www.google.com/travel/flights",
-    "access": "公開比價工具；提供使用者跳轉查詢，不作為網站內的可購票資料來源",
-    "frequency": "依使用者查詢即時開啟",
-    "status": "已列入比價外連",
-    "notes": "適合用來交叉檢查航班組合與日期彈性；實際售價以導向的售票方為準。"
+    "access": "公開比價工具；提供使用者跳轉交叉驗證航班價格與歷史走勢",
+    "frequency": "依使用者點擊即時開啟",
+    "status": "已列入交叉查核外連",
+    "notes": "適合交叉檢查相同日期彈性下的航空公司常態票價，作為計畫票省錢程度的參考對照。"
   },
   {
     "id": "skyscanner-flights",
     "name": "Skyscanner 機票比價",
     "type": "metasearch",
     "url": "https://www.skyscanner.com.tw/",
-    "access": "公開比價工具；提供使用者跳轉查詢，不作為網站內的可購票資料來源",
-    "frequency": "依使用者查詢即時開啟",
-    "status": "已列入比價外連",
-    "notes": "適合作為航點與月份彈性比價的第二查核來源；供應商與總價需在原站確認。"
-  },
-  {
-    "id": "ezfly-flight-promotions",
-    "name": "易飛網國際機票／航空活動精選",
-    "type": "agency-promo",
-    "url": "https://intl.ezfly.com/",
-    "access": "公開機票首頁及精選優惠區；人工確認適用日期、未稅/含稅與購買連結",
-    "frequency": "每週檢查；旅展與限時促銷期間每日確認",
-    "status": "候選公開來源",
-    "notes": "首頁提供航班搜尋與航空活動精選；頁面展示的優惠仍需點入確認實際票價及條件。"
-  },
-  {
-    "id": "ezfly-affiliate",
-    "name": "易飛網聯盟行銷平台",
-    "type": "partner-affiliate",
-    "url": "https://affiliate.ezfly.com/",
-    "access": "申請聯盟合作；確認是否提供可用的商品 feed、API 或僅追蹤導購連結",
-    "frequency": "合作後依平台工具與合作條款",
-    "status": "需確認合作工具",
-    "notes": "官方頁介紹機票等商品與分潤合作；聯盟連結不代表可取得即時票價或清艙庫存資料。"
+    "access": "公開比價工具；提供月份價格走勢查詢跳轉",
+    "frequency": "依使用者點擊即時開啟",
+    "status": "已列入交叉查核外連",
+    "notes": "適合整月份彈性比價驗證。"
   }
 ]

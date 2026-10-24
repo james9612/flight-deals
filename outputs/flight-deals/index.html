@@ -1,13 +1,264 @@
 <!doctype html>
-<html lang="zh-Hant"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>飛行便宜｜便宜機票靈感站</title>
-<link rel="stylesheet" href="styles/site.css?v=20261024-3">
-<body><div class="wrap"><header><div class="logo"><span class="mark">✈</span>飛行便宜</div><nav class="nav"><a href="#deals">探索優惠</a><a href="#deals">計畫／清艙票</a><a href="sources.html">票源清單</a><a href="#alerts">降價通知</a></nav><button class="login" onclick="alert('登入功能將於正式版提供')">登入 / 註冊</button></header>
-<section class="hero"><div><div class="eyebrow">●　給旅行一點好價格</div><h1>便宜機票，<br>讓旅行<em>說走就走。</em></h1><p class="lead">彙整值得出發的航班優惠，也把多段轉機與來回組合整理清楚。先找到好價格，再決定目的地。</p></div><div class="art"><div class="sun"></div><div class="ticket"><div class="small">本週人氣航線　✦ 編輯精選</div><div class="codes"><div><b>TPE</b><small>台北・桃園</small></div><span>↗</span><div><b>KIX</b><small>大阪・關西</small></div></div><div class="small">來回含稅參考價 <span class="price">NT$ 5,280 起</span></div></div></div></section>
-<section class="search" id="alerts"><div class="search-title"><div><h2>找一張適合你的優惠票</h2><p>先選出發地與目的地；日期可留空，先瀏覽目前已收錄的優惠。</p></div><span class="search-count">目前 5 筆公開參考價</span></div><div class="search-guide"><b>怎麼填？</b><span>日期是你的可旅行區間：選「最早出發日」與「最晚回程日」後，系統會找出整段行程落在此區間內的票。</span></div><div class="quick-search" aria-label="快速帶入搜尋條件"><button type="button" data-example="all">查看全部</button><button type="button" data-example="okinawa">台北 → 沖繩｜2026/11/08–11/14</button><button type="button" data-example="seoul">台北 → 首爾｜2027/03/25–03/31</button></div><form id="form"><div class="fields route-search"><div class="field"><label>票源類型</label><select id="kind"><option value="">全部票源</option><option value="airline">航空公司促銷</option><option value="plan">計畫／清艙票</option></select></div><div class="field"><label>出發地</label><select id="origin"><option value="">不限出發地</option><option>台北</option><option>高雄</option><option>台中</option></select></div><div class="field"><label>目的地</label><select id="dest"><option value="">所有目的地</option><option>大阪</option><option>東京</option><option>沖繩</option><option>首爾</option><option>曼谷</option></select></div><div class="field"><label>最早出發日 <small>可留空</small></label><input id="depart" type="date"></div><div class="field"><label>最晚回程日 <small>可留空</small></label><input id="return" type="date"></div><div class="field"><label>每人預算</label><select id="budget"><option value="999999">不限</option><option value="6000">NT$ 6,000 以下</option><option value="10000">NT$ 10,000 以下</option></select></div><button class="go">搜尋優惠　⌕</button></div><div class="options"><span>目前資料皆為台北出發的來回票；日期與價格以每張票卡和原售票頁為準。</span></div></form></section>
-<details class="planner special-tool" id="zero-fare"><summary class="planner-toggle"><b>0 元／超低價快報</b><span>追蹤基本票價 0 元起與限時超低價活動</span><span class="toggle-icon">＋</span></summary><div class="planner-body"><div class="planner-head"><div><div class="eyebrow">FARE WATCH</div><h2>0 元／超低價快報</h2><p>設定你願意追蹤的出發地與目的地，建立一筆待查條件。</p></div><span class="planner-badge">公開公告優先</span></div><form id="zeroFareForm"><div class="mini-fields"><div class="field"><label>出發地</label><select id="zeroOrigin"><option>台北</option><option>高雄</option><option>台中</option></select></div><div class="field"><label>目的地</label><select id="zeroDestination"><option value="">不限目的地</option><option>日本</option><option>韓國</option><option>東南亞</option></select></div><div class="field"><label>優惠類型</label><select id="zeroType"><option value="base">基本票價 0 元／超低價</option><option value="total">總價超低價</option></select></div><button class="go">建立追蹤條件</button></div></form><div id="zeroFareResult" class="itinerary-result" hidden></div><p class="planner-note">「0 元」通常只代表基本票價；稅金、機場服務費、行李與選位費需以原售票頁為準。此功能目前建立條件，不會宣稱已找到可購票價。</p></div></details>
-<details class="planner special-tool" id="mistake-fare"><summary class="planner-toggle"><b>疑似異常票價偵測</b><span>用歷史基準找出價格明顯偏低的候選結果</span><span class="toggle-icon">＋</span></summary><div class="planner-body"><div class="planner-head"><div><div class="eyebrow">ANOMALY WATCH</div><h2>疑似異常票價偵測</h2><p>設定航線和低價門檻，建立一筆等待重新驗證的異常價格規則。</p></div><span class="planner-badge">需二次驗證</span></div><form id="mistakeFareForm"><div class="mini-fields"><div class="field"><label>出發地</label><select id="mistakeOrigin"><option>台北</option><option>高雄</option><option>台中</option></select></div><div class="field"><label>目的地／機場代碼</label><input id="mistakeDestination" list="mistakeDestinations" placeholder="例如：MXP 或 米蘭"><datalist id="mistakeDestinations"><option value="全球／不限目的地"><option value="TYO｜東京"><option value="SEL｜首爾"><option value="BKK｜曼谷"><option value="HKG｜香港"><option value="SIN｜新加坡"><option value="SYD｜雪梨"><option value="MXP｜米蘭"><option value="LON｜倫敦"><option value="NYC｜紐約"><option value="DXB｜杜拜"><option value="CPT｜開普敦"></datalist></div><div class="field"><label>低於常態門檻</label><select id="mistakeThreshold"><option value="35">35% 以上</option><option value="50">50% 以上</option><option value="65">65% 以上</option></select></div><button class="go">建立偵測條件</button></div></form><div id="mistakeFareResult" class="itinerary-result" hidden></div><p class="planner-note">可輸入任何城市名稱或 IATA 機場／城市代碼，例如 MXP、LON 或 NYC；正式版需先比較相同航線、艙等、日期彈性與必要稅費後的總價，再回到航空公司或出票來源重新查價。偵測到不代表一定可出票或不會被取消。</p></div></details>
-<details class="planner special-tool" id="dual-city"><summary class="planner-toggle"><b>雙城票探索</b><span>找出可分月使用的兩段航空公司票型</span><span class="toggle-icon">＋</span></summary><div class="planner-body"><div class="planner-head"><div><div class="eyebrow">DUAL-CITY EXPLORER</div><h2>雙城票探索</h2><p>以台灣為中點，規劃兩段可分開使用的航空行程。</p></div><span class="planner-badge">票型草稿</span></div><form id="dualCityForm"><div class="mini-fields dual-fields"><div class="field"><label>第一段出發地</label><select id="dualStart"><option>澳門</option><option>曼谷</option><option>東京</option><option>大阪</option><option>首爾</option></select></div><div class="field"><label>中點城市</label><select id="dualHub"><option>台北</option><option>高雄</option></select></div><div class="field"><label>第二段目的地</label><select id="dualEnd"><option>曼谷</option><option>東京</option><option>大阪</option><option>首爾</option><option>新加坡</option></select></div><div class="field"><label>第一段日期</label><input id="dualFirstDate" type="date"></div><div class="field"><label>第二段日期</label><input id="dualSecondDate" type="date"></div><button class="go">產生票型條件</button></div></form><div id="dualCityResult" class="itinerary-result" hidden></div><p class="planner-note">系統會建立「第一城市 → 中點」與「中點 → 第二城市」的同票候選條件。是否可分月使用、是否為同一張票及總價，須由航空公司或授權票價來源回傳確認。</p></div></details>
-<details class="planner special-tool" id="four-segment"><summary class="planner-toggle"><b>四段聯程票模板</b><span>例如：曼谷 → 台北 → 米蘭 → 台北 → 曼谷</span><span class="toggle-icon">＋</span></summary><div class="planner-body"><div class="planner-head"><div><div class="eyebrow">FOUR-SEGMENT TEMPLATE</div><h2>樞紐往返四段票</h2><p>以同一個中點機場串接出發城市與長程目的地，建立一張四段聯程票的查詢條件。</p></div><span class="planner-badge">聯程票優先</span></div><form id="fourSegmentForm"><div class="four-segment-grid"><div class="field"><label>出發／回程城市</label><select id="fourOrigin"><option>曼谷</option><option>新加坡</option><option>東京</option><option>大阪</option><option>首爾</option></select></div><div class="field"><label>中點機場</label><select id="fourHub"><option>台北</option><option>高雄</option></select></div><div class="field"><label>長程目的地</label><select id="fourDestination"><option>米蘭</option><option>倫敦</option><option>巴黎</option><option>維也納</option><option>紐約</option></select></div><div class="field"><label>去程日期</label><input id="fourOutbound" type="date"></div><div class="field"><label>回程日期</label><input id="fourInbound" type="date"></div><button class="go">建立四段查詢</button></div></form><div id="fourSegmentResult" class="itinerary-result" hidden></div><p class="planner-note">查詢時會優先要求同一張票涵蓋四段。若中點停留超過轉機規則、不同航空公司不互通或票規不允許，系統應明確顯示無法組成聯程票。</p></div></details>
-<details class="planner" id="multi-city"><summary class="planner-toggle"><b>多城市航程規劃</b><span>需要規劃不同點進出或多段行程時再展開</span><span class="toggle-icon">＋</span></summary><div class="planner-body"><div class="planner-head"><div><div class="eyebrow">MULTI-CITY PLANNER</div><h2>多城市航程規劃</h2><p>設定 2–4 段航程，先整理路線與日期，再交由票價來源查詢。</p></div><span class="planner-badge">行程草稿</span></div><form id="multiForm"><div id="legs"></div><div class="planner-actions"><button type="button" class="add-leg" id="addLeg">＋ 新增一段</button><label class="ticket-mode">票價偏好<select id="ticketMode"><option value="single">優先找同一張聯程票</option><option value="split">也接受分段購票</option></select></label><button type="submit" class="go">整理行程草稿</button></div></form><div id="itineraryResult" class="itinerary-result" hidden></div><p class="planner-note">目前只整理行程條件，尚未連接即時票價。分段購票可能涉及分開開票、自行轉機及各段不同退改規則。</p></div></details><section class="section" id="deals"><div class="head"><div><h2>便宜票源，幫你整理好</h2><p>航空促銷與旅行社固定日期優惠，一頁掌握</p></div><select class="sort" id="sort"><option value="rec">為你推薦</option><option value="price">價格由低到高</option></select></div><div class="pills"><button class="pill on" data-filter="all">全部優惠</button><button class="pill" data-filter="airline">航空促銷</button><button class="pill" data-filter="plan">計畫／清艙票</button><button class="pill" data-filter="flytour">飛遊網清艙票</button><button class="pill" data-filter="japan">日本</button><button class="pill" data-filter="korea">韓國</button><button class="pill" data-filter="asia">東南亞</button></div><div class="cards" id="cards"></div><div class="empty" id="empty">目前沒有符合條件的優惠，試試放寬預算或目的地。</div><div class="disclaimer">* 以下均為介面示意資料，不代表目前可購票價或實際庫存。正式版需接獲授權資料或人工確認，價格與名額以原售票來源為準。</div></section><footer><span><a href="sources.html" style="color:inherit">票源清單</a>　·　© 2026 飛行便宜・讓好旅行更容易</span><span>示意原型｜正式資料需標示來源與最後確認時間</span></footer></div>
-<script src="scripts/app.js?v=20261024-3" defer></script></body></html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>飛行便宜｜旅行社計畫票比價 ＆ 廉航 0 元機票特報聚合站</title>
+  <meta name="description" content="自動爬取雄獅旅遊、飛遊網、可樂旅遊、易飛網等旅行社計畫票與團體湊票，並同步追蹤各大廉價航空 0 元機票與大促特報。">
+  <link rel="stylesheet" href="styles/site.css?v=20261025-1">
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="logo">
+        <span class="mark">✈</span>
+        <span>飛行便宜</span>
+      </div>
+      <nav class="nav">
+        <a href="#zero-promos">0 元機票特報</a>
+        <a href="#deals">旅行社計畫票</a>
+        <a href="sources.html">爬蟲票源清單</a>
+        <a href="#zero-fare">降價快報</a>
+      </nav>
+      <button class="login" onclick="alert('登入通知功能將於正式版提供')">登入 / 追蹤</button>
+    </header>
 
+    <section class="hero">
+      <div>
+        <div class="eyebrow">● 多平台計畫票 ＆ 廉航 0 元機票聚合引擎</div>
+        <h1>多方計畫票，<br>與 0 元機票<em>一站掌握。</em></h1>
+        <p class="lead">自動爬取雄獅旅遊、飛遊網、可樂旅遊、易飛網等旅行社固定日期計畫票與團體湊票，並同步監控各大廉航 0 元大促與超低價快閃，資訊透明好比價。</p>
+      </div>
+      <div class="art">
+        <div class="sun"></div>
+        <div class="ticket">
+          <div class="small">雄獅旅遊計畫票 ✦ 熱門精選</div>
+          <div class="codes">
+            <div><b>TPE</b><small>台北・桃園</small></div>
+            <span>✈</span>
+            <div><b>OKA</b><small>日本・沖繩</small></div>
+          </div>
+          <div class="small">固定日期・含稅含20kg行李</div>
+          <div class="price" style="margin-top:6px;color:#bd2823">NT$ 7,699 起</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 0 元機票與航空公司促銷特報牆 -->
+    <section class="promos-section" id="zero-promos">
+      <div class="head">
+        <div>
+          <h2>🔥 0 元機票與各大航空公司促銷特報</h2>
+          <p>定時追蹤越捷每週 0 元大促、AirAsia Free Seats、虎航 Payday、樂桃 Sale，算清兩地機場稅費與含稅到手總價！</p>
+        </div>
+      </div>
+      <div class="promos-grid" id="promos-grid">
+        <!-- 由 app.js 動態渲染 -->
+      </div>
+    </section>
+
+    <!-- 搜尋與篩選區 -->
+    <section class="search" id="alerts" style="margin-top:35px">
+      <div class="search-title">
+        <div>
+          <h2>找一張適合你的旅行社計畫票</h2>
+          <p>計畫票去回程日期與天數固定，但通常包含來回行李與稅金，價格極具優勢。</p>
+        </div>
+        <span class="search-count">正在載入聚合資料...</span>
+      </div>
+
+      <div class="search-guide">
+        <b>💡 什麼是計畫票？</b>
+        <span>旅行社預先向航空公司承包的團體機位（湊票），時間固定、不可改期退票，但多數直接包含稅金與 20KG 託運行李！</span>
+      </div>
+
+      <div class="quick-search" aria-label="熱門航線快速帶入">
+        <button type="button" data-example="all">查看全部航點</button>
+        <button type="button" data-example="osaka">大阪計畫票（雄獅／易飛網）</button>
+        <button type="button" data-example="okinawa">沖繩計畫票（雄獅／可樂）</button>
+        <button type="button" data-example="seoul">首爾計畫票（雄獅／易飛網）</button>
+      </div>
+
+      <form id="form">
+        <div class="fields route-search">
+          <div class="field">
+            <label>出發地</label>
+            <select id="origin">
+              <option value="">不限出發地</option>
+              <option selected>台北</option>
+              <option>高雄</option>
+              <option>台中</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>目的地關鍵字</label>
+            <select id="dest">
+              <option value="">所有目的地</option>
+              <option>大阪</option>
+              <option>東京</option>
+              <option>沖繩</option>
+              <option>首爾</option>
+              <option>釜山</option>
+              <option>名古屋</option>
+              <option>福岡</option>
+              <option>石垣島</option>
+              <option>澳門</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>最早出發日 <small>可留空</small></label>
+            <input id="depart" type="date">
+          </div>
+          <div class="field">
+            <label>最晚回程日 <small>可留空</small></label>
+            <input id="return" type="date">
+          </div>
+          <div class="field">
+            <label>預算上限</label>
+            <select id="budget">
+              <option value="999999">不限預算</option>
+              <option value="8000">NT$ 8,000 以下</option>
+              <option value="10000">NT$ 10,000 以下</option>
+              <option value="12000">NT$ 12,000 以下</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>排序方式</label>
+            <select id="sort">
+              <option value="price">價格由低到高</option>
+              <option value="date">出發日期由近到遠</option>
+            </select>
+          </div>
+          <button class="go">搜尋計畫票　⌕</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- 旅行社計畫票比價列表 -->
+    <section class="section" id="deals">
+      <div class="head">
+        <div>
+          <h2>✈️ 旅行社計畫票／清艙湊票比價庫</h2>
+          <p>彙整雄獅、飛遊網、可樂、易飛網多方商品，點擊可直達旅行社原始商品頁確認席次</p>
+        </div>
+      </div>
+
+      <div class="pills">
+        <button class="pill on" data-filter="all">全部旅行社</button>
+        <button class="pill" data-filter="lion">雄獅旅遊計畫票</button>
+        <button class="pill" data-filter="plynet">飛遊網清艙票</button>
+        <button class="pill" data-filter="cola">可樂旅遊計畫票</button>
+        <button class="pill" data-filter="ezfly">易飛網清艙快閃</button>
+        <button class="pill" data-filter="japan">🇯🇵 日本航線</button>
+        <button class="pill" data-filter="korea">🇰🇷 韓國航線</button>
+        <button class="pill" data-filter="asia">🌏 東南亞／澳門</button>
+      </div>
+
+      <div class="cards" id="cards">
+        <!-- 由 app.js 動態渲染 -->
+      </div>
+      <div class="empty" id="empty">目前沒有符合該條件的計畫票，建議放寬預算或目的地。</div>
+      <div class="disclaimer">* 計畫票席次與可售狀況隨時變動，點擊商品卡「前往旅行社商品頁預訂」即可查看即時席次與最終開票規則。</div>
+    </section>
+
+    <!-- 輔助監控與比價工具 -->
+    <details class="planner special-tool" id="zero-fare">
+      <summary class="planner-toggle">
+        <b>🔔 0 元機票／大促推播快報設定</b>
+        <span>設定你想追蹤的航點，當越捷、AirAsia、虎航開賣時推播通知</span>
+        <span class="toggle-icon">＋</span>
+      </summary>
+      <div class="planner-body">
+        <div class="planner-head">
+          <div>
+            <div class="eyebrow">ZERO-FARE ALERT</div>
+            <p>設定出發地與目的地，建立一筆 0 元機票追蹤條件。</p>
+          </div>
+          <span class="planner-badge">官方公告即時測價</span>
+        </div>
+        <form id="zeroFareForm">
+          <div class="mini-fields">
+            <div class="field">
+              <label>出發地</label>
+              <select id="zeroOrigin">
+                <option>台北</option>
+                <option>高雄</option>
+                <option>台中</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>目的地</label>
+              <select id="zeroDestination">
+                <option value="">不限目的地</option>
+                <option>日本（東京/大阪/沖繩）</option>
+                <option>韓國（首爾/釜山）</option>
+                <option>越南（富國島/胡志明）</option>
+                <option>泰國/馬來西亞</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>優惠類型</label>
+              <select id="zeroType">
+                <option value="base">基本票價 0 元／免機票大促</option>
+                <option value="total">含稅總價超低價</option>
+              </select>
+            </div>
+            <button class="go">建立快報條件</button>
+          </div>
+        </form>
+        <div id="zeroFareResult" class="itinerary-result" hidden></div>
+      </div>
+    </details>
+
+    <details class="planner special-tool" id="mistake-fare">
+      <summary class="planner-toggle">
+        <b>⚠️ 疑似異常票價（Bug Fare）偵測計算機</b>
+        <span>比較歷史中位價，快速算出是否低於常態 35% ~ 65%</span>
+        <span class="toggle-icon">＋</span>
+      </summary>
+      <div class="planner-body">
+        <div class="planner-head">
+          <div>
+            <div class="eyebrow">ANOMALY WATCH</div>
+            <p>輸入航線與低價門檻，建立異常價格預警規則。</p>
+          </div>
+          <span class="planner-badge">需二次人工驗證</span>
+        </div>
+        <form id="mistakeFareForm">
+          <div class="mini-fields">
+            <div class="field">
+              <label>出發地</label>
+              <select id="mistakeOrigin">
+                <option>台北</option>
+                <option>高雄</option>
+                <option>台中</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>目的地機場代碼</label>
+              <input id="mistakeDestination" placeholder="例如：NRT、KIX、BKK 或 MXP">
+            </div>
+            <div class="field">
+              <label>低於常態門檻</label>
+              <select id="mistakeThreshold">
+                <option value="35">35% 以上</option>
+                <option value="50">50% 以上</option>
+                <option value="65">65% 以上</option>
+              </select>
+            </div>
+            <button class="go">建立偵測條件</button>
+          </div>
+        </form>
+        <div id="mistakeFareResult" class="itinerary-result" hidden></div>
+      </div>
+    </details>
+
+    <footer>
+      <span><a href="sources.html" style="color:inherit">爬蟲票源清單</a>　·　© 2026 飛行便宜・全台旅行社計畫票＆廉航 0 元特報聚合</span>
+      <span>自動化採集管線已運作 · 支援雄獅、飛遊網、可樂、易飛網與廉航官網</span>
+    </footer>
+  </div>
+
+  <script src="scripts/app.js?v=20261025-1" defer></script>
+</body>
+</html>

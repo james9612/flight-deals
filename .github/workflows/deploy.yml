@@ -36,7 +36,7 @@ jobs:
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
         working-directory: outputs/flight-deals
-      - name: Collect Flytour clearance deals
+      - name: Collect all plan deals and airline promos
         run: npm run collect
         working-directory: outputs/flight-deals
       - name: Configure Pages

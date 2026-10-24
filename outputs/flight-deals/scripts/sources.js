@@ -1,13 +1,28 @@
-const sources=[{"id":"tigerair-promotions","name":"台灣虎航官方促銷／最新消息","type":"airline-promo","url":"https://www.tigerairtw.com/zh-TW/index","access":"公開頁面；人工確認促銷適用日、售票期限、價格與限制","frequency":"每日檢查促銷期；優惠發布時優先更新","status":"候選公開來源","notes":"官網促銷票價和座位數依查詢時供應為準。旅行社 API 需另申請，不能視為清艙票來源。"},{"id":"peach-sale","name":"Peach 樂桃官方特別專案／優惠活動","type":"airline-promo","url":"https://www.flypeach.com/tw/um/specials/sale/sale","access":"公開頁面；人工確認搭乘期間、適用航線與促銷票規則","frequency":"每週檢查；促銷期間每日確認","status":"候選公開來源","notes":"官方頁明示優惠座位有限、價格依預訂當下為準。"},{"id":"colatour-airfare-promo","name":"可樂旅遊優惠機票","type":"agency-promo","url":"https://www.colatour.com.tw/webDM/airticket/promotion/holidays/sale.html","access":"公開優惠頁；人工摘錄後回到來源頁確認","frequency":"每週檢查","status":"候選公開來源","notes":"有各航空促銷整理，可作為發現線索；票價和售票條件以來源/出票頁為準。"},{"id":"flytour-clearance","name":"飛遊網清艙機票","type":"plan-clearance","url":"https://plynet.com.tw/","access":"公開頁面；查看清艙機票分類並人工確認可售日期與名額","frequency":"每週檢查；出發較近的票每日確認","status":"優先人工試行","notes":"頁面設有清艙機票分類；先記錄公開資訊，不假設有 API 或授權自動擷取。"},{"id":"etmall-plan-ticket","name":"東森購物／旅行社計畫票商品","type":"plan-clearance","url":"https://www.etmall.com.tw/i/100005214447","access":"公開商品頁；人工核對固定日期、天數、包含項目、售價與售況","frequency":"每週檢查；刊登中的商品每日確認","status":"候選公開來源","notes":"公開商品頁展示樂桃東京 5 日計畫旅遊票示例；每個商品頁可能下架或更換。"},{"id":"settour-api","name":"東南旅遊開放平台","type":"partner-api","url":"https://open.settour.com.tw/","access":"申請合作、審核商品與分潤，再取得 API 串接碼","frequency":"合作後依 API 文件與協議同步","status":"需合作核准","notes":"平台公開說明提供機票等商品 API；公開頁未證實涵蓋旅行社團體清艙票。"},{"id":"tigerair-agent-api","name":"台灣虎航旅行社合作／Navitaire API","type":"partner-api","url":"https://www.tigerairtw.com/zh-tw/corporate/travel-agent","access":"聯絡虎航申請旅行社合作及 API 資格","frequency":"合作後依 API 文件與協議同步","status":"需合作核准","notes":"官方說明是即時查價和訂位 API；不等同旅行社計畫票/清艙庫存。"},{"id":"eztravel-flight-deals","name":"易遊網機票優惠與折扣活動","type":"agency-promo","url":"https://flight.eztravel.com.tw/activity/ready-to-go/","access":"公開機票優惠攻略與活動頁；另確認易遊網月月初、會員日及信用卡活動條款","frequency":"每週檢查；限時活動期間每日確認","status":"候選公開來源","notes":"優惠可能限 APP、會員、信用卡或特定出發日；分開記錄票面票價與折抵後價格，註明適用條件。"},{"id":"ezfly-flight-promotions","name":"易飛網國際機票／航空活動精選","type":"agency-promo","url":"https://intl.ezfly.com/","access":"公開機票首頁及精選優惠區；人工確認適用日期、未稅/含稅與購買連結","frequency":"每週檢查；旅展與限時促銷期間每日確認","status":"候選公開來源","notes":"首頁提供航班搜尋與航空活動精選；頁面展示的優惠仍需點入確認實際票價及條件。"},{"id":"ezfly-affiliate","name":"易飛網聯盟行銷平台","type":"partner-affiliate","url":"https://affiliate.ezfly.com/","access":"申請聯盟合作；確認是否提供可用的商品 feed、API 或僅追蹤導購連結","frequency":"合作後依平台工具與合作條款","status":"需確認合作工具","notes":"官方頁介紹機票等商品與分潤合作；聯盟連結不代表可取得即時票價或清艙庫存資料。"}];
-const labels={"airline-promo":"航空公司促銷","agency-promo":"旅行社／OTA 公開優惠","plan-clearance":"計畫／清艙票","partner-api":"合作 API","partner-affiliate":"聯盟行銷合作"};
-sources.find(s=>s.id==='eztravel-flight-deals').status='已接入公開參考價';
-Object.assign(sources.find(s=>s.id==='flytour-clearance'),{access:'公開清艙頁與目的地日曆；自動讀取固定出發日、天數、售價、航班與票規',frequency:'部署後每日蒐集；出發 14 日內的商品優先複核',status:'自動蒐集器待部署',notes:'公開日曆可讀取日本、韓國與新加坡等固定日期清艙票，點開可取得航班、行李與改退規則。已建立自動擷取器，部署後定期寫入資料庫。'});
-sources.push(
-{id:'liontravel-plan-ticket',name:'雄獅旅遊／旅天下計畫票商品',type:'plan-clearance',url:'https://travel.liontravel.com/',access:'公開商品頁；人工核對固定去回日期、航班、行李、售價與可賣狀態',frequency:'固定日期商品每日確認；其他商品每週檢查',status:'已接入公開計畫票',notes:'目前已收錄一筆東京固定日期計畫票。商品頁的可賣席次會變動，結帳前必須重新確認。'},
-{id:'tripcom-flights',name:'Trip.com 機票搜尋',type:'metasearch',url:'https://tw.trip.com/flights/',access:'公開查價頁；可作為比價與導購來源，公開價格仍需回到該站確認',frequency:'有明確公開活動時人工確認；一般查價不直接收錄為優惠',status:'候選比價來源',notes:'尚未取得供應商資料串接或商品 feed；不將搜尋頁顯示價格視為保證庫存。'},
-{id:'agoda-flights',name:'Agoda 機票搜尋',type:'metasearch',url:'https://www.agoda.com/flights',access:'公開查價頁；可作為比價與導購來源，需由使用者在原站完成查詢與結帳',frequency:'有明確公開活動時人工確認；一般查價不直接收錄為優惠',status:'候選比價來源',notes:'未取得可供同步的即時票價權限，不自動擷取或宣稱庫存。'},
-{id:'google-flights',name:'Google Flights',type:'metasearch',url:'https://www.google.com/travel/flights',access:'公開比價工具；提供使用者跳轉查詢，不作為網站內的可購票資料來源',frequency:'依使用者查詢即時開啟',status:'已列入比價外連',notes:'適合用來交叉檢查航班組合與日期彈性；實際售價以導向的售票方為準。'},
-{id:'skyscanner-flights',name:'Skyscanner 機票比價',type:'metasearch',url:'https://www.skyscanner.com.tw/',access:'公開比價工具；提供使用者跳轉查詢，不作為網站內的可購票資料來源',frequency:'依使用者查詢即時開啟',status:'已列入比價外連',notes:'適合作為航點與月份彈性比價的第二查核來源；供應商與總價需在原站確認。'}
-);
-labels.metasearch='比價／導購來源';
-document.getElementById("sources").innerHTML=sources.map(s=>`<article class="source-card"><span class="status ${s.type.includes('partner')?'partner':''}">${s.status}</span><div class="source-type">${labels[s.type]||s.type}</div><h2>${s.name}</h2><p>${s.access}</p><p><b>檢查節奏：</b>${s.frequency}</p><p>${s.notes}</p><a href="${s.url}" target="_blank" rel="noopener noreferrer">開啟來源 ↗</a></article>`).join('');
+async function loadSources() {
+  const container = document.getElementById("sources");
+  const labels = {
+    "plan-clearance": "旅行社計畫／清艙票",
+    "airline-promo": "航空公司 0 元／促銷特報",
+    "metasearch": "外部交叉查核比價"
+  };
+
+  try {
+    const res = await fetch("data/sources.json", { cache: "no-store" });
+    const sources = await res.json();
+    container.innerHTML = sources.map(s => `
+      <article class="source-card">
+        <span class="status ${s.status.includes('已上線') ? 'online' : ''}">${s.status}</span>
+        <div class="source-type">${labels[s.type] || s.type}</div>
+        <h2>${s.name}</h2>
+        <p>${s.access}</p>
+        <p><b>檢查頻率：</b>${s.frequency}</p>
+        <p>${s.notes}</p>
+        <a href="${s.url}" target="_blank" rel="noopener noreferrer">開啟官方來源 ↗</a>
+      </article>
+    `).join('');
+  } catch (err) {
+    container.innerHTML = '<p class="meta">資料載入中或無法讀取 sources.json</p>';
+  }
+}
+
+loadSources();

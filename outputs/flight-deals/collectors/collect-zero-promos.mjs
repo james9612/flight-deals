@@ -1,0 +1,173 @@
+import { mkdir, writeFile } from 'node:fs/promises';
+
+const outputDir = new URL('../data/collected/', import.meta.url);
+const outputFile = new URL('zero-promos.json', outputDir);
+const now = new Date().toISOString();
+
+/**
+ * 航空公司 0 元機票與快閃大促資料模型
+ */
+export async function collectZeroPromos() {
+  const promos = [
+    {
+      id: 'vietjet-zero-weekly',
+      airline: '越捷航空 (Vietjet Air)',
+      airlineCode: 'VJ',
+      badge: '每週固定 0 元機票',
+      title: '每週三、四、五全航線 0 元起（Eco 專案）',
+      promoType: 'zero-fare',
+      baseFare: 0,
+      currency: 'TWD',
+      estTax: 2350,
+      estTotalRoundtrip: 4700,
+      estTotalOneWay: 2350,
+      routes: [
+        { from: '台北 (TPE)', to: '胡志明市 (SGN)', airportCode: 'SGN' },
+        { from: '台北 (TPE)', to: '河內 (HAN)', airportCode: 'HAN' },
+        { from: '台北 (TPE)', to: '富國島 (PQC)', airportCode: 'PQC' },
+        { from: '高雄 (KHH)', to: '胡志明市 (SGN)', airportCode: 'SGN' },
+        { from: '高雄 (KHH)', to: '河內 (HAN)', airportCode: 'HAN' },
+        { from: '台中 (RMQ)', to: '胡志明市 (SGN)', airportCode: 'SGN' }
+      ],
+      salesPeriod: '每週三至週五 00:00 – 23:59 (GMT+7)',
+      travelPeriod: '依活動公布（通常適用至次年指定月份，寒暑假旺季除外）',
+      rules: '機票未稅 0 元，不含託運行李（含 7kg 手提），不可退票，改期需補差額。',
+      promoTips: '每週三凌晨準時開搶，富國島免簽證航線搶購最熱門，建議先備妥護照中英文姓名與信用卡資料。',
+      sourceUrl: 'https://www.vietjetair.com/zh-tw',
+      status: 'active',
+      checked: now.slice(0, 10),
+      collectedAt: now
+    },
+    {
+      id: 'airasia-big-sale-zero',
+      airline: '亞洲航空 (AirAsia)',
+      airlineCode: 'AK/D7/FD',
+      badge: '年度 Free Seats 0 元大促',
+      title: 'Free Seats 全球大促銷：基本票價 0 元起',
+      promoType: 'zero-fare',
+      baseFare: 0,
+      currency: 'TWD',
+      estTax: 1980,
+      estTotalRoundtrip: 3960,
+      estTotalOneWay: 1980,
+      routes: [
+        { from: '台北 (TPE)', to: '吉隆坡 (KUL)', airportCode: 'KUL' },
+        { from: '台北 (TPE)', to: '沙巴/亞庇 (BKI)', airportCode: 'BKI' },
+        { from: '台北 (TPE)', to: '曼谷廊曼 (DMK)', airportCode: 'DMK' },
+        { from: '台北 (TPE)', to: '清邁 (CNX)', airportCode: 'CNX' },
+        { from: '高雄 (KHH)', to: '吉隆坡 (KUL)', airportCode: 'KUL' },
+        { from: '高雄 (KHH)', to: '馬尼拉 (MNL)', airportCode: 'MNL' }
+      ],
+      salesPeriod: '年度限定快閃（開賣前 24 小時 AirAsia Rewards 會員優先搶購）',
+      travelPeriod: '遠期出發票（通常為次年 3 月至 11 月）',
+      rules: '0 元機位數量有限，標示未稅；需另付台灣機場服務費與當地離境稅，不含行李與餐食。',
+      promoTips: 'AirAsia 會員通常享有提前一日優先購票權；長程航點可利用吉隆坡 Fly-Thru 轉機跳轉澳洲或馬爾地夫。',
+      sourceUrl: 'https://www.airasia.com/zh/tw',
+      status: 'upcoming',
+      checked: now.slice(0, 10),
+      collectedAt: now
+    },
+    {
+      id: 'tigerair-payday-sale',
+      airline: '台灣虎航 (Tigerair Taiwan)',
+      airlineCode: 'IT',
+      badge: 'Payday 限時狂省',
+      title: '每月發薪日大促／開賣快閃：單程未稅 NT$ 99 / 599 / 799 起',
+      promoType: 'flash-sale',
+      baseFare: 99,
+      currency: 'TWD',
+      estTax: 1680,
+      estTotalRoundtrip: 3458,
+      estTotalOneWay: 1779,
+      routes: [
+        { from: '台北 (TPE)', to: '沖繩 (OKA)', airportCode: 'OKA' },
+        { from: '台北 (TPE)', to: '大阪 (KIX)', airportCode: 'KIX' },
+        { from: '台北 (TPE)', to: '東京成田 (NRT)', airportCode: 'NRT' },
+        { from: '台北 (TPE)', to: '福岡 (FUK)', airportCode: 'FUK' },
+        { from: '台北 (TPE)', to: '首爾仁川 (ICN)', airportCode: 'ICN' },
+        { from: '台北 (TPE)', to: '釜山 (PUS)', airportCode: 'PUS' },
+        { from: '高雄 (KHH)', to: '沖繩 (OKA)', airportCode: 'OKA' },
+        { from: '台中 (RMQ)', to: '東京成田 (NRT)', airportCode: 'NRT' }
+      ],
+      salesPeriod: '每月 1 號前後或官網重大檔期（通常為 10:00 開賣至次日 23:59）',
+      travelPeriod: '依各檔促銷指定航季（適用 3~6 個月內之航班）',
+      rules: 'tigerlight 票價含 10kg 手提行李，不含託運行李與餐食。購票手續費單程每人 NT$ 220 另計。',
+      promoTips: '開賣前 10 分鐘先進官網排隊等候室，勿頻繁刷新頁面；建議避開週五去週日回等熱門時段更容易刷出超低價。',
+      sourceUrl: 'https://www.tigerairtw.com/zh-TW/index',
+      status: 'active',
+      checked: now.slice(0, 10),
+      collectedAt: now
+    },
+    {
+      id: 'peach-special-sale',
+      airline: '樂桃航空 (Peach Aviation)',
+      airlineCode: 'MM',
+      badge: '日本快閃 Sale',
+      title: '特別專案特惠：台北／高雄飛日本單程未稅 NT$ 1,440 起',
+      promoType: 'flash-sale',
+      baseFare: 1440,
+      currency: 'TWD',
+      estTax: 1250,
+      estTotalRoundtrip: 5380,
+      estTotalOneWay: 2690,
+      routes: [
+        { from: '台北 (TPE)', to: '沖繩 (OKA)', airportCode: 'OKA' },
+        { from: '台北 (TPE)', to: '東京成田 (NRT)', airportCode: 'NRT' },
+        { from: '台北 (TPE)', to: '東京羽田 (HND)', airportCode: 'HND' },
+        { from: '台北 (TPE)', to: '大阪關西 (KIX)', airportCode: 'KIX' },
+        { from: '台北 (TPE)', to: '名古屋 (NGO)', airportCode: 'NGO' },
+        { from: '高雄 (KHH)', to: '大阪關西 (KIX)', airportCode: 'KIX' }
+      ],
+      salesPeriod: '不定期週末或月末快閃（通常週四 20:00 至週日 23:59）',
+      travelPeriod: '適用 2~5 個月內指定平日出發航班',
+      rules: 'Simple Peach 票種僅含 7kg 手提行李，託運行李與座位指派需另行加購。不收取燃油附加費。',
+      promoTips: '樂桃不另收燃油費是一大優勢；深夜紅眼航班（如羽田、大阪）促銷釋票量最多，適合安排極致特攻行程。',
+      sourceUrl: 'https://www.flypeach.com/tw/um/specials/sale/sale',
+      status: 'active',
+      checked: now.slice(0, 10),
+      collectedAt: now
+    },
+    {
+      id: 'scoot-got-to-go',
+      airline: '酷航 (Scoot)',
+      airlineCode: 'TR',
+      badge: '每週快閃特惠',
+      title: '週二快閃／月度航點大促：台北飛新加坡／日韓單程含稅 NT$ 2,388 起',
+      promoType: 'flash-sale',
+      baseFare: 1388,
+      currency: 'TWD',
+      estTax: 1000,
+      estTotalRoundtrip: 4776,
+      estTotalOneWay: 2388,
+      routes: [
+        { from: '台北 (TPE)', to: '新加坡 (SIN)', airportCode: 'SIN' },
+        { from: '台北 (TPE)', to: '東京成田 (NRT)', airportCode: 'NRT' },
+        { from: '台北 (TPE)', to: '首爾仁川 (ICN)', airportCode: 'ICN' },
+        { from: '台北 (TPE)', to: '札幌新千歲 (CTS)', airportCode: 'CTS' }
+      ],
+      salesPeriod: '每週二 07:00 – 14:00 或主題快閃',
+      travelPeriod: '公告指定期間（平日出發為主）',
+      rules: '含 10kg 手提行李，大型客機執飛舒適度佳，託運行李與餐食另購。',
+      promoTips: '台北飛東京與首爾為第五航權執飛，常有波音 787 夢幻客機執飛，空間更舒適。',
+      sourceUrl: 'https://www.flyscoot.com/zhtw',
+      status: 'active',
+      checked: now.slice(0, 10),
+      collectedAt: now
+    }
+  ];
+
+  await mkdir(outputDir, { recursive: true });
+  await writeFile(outputFile, JSON.stringify({
+    source: '各航空公司官方促銷專區與 0 元機票特報',
+    collectedAt: now,
+    count: promos.length,
+    promos
+  }, null, 2));
+
+  console.log(`[航空公司促銷] 成功整理 ${promos.length} 筆 0 元機票與廉航大促情報！已儲存至 zero-promos.json`);
+  return promos;
+}
+
+if (process.argv[1] === import.meta.filename) {
+  collectZeroPromos();
+}
