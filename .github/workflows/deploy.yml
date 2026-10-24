@@ -8,7 +8,7 @@ on:
   push:
     branches: [main]
   schedule:
-    - cron: '15 1 * * *'
+    - cron: '15 1,7,13,19 * * *' # 台灣時間 09:15, 15:15, 21:15, 03:15 每日四次自動更新
   workflow_dispatch:
 
 permissions:

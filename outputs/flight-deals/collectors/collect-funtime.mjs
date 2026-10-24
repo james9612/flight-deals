@@ -25,9 +25,13 @@ export async function collectFuntime() {
       const blocks = data.data_detail?.block || [];
 
       for (const b of blocks) {
+        // Skip informational blog / travel guide blocks
+        if ((b.name || '').includes('攻略') || (b.name || '').includes('介紹')) continue;
+
         const goods = b.goods || [];
         for (const g of goods) {
-          if (g.price_str === '售完' || !g.price) continue;
+          const price = Number(g.price || 0);
+          if (g.price_str === '售完' || !price || price < 4000) continue;
           index++;
 
           const title = g.title || '';

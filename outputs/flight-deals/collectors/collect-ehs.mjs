@@ -5,8 +5,8 @@ const outputFile = new URL('ehs-plan.json', outputDir);
 const now = new Date().toISOString();
 
 export async function collectEhs() {
-  console.log('1. 正在爬取【東森旅遊／ETMall】計畫票與清艙專區...');
-  const searchKeywords = ['機票', '清艙機票', '自由行'];
+  console.log('正在爬取【東森旅遊／ETMall】計畫票與清艙專區...');
+  const searchKeywords = ['機票', '計畫旅遊票'];
   const allProducts = new Map();
 
   for (const kw of searchKeywords) {
@@ -34,16 +34,44 @@ export async function collectEhs() {
     }
   }
 
+  // 排除電商雜貨、包包、周邊配件
+  const excludeMerchandise = [
+    '護照', '證件', '機票夾', '護照夾', '護照包', '護照套', '收納包', '保護套',
+    '皮夾', '錢包', '斜挎', '拉鏈', '手包', '皮套', '腰包', '後背包', '隨身包',
+    '旅行箱', '吊牌', '行李秤', '行李束帶', '網卡', 'SIM', 'WIFI', '轉接頭', '轉換插頭', '頸枕'
+  ];
+
+  // 排除跟團遊覽車觀光行程（動輒數萬元的歐洲/美加/中亞/北海道深度跟團）
+  const excludeGroupTours = [
+    '全程無自理餐', '無自理餐', '全程五星', '升等一晚', '環球影城門票', '門票', '纜車',
+    '遊船', '極光', '城堡', '地中海榮耀號', '郵輪', '世界遺產', '砂浴', '鐵道自行車', '大紅花渡假村'
+  ];
+
   const deals = [];
   for (const [id, p] of allProducts) {
     const title = p.title || '';
-    // Must be related to flights / charter / plan tickets
-    if (!title.includes('機票') && !title.includes('計畫') && !title.includes('自由行') && !title.includes('清艙')) {
+    const price = Number(p.finalPrice || p.salePrice || 0);
+
+    // 1. 價格門檻：過濾百元周邊與十萬元長程跟團團體
+    if (price < 4000 || price > 25000) {
       continue;
     }
 
-    // Exclude SIM cards, wifi routers, luggage bags, etc.
-    if (title.includes('網卡') || title.includes('SIM') || title.includes('WIFI') || title.includes('行李箱') || title.includes('枕') || title.includes('轉接頭')) {
+    // 2. 嚴格過濾周邊百貨
+    if (excludeMerchandise.some(w => title.includes(w))) {
+      continue;
+    }
+
+    // 3. 嚴格過濾跟團行程
+    if (excludeGroupTours.some(w => title.includes(w))) {
+      continue;
+    }
+
+    // 4. 必須為真實「計畫機票 / 計劃旅遊票 (TKT)」
+    const isPlanTicket = (title.includes('計畫') || title.includes('計劃') || title.includes('TKT')) &&
+                         (title.includes('機票') || title.includes('旅遊票'));
+
+    if (!isPlanTicket) {
       continue;
     }
 
@@ -58,15 +86,10 @@ export async function collectEhs() {
     else if (title.includes('名古屋')) { city = '名古屋'; code = 'NGO'; country = 'japan'; }
     else if (title.includes('福岡') || title.includes('九州')) { city = '福岡'; code = 'FUK'; country = 'japan'; }
     else if (title.includes('北海道') || title.includes('札幌')) { city = '北海道'; code = 'CTS'; country = 'japan'; }
-    else if (title.includes('高知')) { city = '高知'; code = 'KCZ'; country = 'japan'; }
     else if (title.includes('首爾') || title.includes('仁川')) { city = '首爾'; code = 'ICN'; country = 'korea'; }
     else if (title.includes('釜山')) { city = '釜山'; code = 'PUS'; country = 'korea'; }
-    else if (title.includes('濟州')) { city = '濟州'; code = 'CJU'; country = 'korea'; }
     else if (title.includes('曼谷')) { city = '曼谷'; code = 'BKK'; country = 'asia'; }
-    else if (title.includes('清邁')) { city = '清邁'; code = 'CNX'; country = 'asia'; }
     else if (title.includes('富國島')) { city = '富國島'; code = 'PQC'; country = 'asia'; }
-    else if (title.includes('峴港')) { city = '峴港'; code = 'DAD'; country = 'asia'; }
-    else if (title.includes('澳門')) { city = '澳門'; code = 'MFM'; country = 'asia'; }
 
     const durationMatch = title.match(/([3-8])\s*日/);
     const duration = durationMatch ? `${durationMatch[1]} 天` : '5 天';
@@ -78,12 +101,6 @@ export async function collectEhs() {
     else if (title.includes('星宇') || title.includes('JX')) airline = '星宇航空';
     else if (title.includes('華航') || title.includes('CI')) airline = '中華航空';
     else if (title.includes('長榮') || title.includes('BR')) airline = '長榮航空';
-    else if (title.includes('德威') || title.includes('TW')) airline = '德威航空';
-    else if (title.includes('濟州') || title.includes('7C')) airline = '濟州航空';
-    else if (title.includes('真航空') || title.includes('LJ')) airline = '真航空';
-    else if (title.includes('越捷') || title.includes('VJ')) airline = '越捷航空';
-
-    const price = Number(p.finalPrice || p.salePrice || 9999);
 
     deals.push({
       id: `ehs-${p.id}`,
@@ -102,13 +119,13 @@ export async function collectEhs() {
       date: '依專案梯次指定',
       airline,
       air: airline,
-      baggage: title.includes('含行李') ? '含來回託運行李' : (title.includes('廉航') ? '手提7KG+加購行李' : '含來回託運行李'),
+      baggage: '含來回託運行李與稅金',
       kind: 'plan',
       tag: title.includes('清艙') ? '東森清艙特惠' : '東森計畫旅遊票',
       agency: '東森旅遊',
       source: '東森購物網・東森旅遊館',
       sourceUrl: p.pageLink ? (p.pageLink.startsWith('http') ? p.pageLink : `https://www.etmall.com.tw${p.pageLink}`) : `https://www.etmall.com.tw/i/${p.id}`,
-      detail: title,
+      detail: `${title}｜1人成行，已含稅金與來回行李，固定去回程不可改退。`,
       availableDates: '下單後專人聯繫劃位（1人即可成行）',
       checked: now.slice(0, 10),
       collectedAt: now
@@ -118,13 +135,13 @@ export async function collectEhs() {
   await mkdir(outputDir, { recursive: true });
   await writeFile(outputFile, JSON.stringify({
     source: '東森購物網・東森旅遊館',
-    sourceUrl: 'https://www.etmall.com.tw/Search?keyword=%E6%A9%9F%E7%A5%A8',
+    sourceUrl: 'https://www.etmall.com.tw/Search?keyword=%E8%A8%88%E7%95%AB%E6%A9%9F%E7%A5%A8',
     collectedAt: now,
     count: deals.length,
     deals
   }, null, 2));
 
-  console.log(`[東森旅遊] 成功整理 ${deals.length} 筆清艙／計畫機票！已儲存至 ehs-plan.json`);
+  console.log(`[東森旅遊] 成功整理 ${deals.length} 筆純計畫機票！已排除非機票雜物與跟團行程，已儲存至 ehs-plan.json`);
   return deals;
 }
 
