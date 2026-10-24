@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="zh-Hant">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>優惠資料上架｜飛行便宜</title>
+<link rel="stylesheet" href="styles/site.css">
+<style>
+.admin-hero{padding:34px 0 22px}.admin-hero h1{font-size:34px;letter-spacing:-1px;margin:10px 0}.admin-hero p{color:var(--muted);font-size:13px;line-height:1.8;max-width:680px}.admin-grid{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(300px,.8fr);gap:18px;padding-bottom:50px}.panel{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px}.panel h2{font-size:16px;margin:0 0 4px}.panel>p{margin:0 0 16px;color:var(--muted);font-size:11px;line-height:1.7}.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.form-grid .field{background:#fff}.span-2{grid-column:span 2}.field textarea{border:0;width:100%;height:72px;resize:vertical;outline:0;font:600 12px inherit;color:var(--ink)}.form-actions{display:flex;gap:9px;justify-content:flex-end;margin-top:14px}.secondary{background:#fff;border:1px solid #cfdacb;color:var(--green);border-radius:9px;padding:11px 14px;font-weight:700;cursor:pointer}.form-actions .go{min-height:42px}.required{color:#a24f32}.record{border:1px solid var(--line);border-radius:11px;padding:13px;margin-top:10px}.record-top{display:flex;justify-content:space-between;gap:8px;align-items:start}.record h3{font-size:14px;margin:7px 0 3px}.record p{font-size:10px;color:var(--muted);line-height:1.7;margin:5px 0}.record-actions{display:flex;gap:7px;margin-top:9px}.tiny{background:white;border:1px solid var(--line);border-radius:7px;padding:6px 8px;color:var(--green);font-size:10px;cursor:pointer}.tiny.delete{color:#a24f32}.empty-admin{font-size:11px;color:var(--muted);padding:20px 0}.export{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}.note{font-size:10px;color:var(--muted);line-height:1.7;background:#f4f7ef;padding:10px;border-radius:9px;margin-top:14px}@media(max-width:740px){.admin-grid{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}.span-2{grid-column:auto}}
+</style>
+<body><div class="wrap">
+<header><div class="logo"><span class="mark">✈</span>飛行便宜</div><a class="back" href="index.html">← 回優惠列表</a></header>
+<section class="admin-hero"><div class="eyebrow">DEAL INTAKE</div><h1>優惠資料上架表單</h1><p>每筆資料都要有原始連結與最後確認日。固定日期的計畫票請填完整去回程日；尚未確認的席次請選「待確認」，不要猜測數量。</p></section>
+<main class="admin-grid"><section class="panel"><h2 id="formTitle">新增一筆優惠</h2><p>標示 <span class="required">＊</span> 的欄位是上架前必要資訊。</p><form id="dealForm"><input id="recordId" type="hidden"><div class="form-grid">
+<div class="field"><label>票種 <span class="required">＊</span></label><select id="kind" required><option value="airline">航空公司促銷</option><option value="plan">計畫票／清艙票</option><option value="zero">0 元／超低價活動</option><option value="mistake">疑似異常票價</option></select></div>
+<div class="field"><label>優惠標題 <span class="required">＊</span></label><input id="title" required placeholder="例如：桃園－釜山 5 天清艙票"></div>
+<div class="field"><label>出發地 <span class="required">＊</span></label><input id="origin" required placeholder="例如：台北／桃園"></div>
+<div class="field"><label>目的地 <span class="required">＊</span></label><input id="destination" required placeholder="例如：釜山"></div>
+<div class="field"><label>出發日期 <span class="required">＊</span></label><input id="depart" type="date" required></div>
+<div class="field"><label>回程日期 <span class="required">＊</span></label><input id="return" type="date" required></div>
+<div class="field"><label>每人價格（TWD）<span class="required">＊</span></label><input id="price" type="number" min="0" required placeholder="例如：9700"></div>
+<div class="field"><label>售況 <span class="required">＊</span></label><select id="availability" required><option value="可售">可售</option><option value="待確認">待確認</option><option value="額滿">額滿</option><option value="已結束">已結束</option></select></div>
+<div class="field"><label>航空公司／航班</label><input id="airline" placeholder="例如：樂桃 MM626／MM625"></div>
+<div class="field"><label>行李／包含項目</label><input id="baggage" placeholder="例如：來回 20 公斤行李"></div>
+<div class="field"><label>原始來源名稱 <span class="required">＊</span></label><input id="source" required placeholder="例如：飛遊網清艙機票"></div>
+<div class="field"><label>原始商品連結 <span class="required">＊</span></label><input id="sourceUrl" type="url" required placeholder="https://..."></div>
+<div class="field"><label>最後確認日 <span class="required">＊</span></label><input id="checked" type="date" required></div>
+<div class="field"><label>售票／報名截止日</label><input id="deadline" type="date"></div>
+<div class="field span-2"><label>票規與備註</label><textarea id="notes" placeholder="例如：固定日期，不可更改航班與日期；席次與價格以原頁為準。"></textarea></div>
+</div><div class="form-actions"><button type="button" class="secondary" id="resetForm">清除</button><button class="go" type="submit">儲存資料</button></div></form><div class="note">此頁暫時只儲存在目前瀏覽器的本機資料。匯出的 JSON 可作為下一版資料庫或網站前台的匯入檔。</div></section>
+<aside class="panel"><h2>已暫存的資料</h2><p>先確認欄位與原始頁是否一致，再匯出或交給前台使用。</p><div id="records"></div><div class="export"><button class="secondary" id="exportJson" type="button">匯出 JSON</button><button class="secondary" id="clearAll" type="button">清空暫存</button></div></aside></main>
+<footer><span>飛行便宜｜資料上架工具</span><span>本機原型，尚未連接正式資料庫</span></footer>
+</div><script src="scripts/admin.js" defer></script></body></html>

@@ -1,0 +1,13 @@
+{
+  "name": "flight-deals-collector",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "collect:plynet": "node collectors/collect-plynet.mjs",
+    "prepare:published-deals": "node collectors/merge-collected.mjs",
+    "collect": "npm run collect:plynet && npm run prepare:published-deals"
+  },
+  "devDependencies": {
+    "playwright": "^1.57.0"
+  }
+}
