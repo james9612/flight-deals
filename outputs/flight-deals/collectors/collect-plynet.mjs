@@ -51,7 +51,7 @@ const page = await browser.newPage({ locale: 'zh-TW' });
 async function openClearanceCalendar() {
   await page.goto(sourceUrl, { waitUntil: 'domcontentloaded' });
   await page.getByRole('button', { name: '清艙機票', exact: true }).click();
-  await page.waitForTimeout(700);
+  await page.locator('[role="button"]').filter({ hasText: /\d天\s*\|\s*\$\d+/ }).first().waitFor({ state: 'visible', timeout: 15_000 });
 }
 
 await openClearanceCalendar();
