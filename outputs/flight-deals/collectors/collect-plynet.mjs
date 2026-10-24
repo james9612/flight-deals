@@ -64,15 +64,12 @@ for (let index = 0; index < eventCount; index += 1) {
   const detail = await page.locator('body').innerText();
   const record = parseDetail(detail, calendarYear);
   if (record && !collected.some(item => item.id === record.id)) collected.push(record);
-  const close = page.getByRole('button', { name: '關閉', exact: true });
+  await page.keyboard.press('Escape');
+  const close = page.getByRole('button', { name: /^(關閉|close)$/i });
   if (await close.count()) {
-    try {
-      await close.last().click({ force: true, timeout: 2_000 });
-    } catch {
-      await page.keyboard.press('Escape');
-    }
-    await page.waitForTimeout(250);
+    await close.last().click({ force: true, timeout: 2_000 }).catch(() => {});
   }
+  await page.waitForTimeout(250);
 }
 
 await browser.close();
