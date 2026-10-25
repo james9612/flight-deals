@@ -2,7 +2,7 @@ let deals = [];
 let promos = [];
 let activeFilter = 'all';
 let currentPage = 1;
-const PAGE_SIZE = 30;
+const PAGE_SIZE = 20;
 
 const agencyClassMap = {
   '雄獅旅遊': 'agency-lion',
