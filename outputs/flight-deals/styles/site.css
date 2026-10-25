@@ -500,9 +500,30 @@ h1 em:after {
   background: var(--green-hover);
 }
 
+/* 日期搜尋欄內嵌旅行社快捷按鈕 */
+.search-agency-pills {
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px dashed #cbd5e1;
+}
+.search-pills-label {
+  font-size: 13px;
+  color: #334155;
+  margin-bottom: 10px;
+}
+.search-agency-pills .pills {
+  margin: 0;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
 /* 旅行社計畫票比價庫（卡片向上移動） */
 .section {
   padding: 16px 0 44px;
+}
+.section .head {
+  margin-bottom: 20px;
 }
 .section .head h2 {
   font-size: 26px;

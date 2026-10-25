@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>飛行便宜｜旅行社計畫票比價 ＆ 廉航 0 元機票特報聚合站</title>
   <meta name="description" content="自動爬取雄獅旅遊、飛遊網、可樂旅遊、易飛網等旅行社計畫票與團體湊票，並同步追蹤各大廉價航空 0 元機票與大促特報。">
-  <link rel="stylesheet" href="styles/site.css?v=20261025-13">
+  <link rel="stylesheet" href="styles/site.css?v=20261025-14">
 </head>
 <body>
   <div class="wrap">
@@ -44,7 +44,22 @@
       </div>
     </section>
 
-    <!-- 搜尋與篩選區（日期搜尋向上移動） -->
+    <!-- 0 元機票與各大航空公司促銷特報（移至最上方） -->
+    <details class="planner zero-promos-collapsible" id="zero-promos">
+      <summary class="planner-toggle">
+        <span class="planner-promo-badge">🔥 0 元促銷</span>
+        <b>廉航 0 元機票與各大航空公司促銷特報牆（點擊展開 5 則促銷情報）</b>
+        <span>越捷每週 0 元大促、AirAsia Free Seats、虎航 Payday 到手總價試算</span>
+        <span class="toggle-icon">＋</span>
+      </summary>
+      <div class="planner-body">
+        <div class="promos-grid" id="promos-grid">
+          <!-- 由 app.js 動態渲染 -->
+        </div>
+      </div>
+    </details>
+
+    <!-- 搜尋與篩選區（日期地點搜尋 ＆ 旅行社分類快捷按鈕） -->
     <section class="search" id="alerts">
       <div class="search-title">
         <div>
@@ -57,17 +72,6 @@
       <div class="search-guide">
         <b>💡 什麼是計畫票？</b>
         <span>旅行社預先向航空公司承包的團體機位（湊票），時間固定、不可改期退票，但多數直接包含稅金與 20KG 託運行李！</span>
-      </div>
-
-      <div class="quick-search" aria-label="熱門航線快速帶入">
-        <button type="button" data-example="all">查看全部航點</button>
-        <button type="button" data-example="kkday">⚡ KKday 清艙特惠</button>
-        <button type="button" data-example="ehs">🏷️ 東森旅遊清艙</button>
-        <button type="button" data-example="settour">🌸 東南旅遊計畫票</button>
-        <button type="button" data-example="funtime">🎈 FunTime計畫機票</button>
-        <button type="button" data-example="osaka">大阪計畫票（雄獅／易飛網）</button>
-        <button type="button" data-example="okinawa">沖繩計畫票（雄獅／可樂）</button>
-        <button type="button" data-example="seoul">首爾計畫票（雄獅／易飛網）</button>
       </div>
 
       <form id="form">
@@ -133,45 +137,34 @@
           <button class="go">搜尋計畫票　⌕</button>
         </div>
       </form>
-    </section>
 
-    <!-- 0 元機票與各大航空公司促銷特報（預設收折） -->
-    <details class="planner zero-promos-collapsible" id="zero-promos">
-      <summary class="planner-toggle">
-        <span class="planner-promo-badge">🔥 0 元促銷</span>
-        <b>廉航 0 元機票與各大航空公司促銷特報牆（點擊展開 5 則促銷情報）</b>
-        <span>越捷每週 0 元大促、AirAsia Free Seats、虎航 Payday 到手總價試算</span>
-        <span class="toggle-icon">＋</span>
-      </summary>
-      <div class="planner-body">
-        <div class="promos-grid" id="promos-grid">
-          <!-- 由 app.js 動態渲染 -->
+      <!-- 日期搜尋欄內嵌入各家旅行社與航線分類快捷按鈕 -->
+      <div class="search-agency-pills">
+        <div class="search-pills-label"><b>🏷️ 旅行社與航線分類快捷按鈕：</b></div>
+        <div class="pills">
+          <button type="button" class="pill on" data-filter="all">全部旅行社</button>
+          <button type="button" class="pill" data-filter="kkday">⚡ KKday清艙特惠</button>
+          <button type="button" class="pill" data-filter="ehs">🏷️ 東森旅遊清艙</button>
+          <button type="button" class="pill" data-filter="settour">🌸 東南旅遊計畫票</button>
+          <button type="button" class="pill" data-filter="funtime">🎈 FunTime計畫機票</button>
+          <button type="button" class="pill" data-filter="lion">雄獅旅遊計畫票</button>
+          <button type="button" class="pill" data-filter="plynet">飛遊網清艙票</button>
+          <button type="button" class="pill" data-filter="cola">可樂旅遊計畫票</button>
+          <button type="button" class="pill" data-filter="ezfly">易飛網清艙快閃</button>
+          <button type="button" class="pill" data-filter="japan">🇯🇵 日本航線</button>
+          <button type="button" class="pill" data-filter="korea">🇰🇷 韓國航線</button>
+          <button type="button" class="pill" data-filter="asia">🌏 東南亞／澳門</button>
         </div>
       </div>
-    </details>
+    </section>
 
-    <!-- 旅行社計畫票比價列表 -->
+    <!-- 旅行社計畫票比價列表（卡片上方不再放重複快捷按鈕） -->
     <section class="section" id="deals">
       <div class="head">
         <div>
           <h2>✈️ 旅行社計畫票／清艙湊票比價庫</h2>
           <p>彙整雄獅、飛遊網、可樂、易飛網、KKday、東森旅遊、東南旅遊、FunTime多方商品，點擊可直達原始商品頁預訂席次</p>
         </div>
-      </div>
-
-      <div class="pills">
-        <button class="pill on" data-filter="all">全部旅行社</button>
-        <button class="pill" data-filter="kkday">⚡ KKday清艙特惠</button>
-        <button class="pill" data-filter="ehs">🏷️ 東森旅遊清艙</button>
-        <button class="pill" data-filter="settour">🌸 東南旅遊計畫票</button>
-        <button class="pill" data-filter="funtime">🎈 FunTime計畫機票</button>
-        <button class="pill" data-filter="lion">雄獅旅遊計畫票</button>
-        <button class="pill" data-filter="plynet">飛遊網清艙票</button>
-        <button class="pill" data-filter="cola">可樂旅遊計畫票</button>
-        <button class="pill" data-filter="ezfly">易飛網清艙快閃</button>
-        <button class="pill" data-filter="japan">🇯🇵 日本航線</button>
-        <button class="pill" data-filter="korea">🇰🇷 韓國航線</button>
-        <button class="pill" data-filter="asia">🌏 東南亞／澳門</button>
       </div>
 
       <div class="cards" id="cards">
@@ -280,6 +273,6 @@
     </footer>
   </div>
 
-  <script src="scripts/app.js?v=20261025-13" defer></script>
+  <script src="scripts/app.js?v=20261025-14" defer></script>
 </body>
 </html>
