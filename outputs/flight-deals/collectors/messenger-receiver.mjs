@@ -1,6 +1,6 @@
 import http from 'node:http';
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
-import { parseSocialDeal } from './parse-social-deal.mjs';
+import { parseSocialDeals } from './parse-social-deal.mjs';
 import { mergeCollected } from './merge-collected.mjs';
 
 const PORT = process.env.PORT || 3500;
@@ -58,31 +58,37 @@ const server = http.createServer(async (req, res) => {
         console.log('來源：', sourceUrl);
         console.log('原文：', rawText.slice(0, 100), rawText.length > 100 ? '...' : '');
 
-        const deal = parseSocialDeal(rawText, sourceUrl);
-        if (!deal) {
+        const newDeals = parseSocialDeals(rawText, sourceUrl);
+        if (!newDeals.length) {
           res.writeHead(422, { 'Content-Type': 'application/json' });
           res.end(JSON.stringify({ error: '無法解析為有效機票資訊' }));
           return;
         }
 
-        console.log(`[成功解析] ${deal.from} ➔ ${deal.city} | ${deal.airline} | NT$ ${deal.price.toLocaleString()} | ${deal.date}`);
+        console.log(`[成功解析 ${newDeals.length} 筆清艙機票]`);
 
         const existing = await loadExistingDeals();
-        // 檢查是否已有相同內容防重複
-        const isDuplicate = existing.some(d => d.rawMessage && d.rawMessage === deal.rawMessage);
+        let addedCount = 0;
 
-        if (!isDuplicate) {
-          existing.unshift(deal);
-          // 最多保留最新 50 筆突發清艙
-          const trimmed = existing.slice(0, 50);
+        for (const deal of newDeals) {
+          const isDuplicate = existing.some(d => d.rawMessage && d.rawMessage === deal.rawMessage && d.depart === deal.depart && d.price === deal.price);
+          if (!isDuplicate) {
+            existing.unshift(deal);
+            addedCount++;
+          }
+        }
+
+        if (addedCount > 0) {
+          // 最多保留最新 100 筆突發清艙
+          const trimmed = existing.slice(0, 100);
           await mkdir(new URL('../data/collected/', import.meta.url), { recursive: true });
           await writeFile(outputFile, JSON.stringify(trimmed, null, 2));
 
           // 自動執行聚合管線更新 deals.json
           await mergeCollected();
-          console.log('[聚合完成] 已自動將新機票同步寫入 deals.json！');
+          console.log(`[聚合完成] 成功寫入 ${addedCount} 筆新機票至 deals.json！`);
         } else {
-          console.log('[略過重複] 此則訊息先前已收錄過。');
+          console.log('[略過重複] 所有訊息先前已收錄過。');
         }
 
         res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
