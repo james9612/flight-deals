@@ -1,3 +1,16 @@
+// Ensure page opens at the top on initial load or refresh
+if ('scrollRestoration' in history) {
+  history.scrollRestoration = 'manual';
+}
+window.scrollTo(0, 0);
+
+// If URL contains an old hash from testing like #zero-fare, clean it up so reloads start at top
+if (window.location.hash) {
+  try {
+    history.replaceState(null, '', window.location.pathname + window.location.search);
+  } catch (e) {}
+}
+
 let deals = [];
 let promos = [];
 let activeFilter = 'all';
@@ -491,9 +504,9 @@ document.addEventListener('DOMContentLoaded', () => {
       event.preventDefault();
       const origin = document.getElementById('zeroOrigin').value;
       const destination = document.getElementById('zeroDestination').value || '所有航線';
-      const type = document.getElementById('zeroType').value === 'base' ? '基本票價 0 元／超低價' : '含稅總價超低價';
+      const type = document.getElementById('zeroType').value === 'base' ? '基本票價 0 元／免機票大促' : '含稅總價超低價';
       const result = document.getElementById('zeroFareResult');
-      result.innerHTML = `<strong>已建立 0 元機票快報條件：${origin} ➔ ${destination}</strong><br>追蹤類型：${type}<br><span class="meta">當越捷、AirAsia、虎航發布該航線 0 元大促時將自動推播；搶購時需備妥護照中英文名。</span>`;
+      result.innerHTML = `<strong>✔ 已建立 0 元機票快報條件：${origin} ➔ ${destination}</strong><br>追蹤類型：${type}<br><span class="meta">💡 此為【介面功能預覽】，正式版將串接 LINE Notify 與瀏覽器即時推播，當越捷、AirAsia、虎航開賣時立即發送提醒！</span>`;
       result.hidden = false;
     });
   }
@@ -506,16 +519,24 @@ document.addEventListener('DOMContentLoaded', () => {
       const origin = document.getElementById('mistakeOrigin').value;
       const destination = document.getElementById('mistakeDestination').value.trim() || '全球／不限目的地';
       const threshold = document.getElementById('mistakeThreshold').value;
-      result.innerHTML = `<strong>已建立異常票價偵測條件：${origin} ➔ ${destination}</strong><br>判定門檻：低於常態中位價 ${threshold}% 以上<br><span class="meta">偵測命中後需確認票規與是否包含稅金，並回到航空公司或出票方核驗。</span>`;
+      const result = document.getElementById('mistakeFareResult');
+      result.innerHTML = `<strong>✔ 已建立異常票價偵測條件：${origin} ➔ ${destination}</strong><br>判定門檻：低於常態中位價 ${threshold}% 以上<br><span class="meta">💡 此為【介面功能預覽】，正式版將自動對接歷史中位價與人工二度核驗機制！</span>`;
       result.hidden = false;
     });
   }
 
-  // Open 0-fare promos accordion if anchor link is clicked
-  document.querySelectorAll('a[href="#zero-promos"]').forEach(a => {
-    a.addEventListener('click', () => {
-      const el = document.getElementById('zero-promos');
-      if (el) el.open = true;
+  // In-page navigation: auto-expand accordions and smooth-scroll without polluting URL bar
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    const hash = a.getAttribute('href');
+    if (!hash || hash === '#') return;
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(hash);
+      if (!target) return;
+      if (target.tagName.toLowerCase() === 'details') {
+        target.open = true;
+      }
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
   });
 });
