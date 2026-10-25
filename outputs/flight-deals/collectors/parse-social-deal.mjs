@@ -17,21 +17,49 @@ const countryMap = {
 };
 
 const routeFlightTimes = {
-  '長榮航空-福岡': '去程 BR106 08:10-11:15／回程 BR105 12:15-13:50（早去午回）',
-  '中華航空-廣島': '去程 CI112 17:20-20:40／回程 CI113 09:00-10:50（晚去早回）',
-  '中華航空-高松': '去程 CI178 14:30-18:00／回程 CI179 19:00-21:00（午去晚回）',
-  '酷航-東京': '去程 TR898 06:40-10:45／回程 TR899 11:45-15:10（早去午回）',
-  '酷航-北海道': '去程 TR892 11:30-16:15／回程 TR893 17:35-21:05（午去晚回）',
-  '台灣虎航-福島': '去程 IT266 08:40-12:30／回程 IT267 13:20-16:20（早去午回）',
-  '台灣虎航-高知': '去程 IT250 08:40-12:00／回程 IT251 13:00-15:35（早去午回）',
-  '台灣虎航-石垣島': '去程 IT280 12:15-14:10／回程 IT281 15:00-15:05（午去午回）',
-  '台灣虎航-岡山': '去程 IT214 13:30-17:00／回程 IT215 17:55-19:55（午去晚回）',
-  '樂桃航空-東京': '去程 MM620 02:30-06:45／回程 MM627 22:00-00:45（紅眼早去晚回）',
-  '樂桃航空-大阪': '去程 MM022 09:35-13:05／回程 MM027 16:00-18:15（早去晚回）',
-  '樂桃航空-沖繩': '去程 MM924 09:30-12:15／回程 MM927 16:40-17:20（早去晚回）',
-  '亞洲航空-沖繩': '去程 FD230 13:30-16:00／回程 FD231 16:55-17:35（午去晚回）',
-  '亞洲航空-大阪': '去程 D7378 15:40-19:15／回程 D7379 20:30-22:45（午去晚回）'
+  // 台北（桃園 TPE）出發
+  '台北-長榮航空-福岡': '去程 BR106 08:10-11:15／回程 BR105 12:15-13:50（早去午回）',
+  '台北-中華航空-廣島': '去程 CI112 17:20-20:40／回程 CI113 09:00-10:50（晚去早回）',
+  '台北-中華航空-高松': '去程 CI178 14:30-18:00／回程 CI179 19:00-21:00（午去晚回）',
+  '台北-酷航-東京': '去程 TR898 06:40-10:45／回程 TR899 11:45-15:10（早去午回）',
+  '台北-酷航-北海道': '去程 TR892 11:30-16:15／回程 TR893 17:35-21:05（午去晚回）',
+  '台北-台灣虎航-福島': '去程 IT266 08:40-12:30／回程 IT267 13:20-16:20（早去午回）',
+  '台北-台灣虎航-高知': '去程 IT250 08:40-12:00／回程 IT251 13:00-15:35（早去午回）',
+  '台北-台灣虎航-石垣島': '去程 IT280 12:15-14:10／回程 IT281 15:00-15:05（午去午回）',
+  '台北-台灣虎航-大分': '去程 IT274 07:30-10:55／回程 IT275 11:55-13:40（早去午回）',
+  '台北-台灣虎航-佐賀大分': '去程台北-佐賀 IT246 07:00-10:25／回程大分-台北 IT275 11:55-13:40（雙點進出）',
+  '台北-台灣虎航-大分佐賀': '去程台北-大分 IT274 07:30-10:55／回程佐賀-台北 IT247 11:25-13:10（雙點進出）',
+  '台北-台灣虎航-岡山': '去程 IT214 13:30-17:00／回程 IT215 17:55-19:55（午去晚回）',
+  '台北-樂桃航空-東京': '去程 MM620 02:30-06:45／回程 MM627 22:00-00:45（紅眼早去晚回）',
+  '台北-樂桃航空-大阪': '去程 MM022 09:35-13:05／回程 MM027 16:00-18:15（早去晚回）',
+  '台北-樂桃航空-沖繩': '去程 MM924 09:30-12:15／回程 MM927 16:40-17:20（早去晚回）',
+  '台北-亞洲航空-沖繩': '去程 FD230 13:30-16:00／回程 FD231 16:55-17:35（午去晚回）',
+  '台北-亞洲航空-北海道': '去程 FD242 07:05-12:05／回程 FD243 14:40-18:00（早去午回）',
+
+  // 高雄（小港 KHH）出發（真實核實航班，不再誤植台北班機）
+  '高雄-中華航空-高松': '去程 CI7760 06:35-10:30／回程 CI7761 11:50-13:55（早去午回・華航A321neo客機）',
+  '高雄-泰國獅航-北海道': '去程 SL392 10:50-16:00／回程 SL393 17:00-21:00（午去晚回・直飛札幌）',
+  '高雄-台灣虎航-北海道': '去程 IT260 08:00-12:55／回程 IT261 13:55-18:05（早去午回・直飛札幌）',
+  '高雄-台灣虎航-岡山': '去程 IT262 12:40-16:30／回程 IT263 17:30-20:00（午去晚回）',
+  '高雄-亞洲航空-大阪': '去程 AK170 08:30-12:40／回程 AK171 13:40-16:30（早去午回・直飛關西）'
 };
+
+function lookupFlightTime(from, airline, city, rawDesc = '') {
+  if (rawDesc.includes('佐賀大分')) {
+    return routeFlightTimes[`${from}-${airline}-佐賀大分`] || '去程台北-佐賀 IT246／回程大分-台北 IT275（雙點進出）';
+  }
+  if (rawDesc.includes('大分佐賀')) {
+    return routeFlightTimes[`${from}-${airline}-大分佐賀`] || '去程台北-大分 IT274／回程佐賀-台北 IT247（雙點進出）';
+  }
+  const key = `${from}-${airline}-${city}`;
+  if (routeFlightTimes[key]) return routeFlightTimes[key];
+
+  const timeKeywords = ['早去晚回', '早去午回', '午去晚回', '早去早回', '晚去晚回', '午去午回'];
+  for (const kw of timeKeywords) {
+    if (rawDesc.includes(kw)) return kw;
+  }
+  return '';
+}
 
 /**
  * 智慧解析社群／Messenger／Facebook 粉專口語化清艙文字（支援多行大補帖與單則促銷）
@@ -101,8 +129,7 @@ export function parseSocialDeals(rawText, sourceUrl = 'https://line.me/R/ti/p/%4
         retObj.setDate(retObj.getDate() + (activeDays - 1));
         const returnDate = retObj.toISOString().slice(0, 10);
 
-        const routeKey = `${blockAirline}-${blockCity}`;
-        const flightTime = routeFlightTimes[routeKey] || (line.includes('早去晚回') ? '早去晚回' : (line.includes('早去午回') ? '早去午回' : ''));
+        const flightTime = lookupFlightTime(blockFrom, blockAirline, blockCity, line);
 
         results.push({
           id: `goflytrip-${cityCodeMap[blockCity] || 'INT'}-${m}${d}-${activePrice}-${Math.random().toString(36).slice(2, 5)}`,
@@ -120,14 +147,14 @@ export function parseSocialDeals(rawText, sourceUrl = 'https://line.me/R/ti/p/%4
           airline: blockAirline,
           air: blockAirline,
           baggage: blockAirline === '長榮航空' || blockAirline === '中華航空' ? '含機上餐與來回託運行李' : '含來回託運行李（依清艙商品規格）',
-          source: '飛趣旅遊官方 LINE 清艙',
+          source: '飛趣旅遊官方粉絲專頁',
           sourceUrl,
           checked: new Date().toISOString().slice(0, 10),
           tag: '飛趣旅遊清艙',
           agency: '飛趣旅遊',
           kind: 'plan',
           flightTime,
-          detail: `【飛趣旅遊 清艙機票】${blockAirline}直飛${blockCity}${activeDays}日機票｜出發日：${depart}，含稅特惠價 NT$ ${activePrice.toLocaleString()}，官方 LINE: @flynow01 私訊搶位！`,
+          detail: `【飛趣旅遊 清艙機票】${blockAirline}直飛${blockCity}${activeDays}日機票｜資訊來自於官方粉絲專頁，出發日：${depart}，含稅特惠價 NT$ ${activePrice.toLocaleString()}，官方 LINE: @flynow01 私訊搶位！`,
           rawMessage: line,
           collectedAt: new Date().toISOString()
         });
@@ -169,8 +196,7 @@ export function parseSocialDeals(rawText, sourceUrl = 'https://line.me/R/ti/p/%4
       else if (desc.includes('泰亞航') || desc.includes('亞航')) airline = '亞洲航空';
       else if (desc.includes('星宇')) airline = '星宇航空';
 
-      const routeKey = `${airline}-${city}`;
-      const flightTime = routeFlightTimes[routeKey] || (desc.includes('早去晚回') ? '早去晚回' : (desc.includes('早去午回') ? '早去午回' : ''));
+      const flightTime = lookupFlightTime(from, airline, city, desc);
 
       const dateParts = datesStr.split(/[、,]/);
       for (const dPart of dateParts) {
@@ -198,14 +224,14 @@ export function parseSocialDeals(rawText, sourceUrl = 'https://line.me/R/ti/p/%4
           airline,
           air: airline,
           baggage: airline === '長榮航空' || airline === '中華航空' ? '含機上餐與來回託運行李' : '含來回託運行李（依清艙商品規格）',
-          source: '飛趣旅遊官方 LINE 清艙',
+          source: '飛趣旅遊官方粉絲專頁',
           sourceUrl,
           checked: new Date().toISOString().slice(0, 10),
           tag: '飛趣旅遊清艙',
           agency: '飛趣旅遊',
           kind: 'plan',
           flightTime,
-          detail: `【飛趣旅遊 清艙機票】${desc}｜出發日：${depart}，含稅特惠價 NT$ ${price.toLocaleString()}，官方 LINE: @flynow01 私訊搶位！`,
+          detail: `【飛趣旅遊 清艙機票】${desc}｜資訊來自於官方粉絲專頁，出發日：${depart}，含稅特惠價 NT$ ${price.toLocaleString()}，官方 LINE: @flynow01 私訊搶位！`,
           rawMessage: line,
           collectedAt: new Date().toISOString()
         });
@@ -334,14 +360,14 @@ function parseSingleSocialDeal(rawText, sourceUrl) {
     airline,
     air: airline,
     baggage,
-    source: '飛趣旅遊官方 LINE 清艙',
+    source: '飛趣旅遊官方粉絲專頁',
     sourceUrl: sourceUrl || 'https://line.me/R/ti/p/%40flynow01',
     checked: new Date().toISOString().slice(0, 10),
     tag: '飛趣旅遊清艙',
     agency: '飛趣旅遊',
     kind: 'plan',
     flightTime,
-    detail: `【飛趣旅遊 清艙機票】${text.slice(0, 180)}`,
+    detail: `【飛趣旅遊 清艙機票】${text.slice(0, 150)}｜資訊來自於官方粉絲專頁`,
     rawMessage: text,
     collectedAt: new Date().toISOString()
   };

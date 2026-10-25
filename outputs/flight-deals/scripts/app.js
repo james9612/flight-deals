@@ -35,6 +35,7 @@ const agencyClassMap = {
   'FunTime': 'agency-funtime',
   'FunTime旅遊比價網（localtour）': 'agency-funtime',
   '飛趣旅遊': 'agency-goflytrip',
+  '飛趣旅遊官方粉絲專頁': 'agency-goflytrip',
   '飛趣旅遊 Messenger 清艙': 'agency-goflytrip'
 };
 

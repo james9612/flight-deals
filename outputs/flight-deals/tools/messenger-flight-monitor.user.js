@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         ✈️ 飛行便宜・Facebook 粉專貼文 ＆ Messenger 清艙即時監聽外掛
 // @namespace    https://james9612.github.io/flight-deals/
-// @version      1.2.0
+// @version      1.3.0
 // @description  自動即時監聽 Facebook 粉絲專頁貼文與 Messenger 廣播專區（如飛趣旅遊）之清艙機票，並一鍵/自動同步至「飛行便宜」比價網！
 // @author       飛行便宜
 // @match        *://*.messenger.com/*
@@ -38,10 +38,25 @@
     return hash.toString();
   }
 
-  // 檢查是否為機票相關訊息
+  // 檢查是否為機票相關訊息（嚴格防偽，排除側邊欄一般聊天問候）
   function isFlightMessage(text) {
     if (!text || text.length < 10) return false;
-    const keywords = ['機票', '清艙', '出清', '湊票', '特價', '機位', '含稅', '出發', '去回', '虎航', '樂桃', '酷航', '華航', '長榮', '星宇', '東京', '大阪', '沖繩', '首爾', '釜山', '曼谷', '富國島', '名古屋', '福岡', '北海道', '札幌', '函館'];
+
+    // 排除個人對話、未讀通知與系統提示
+    const noisePatterns = ['未讀訊息', '端對端加密', '請告訴我們該如何為你提供協助', '傳送了', '查看全部', '撥打電話', '語音通話', '已讀'];
+    for (const np of noisePatterns) {
+      if (text.includes(np)) return false;
+    }
+
+    // 必須含有價格特徵 或 ✈ 航班標記
+    const hasPriceOrFlight = text.includes('✈') || /(?:NT\$|TWD|\$|特價|只要|機票|一口價)\s*([0-9]{4,5})/i.test(text) || /\b([3-9][0-9]{3}|[1-2][0-9]{4})\b/.test(text);
+    if (!hasPriceOrFlight) return false;
+
+    // 必須含有日期或清艙關鍵字
+    const hasDateOrClearance = /[0-1]?[0-9]\/[0-3]?[0-9]/.test(text) || /[0-9]月[0-9]日/.test(text) || text.includes('清艙') || text.includes('機票') || text.includes('日機票');
+    if (!hasDateOrClearance) return false;
+
+    const keywords = ['機票', '清艙', '出清', '湊票', '特價', '機位', '含稅', '出發', '去回', '虎航', '樂桃', '酷航', '華航', '長榮', '星宇', '泰亞航', '亞航', '東京', '大阪', '沖繩', '首爾', '釜山', '曼谷', '富國島', '名古屋', '福岡', '北海道', '札幌', '函館', '高松', '岡山', '大分', '佐賀', '福島', '廣島', '高知', '石垣島'];
     let hitCount = 0;
     for (const kw of keywords) {
       if (text.includes(kw)) hitCount++;
@@ -52,7 +67,7 @@
   // 快速本機解析預覽
   function quickParsePreview(text) {
     let dest = '精選航點';
-    for (const c of ['東京', '大阪', '沖繩', '札幌', '北海道', '福岡', '名古屋', '函館', '首爾', '釜山', '曼谷', '富國島', '石垣島', '小松', '高松', '高知']) {
+    for (const c of ['東京', '大阪', '沖繩', '札幌', '北海道', '福岡', '名古屋', '函館', '高松', '岡山', '大分', '佐賀', '福島', '廣島', '高知', '石垣島', '首爾', '釜山', '曼谷', '富國島']) {
       if (text.includes(c)) { dest = c; break; }
     }
     let price = '特惠價';
@@ -66,7 +81,7 @@
     const payload = {
       text: text,
       url: window.location.href,
-      author: '飛趣旅遊 Messenger 廣播專區',
+      author: '飛趣旅遊官方粉絲專頁',
       timestamp: new Date().toISOString()
     };
 
@@ -253,17 +268,19 @@
     }
   }
 
-  // 擷取最新一則訊息或粉專貼文
+  // 擷取最新一則訊息或粉專貼文（只鎖定聊天對話主畫面或貼文牆，完全避開側邊欄聯絡人列表）
   function captureLatestMessage(isManual = false) {
     const selectors = [
+      'div[role="main"] div[dir="auto"]',
+      'div[aria-label="訊息"] div[dir="auto"]',
+      'div[data-pagelet="Messages"] div[dir="auto"]',
+      'div[role="feed"] div[dir="auto"]',
       'div[data-ad-preview="message"]',
       'div[data-ad-comet-preview="message"]',
-      'div[role="article"]',
-      'div[dir="auto"]',
-      'div[role="row"]',
-      'span[dir="auto"]'
+      'div[role="article"]'
     ];
-    const messages = Array.from(document.querySelectorAll(selectors.join(', ')));
+    const messages = Array.from(document.querySelectorAll(selectors.join(', ')))
+      .filter(el => !el.closest('[role="navigation"]') && !el.closest('[aria-label*="Chats"]') && !el.closest('[aria-label*="對話"]'));
     let latestValid = null;
 
     for (let i = messages.length - 1; i >= 0; i--) {
