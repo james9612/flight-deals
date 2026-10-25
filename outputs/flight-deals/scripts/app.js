@@ -215,13 +215,27 @@ function renderDeals() {
     if (d.sourceUrl && d.sourceUrl.includes('line.me')) {
       btnText = `前往 飛遊網官方 LINE 即時開票 ↗`;
     } else if ((d.agency || '').includes('FunTime')) {
-      btnText = `前往 FunTime 機票特惠預訂 ↗`;
+      if (d.sourceUrl && d.sourceUrl.includes('liontravel.com')) {
+        btnText = `前往 雄獅旅遊 預訂（FunTime特惠）↗`;
+      } else if (d.sourceUrl && d.sourceUrl.includes('gounitravel.com')) {
+        btnText = `前往 旅天下 預訂（FunTime特惠）↗`;
+      } else if (d.sourceUrl && d.sourceUrl.includes('kkday.com')) {
+        btnText = `前往 KKday 預訂（FunTime特惠）↗`;
+      } else {
+        btnText = `前往 FunTime 機票特惠預訂 ↗`;
+      }
     } else if ((d.agency || '').includes('KKday')) {
       btnText = `前往 KKday 官方機票預訂 ↗`;
     } else if ((d.agency || '').includes('東南')) {
       btnText = `前往 東南旅遊官方機位預訂 ↗`;
     } else if ((d.agency || '').includes('東森')) {
       btnText = `前往 東森旅遊官方商品頁 ↗`;
+    }
+    let tagText = d.tag;
+    if ((d.agency || '').includes('FunTime') && d.sourceUrl) {
+      if (d.sourceUrl.includes('liontravel.com')) tagText = 'FunTime彙整・雄獅開票';
+      else if (d.sourceUrl.includes('gounitravel.com')) tagText = 'FunTime彙整・旅天下開票';
+      else if (d.sourceUrl.includes('kkday.com')) tagText = 'FunTime彙整・KKday開票';
     }
 
     return `
@@ -230,7 +244,7 @@ function renderDeals() {
           <div class="cardtop">
             <div>
               <span class="agency-badge ${agencyClass}">${d.agency || d.source}</span>
-              <span class="tag">${d.tag}</span>
+              <span class="tag">${tagText}</span>
             </div>
             <button class="heart" onclick="event.stopPropagation();this.textContent=this.textContent==='♡'?'♥':'♡'">♡</button>
           </div>
