@@ -19,8 +19,8 @@ body {
   background: var(--paper);
   color: var(--ink);
   font-family: 'DM Sans', 'Noto Sans TC', -apple-system, sans-serif;
-  font-size: 14px;
-  line-height: 1.6;
+  font-size: 16px;
+  line-height: 1.68;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -40,7 +40,7 @@ header {
 }
 .logo {
   font-weight: 900;
-  font-size: 22px;
+  font-size: 24px;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -50,13 +50,13 @@ header {
   background: var(--green);
   color: var(--lime);
   border-radius: 10px;
-  padding: 6px 10px;
-  font-size: 18px;
+  padding: 7px 11px;
+  font-size: 20px;
 }
 .nav {
   display: flex;
   gap: 28px;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 700;
 }
 .nav a {
@@ -71,10 +71,10 @@ header {
   border: 1px solid var(--line);
   background: white;
   border-radius: 30px;
-  padding: 9px 18px;
+  padding: 10px 20px;
   color: var(--ink);
   font-weight: 700;
-  font-size: 13px;
+  font-size: 14.5px;
   cursor: pointer;
 }
 
@@ -88,13 +88,13 @@ header {
 }
 .eyebrow {
   color: var(--green);
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 800;
   letter-spacing: .5px;
   margin-bottom: 8px;
 }
 h1 {
-  font-size: clamp(38px, 5.5vw, 56px);
+  font-size: clamp(40px, 5.5vw, 58px);
   line-height: 1.18;
   letter-spacing: -2px;
   margin: 12px 0;
@@ -118,10 +118,10 @@ h1 em:after {
   border-radius: 6px;
 }
 .lead {
-  font-size: 15px;
+  font-size: 17px;
   line-height: 1.85;
   color: var(--muted);
-  max-width: 580px;
+  max-width: 620px;
   font-weight: 500;
 }
 .lead b {
@@ -238,13 +238,13 @@ h1 em:after {
   border-bottom: 2px solid var(--line-light);
 }
 .promos-section .head h2 {
-  font-size: 26px;
+  font-size: 28px;
   font-weight: 900;
   margin: 0 0 6px;
   color: var(--ink);
 }
 .promos-section .head p {
-  font-size: 14px;
+  font-size: 15.5px;
   color: var(--muted);
   margin: 0;
   font-weight: 500;
@@ -259,7 +259,7 @@ h1 em:after {
   background: white;
   border: 1px solid #cbd5e1;
   border-radius: 16px;
-  padding: 22px;
+  padding: 24px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -278,8 +278,8 @@ h1 em:after {
   background: #ffedd5;
   color: #c2410c;
   border-radius: 20px;
-  padding: 6px 12px;
-  font-size: 12px;
+  padding: 7px 14px;
+  font-size: 13.5px;
   font-weight: 800;
   align-self: flex-start;
 }
@@ -291,14 +291,14 @@ h1 em:after {
   margin: 14px 0 10px;
 }
 .promo-head h3 {
-  font-size: 19px;
+  font-size: 21px;
   font-weight: 800;
   margin: 4px 0 0;
   line-height: 1.4;
   color: #0f172a;
 }
 .promo-airline {
-  font-size: 13px;
+  font-size: 14.5px;
   font-weight: 800;
   color: var(--green);
 }
@@ -306,32 +306,32 @@ h1 em:after {
   background: #f1f5f9;
   border: 1px solid #cbd5e1;
   border-radius: 12px;
-  padding: 12px 14px;
+  padding: 14px 16px;
   margin: 14px 0;
 }
 .price-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 13px;
+  font-size: 14.5px;
   color: #334155;
   font-weight: 600;
-  margin: 5px 0;
+  margin: 6px 0;
 }
 .price-row b {
   color: #0f172a;
-  font-size: 14px;
+  font-size: 15.5px;
 }
 .price-row.total {
   border-top: 1px dashed #94a3b8;
-  padding-top: 9px;
-  margin-top: 9px;
-  font-size: 14px;
+  padding-top: 10px;
+  margin-top: 10px;
+  font-size: 15.5px;
   color: #0f172a;
   font-weight: 800;
 }
 .price-row.total .sum {
-  font-size: 22px;
+  font-size: 26px;
   font-weight: 900;
   color: #c2410c;
 }
@@ -342,7 +342,7 @@ h1 em:after {
   margin: 12px 0;
 }
 .promo-routes-title {
-  font-size: 12px;
+  font-size: 13.5px;
   font-weight: 800;
   color: #334155;
   margin-bottom: 6px;
@@ -356,25 +356,25 @@ h1 em:after {
   background: #e2e8f0;
   color: #1e293b;
   border-radius: 6px;
-  padding: 4px 9px;
-  font-size: 12px;
+  padding: 5px 10px;
+  font-size: 13.5px;
   font-weight: 700;
 }
 .promo-period {
-  font-size: 13px;
+  font-size: 14.5px;
   color: #334155;
   margin: 12px 0 8px;
-  line-height: 1.6;
+  line-height: 1.65;
 }
 .promo-tips {
-  font-size: 12px;
+  font-size: 13.5px;
   color: #164e63;
   background: #ecfeff;
   border: 1px solid #a5f3fc;
   border-radius: 8px;
-  padding: 10px 12px;
+  padding: 11px 14px;
   margin-top: 10px;
-  line-height: 1.6;
+  line-height: 1.65;
   font-weight: 500;
 }
 .promo-btn {
@@ -384,8 +384,8 @@ h1 em:after {
   color: white;
   text-decoration: none;
   font-weight: 800;
-  font-size: 14px;
-  padding: 12px 18px;
+  font-size: 16px;
+  padding: 13px 20px;
   border-radius: 10px;
   margin-top: 16px;
   transition: background .2s;
@@ -446,7 +446,7 @@ h1 em:after {
   align-items: start;
 }
 .search-title h2 {
-  font-size: 20px;
+  font-size: 23px;
   font-weight: 900;
   margin: 0 0 4px;
   color: var(--ink);
@@ -454,7 +454,7 @@ h1 em:after {
 .search-title p {
   margin: 0;
   color: var(--muted);
-  font-size: 14px;
+  font-size: 15.5px;
   font-weight: 500;
 }
 .search-count {
@@ -463,20 +463,20 @@ h1 em:after {
   color: #1b5e20;
   border: 1px solid #c8e6c9;
   border-radius: 20px;
-  padding: 8px 14px;
-  font-size: 13px;
+  padding: 8px 16px;
+  font-size: 14.5px;
   font-weight: 800;
 }
 .search-guide {
   display: flex;
   gap: 10px;
   margin: 16px 0 12px;
-  padding: 12px 16px;
+  padding: 13px 18px;
   background: #f1f5f9;
   border: 1px solid #cbd5e1;
   border-radius: 10px;
   color: #1e293b;
-  font-size: 13px;
+  font-size: 14.5px;
   line-height: 1.6;
 }
 .search-guide b {
@@ -494,9 +494,9 @@ h1 em:after {
   border: 1px solid #cbd5e1;
   background: white;
   border-radius: 20px;
-  padding: 8px 14px;
+  padding: 9px 16px;
   color: #0f172a;
-  font-size: 13px;
+  font-size: 14.5px;
   font-weight: 700;
   cursor: pointer;
   transition: all .18s;
@@ -515,7 +515,7 @@ h1 em:after {
 .field {
   border: 1px solid #cbd5e1;
   border-radius: 10px;
-  padding: 8px 12px;
+  padding: 9px 12px;
   background: #fff;
   min-width: 0;
   display: flex;
@@ -524,14 +524,14 @@ h1 em:after {
 }
 .field label {
   display: block;
-  font-size: 11.5px;
+  font-size: 13px;
   font-weight: 800;
   color: #334155;
-  margin-bottom: 2px;
+  margin-bottom: 3px;
   white-space: nowrap;
 }
 .field label small {
-  font-size: 11px;
+  font-size: 12px;
   color: #64748b;
   font-weight: 500;
 }
@@ -542,7 +542,7 @@ h1 em:after {
   outline: 0;
   color: #0f172a;
   font-weight: 700;
-  font-size: 13.5px;
+  font-size: 15.5px;
   min-width: 0;
   padding: 2px 0;
   margin: 0;
@@ -559,9 +559,10 @@ h1 em:after {
   color: white;
   border: 0;
   border-radius: 10px;
-  padding: 0 22px;
+  padding: 0 24px;
   font-weight: 800;
-  font-size: 15px;
+  font-size: 16.5px;
+  min-height: 48px;
   cursor: pointer;
   transition: background .2s;
 }
@@ -576,7 +577,8 @@ h1 em:after {
   border-top: 1px dashed #cbd5e1;
 }
 .search-pills-label {
-  font-size: 13px;
+  font-size: 14.5px;
+  font-weight: 700;
   color: #334155;
   margin-bottom: 10px;
 }
@@ -595,13 +597,13 @@ h1 em:after {
   margin-bottom: 20px;
 }
 .section .head h2 {
-  font-size: 26px;
+  font-size: 28px;
   font-weight: 900;
   margin: 0 0 6px;
   color: var(--ink);
 }
 .section .head p {
-  font-size: 14px;
+  font-size: 15.5px;
   color: var(--muted);
   margin: 0;
   font-weight: 500;
@@ -616,8 +618,8 @@ h1 em:after {
   border: 1px solid #cbd5e1;
   background: white;
   border-radius: 30px;
-  padding: 9px 16px;
-  font-size: 13px;
+  padding: 10px 18px;
+  font-size: 14.5px;
   font-weight: 700;
   color: #334155;
   cursor: pointer;
@@ -663,9 +665,9 @@ h1 em:after {
 }
 .agency-badge {
   display: inline-block;
-  padding: 5px 10px;
+  padding: 6px 11px;
   border-radius: 6px;
-  font-size: 12px;
+  font-size: 13.5px;
   font-weight: 800;
   letter-spacing: .3px;
   margin-right: 6px;
@@ -684,15 +686,15 @@ h1 em:after {
   color: #334155;
   border: 1px solid #cbd5e1;
   border-radius: 20px;
-  padding: 4px 10px;
-  font-size: 11px;
+  padding: 5px 12px;
+  font-size: 12.5px;
   font-weight: 700;
 }
 .heart {
   border: 0;
   background: none;
   color: #94a3b8;
-  font-size: 20px;
+  font-size: 22px;
   cursor: pointer;
 }
 .heart:hover {
@@ -707,25 +709,25 @@ h1 em:after {
   margin: 6px 0 10px;
 }
 .dest-city-large {
-  font-size: 24px;
+  font-size: 26px;
   font-weight: 900;
   color: #0f172a;
 }
 .dest-duration-badge {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 800;
   background: #f1f5f9;
   color: #1e293b;
   border: 1px solid #cbd5e1;
-  padding: 4px 10px;
+  padding: 5px 12px;
   border-radius: 8px;
 }
 .flight-meta-row {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 8px;
-  font-size: 13px;
+  gap: 9px;
+  font-size: 14.5px;
   color: #1e293b;
   font-weight: 700;
   margin-bottom: 12px;
@@ -739,9 +741,9 @@ h1 em:after {
   background: #ecfdf5;
   color: #065f46;
   border: 1px solid #a7f3d0;
-  font-size: 12px;
+  font-size: 13.5px;
   font-weight: 800;
-  padding: 4px 10px;
+  padding: 5px 12px;
   border-radius: 12px;
   margin-bottom: 14px;
 }
@@ -751,7 +753,7 @@ h1 em:after {
   background: #f8fafc;
   border: 1px solid #e2e8f0;
   border-radius: 12px;
-  padding: 12px 16px;
+  padding: 14px 18px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -761,16 +763,16 @@ h1 em:after {
   text-align: center;
 }
 .route-iata {
-  font-size: 22px;
+  font-size: 25px;
   font-weight: 900;
   color: #0f172a;
   letter-spacing: -0.5px;
 }
 .route-city-label {
-  font-size: 13px;
+  font-size: 14.5px;
   font-weight: 700;
   color: #334155;
-  margin-top: 2px;
+  margin-top: 3px;
 }
 .route-center {
   flex: 1;
@@ -779,13 +781,13 @@ h1 em:after {
   position: relative;
 }
 .route-flight-type {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   color: #475569;
   background: white;
   border: 1px solid #cbd5e1;
   border-radius: 12px;
-  padding: 2px 8px;
+  padding: 3px 9px;
   position: relative;
   z-index: 1;
 }
@@ -801,11 +803,11 @@ h1 em:after {
 
 /* 可售出發日期預覽 */
 .dates-preview {
-  font-size: 12px;
+  font-size: 13.5px;
   color: #1e293b;
   background: #f8fafc;
   border: 1px dashed #94a3b8;
-  padding: 8px 12px;
+  padding: 10px 14px;
   border-radius: 8px;
   margin: 10px 0;
   line-height: 1.6;
@@ -825,14 +827,14 @@ h1 em:after {
   align-items: flex-end;
 }
 .foot-info {
-  font-size: 12px;
+  font-size: 13px;
   color: #475569;
   font-weight: 600;
   line-height: 1.5;
 }
 .foot-info b {
   display: block;
-  font-size: 13px;
+  font-size: 14.5px;
   color: #0f172a;
   margin-bottom: 2px;
 }
@@ -840,23 +842,23 @@ h1 em:after {
   text-align: right;
 }
 .fare-currency {
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 800;
   color: #b91c1c;
 }
 .fare-amount {
-  font-size: 26px;
+  font-size: 30px;
   font-weight: 900;
   color: #b91c1c;
   letter-spacing: -1px;
 }
 .fare-suffix {
-  font-size: 11px;
+  font-size: 12.5px;
   color: #64748b;
   font-weight: 700;
 }
 .original-price-del {
-  font-size: 12px;
+  font-size: 13.5px;
   color: #94a3b8;
   text-decoration: line-through;
   font-weight: 700;
@@ -876,7 +878,7 @@ h1 em:after {
   padding-top: 12px;
 }
 .detail-text {
-  font-size: 12px;
+  font-size: 13.5px;
   color: #334155;
   line-height: 1.65;
   margin: 0 0 10px;
@@ -885,7 +887,7 @@ h1 em:after {
 .source-info-bar {
   display: flex;
   justify-content: space-between;
-  font-size: 12px;
+  font-size: 13.5px;
   color: #475569;
   font-weight: 600;
   margin-bottom: 10px;
@@ -901,9 +903,9 @@ h1 em:after {
   border: 1px solid #cbd5e1;
   text-decoration: none;
   font-weight: 800;
-  font-size: 13px;
-  padding: 10px 14px;
-  border-radius: 8px;
+  font-size: 15.5px;
+  padding: 12px 18px;
+  border-radius: 10px;
   transition: all .2s;
 }
 .card-booking-btn:hover {
@@ -915,7 +917,7 @@ h1 em:after {
 .disclaimer {
   text-align: right;
   color: #64748b;
-  font-size: 12px;
+  font-size: 13.5px;
   margin-top: 16px;
   font-weight: 500;
 }
@@ -949,19 +951,19 @@ h1 em:after {
   color: var(--ink);
 }
 .planner-toggle::-webkit-details-marker { display: none; }
-.planner-toggle b { font-size: 15px; font-weight: 800; }
-.planner-toggle span:not(.toggle-icon) { font-size: 13px; color: #475569; font-weight: 600; }
-.toggle-icon { margin-left: auto; color: var(--green); font-size: 20px; font-weight: 800; }
+.planner-toggle b { font-size: 17px; font-weight: 800; }
+.planner-toggle span:not(.toggle-icon) { font-size: 14.5px; color: #475569; font-weight: 600; }
+.toggle-icon { margin-left: auto; color: var(--green); font-size: 22px; font-weight: 800; }
 .planner[open] .planner-toggle { border-bottom: 1px solid #cbd5e1; }
-.planner-body { padding: 18px 22px; }
-.planner-head p { font-size: 13px; color: #334155; margin: 4px 0 0; font-weight: 600; }
+.planner-body { padding: 20px 24px; }
+.planner-head p { font-size: 14.5px; color: #334155; margin: 4px 0 0; font-weight: 600; }
 .planner-badge {
   background: white;
   border: 1px solid #cbd5e1;
   border-radius: 20px;
-  padding: 6px 12px;
+  padding: 6px 14px;
   color: var(--green);
-  font-size: 12px;
+  font-size: 13.5px;
   font-weight: 800;
 }
 .mini-fields {
@@ -976,9 +978,9 @@ h1 em:after {
   background: white;
   border: 1px solid #cbd5e1;
   border-radius: 12px;
-  padding: 14px 18px;
+  padding: 16px 20px;
   margin-top: 14px;
-  font-size: 14px;
+  font-size: 15px;
   line-height: 1.8;
   color: #1e293b;
   font-weight: 600;
@@ -997,13 +999,13 @@ h1 em:after {
   background: white;
   border: 1px solid #cbd5e1;
   border-radius: 16px;
-  padding: 16px 24px;
+  padding: 18px 26px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
   width: 100%;
   max-width: 800px;
 }
 .page-info {
-  font-size: 13px;
+  font-size: 14.5px;
   font-weight: 700;
   color: #334155;
   letter-spacing: .2px;
@@ -1015,7 +1017,7 @@ h1 em:after {
 .page-controls {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   flex-wrap: wrap;
   justify-content: center;
 }
@@ -1025,13 +1027,14 @@ h1 em:after {
   background: #f8fafc;
   color: #1e293b;
   font-family: inherit;
-  font-size: 13px;
+  font-size: 14.5px;
   font-weight: 700;
-  padding: 7px 14px;
+  padding: 8px 16px;
   border-radius: 8px;
   cursor: pointer;
   transition: all .15s ease;
-  min-width: 36px;
+  min-width: 40px;
+  min-height: 40px;
   text-align: center;
 }
 .page-btn:hover:not(:disabled):not(.active) {
@@ -1055,7 +1058,7 @@ h1 em:after {
   background: #f1f5f9;
 }
 .page-btn.page-nav {
-  padding: 7px 12px;
+  padding: 8px 14px;
   font-weight: 800;
   background: white;
 }
@@ -1069,9 +1072,9 @@ h1 em:after {
 /* Footer */
 footer {
   border-top: 1px solid #cbd5e1;
-  padding: 24px 0 36px;
+  padding: 26px 0 40px;
   color: #475569;
-  font-size: 13px;
+  font-size: 14.5px;
   font-weight: 600;
   display: flex;
   justify-content: space-between;
@@ -1135,44 +1138,44 @@ footer {
   }
   .nav a {
     white-space: nowrap;
-    font-size: 13px;
+    font-size: 15px;
   }
   h1 {
-    font-size: clamp(28px, 6.5vw, 40px);
+    font-size: clamp(30px, 6.5vw, 42px);
     letter-spacing: -1px;
   }
   .lead {
-    font-size: 14px;
+    font-size: 16px;
     line-height: 1.75;
   }
   .hero-sources-banner {
     padding: 10px 12px;
   }
   .source-chip {
-    font-size: 11.5px;
-    padding: 4px 8px;
+    font-size: 13px;
+    padding: 5px 10px;
   }
   .zero-promos-collapsible .planner-toggle {
-    padding: 12px 14px;
+    padding: 14px 16px;
     flex-wrap: wrap;
     gap: 8px;
   }
   .zero-promos-collapsible .planner-toggle b {
-    font-size: 14px;
+    font-size: 16px;
     width: 100%;
   }
   .zero-promos-collapsible .planner-toggle span:not(.toggle-icon) {
-    font-size: 12px;
+    font-size: 14px;
   }
   .promos-grid {
     grid-template-columns: 1fr;
     gap: 12px;
   }
   .promo-card {
-    padding: 16px;
+    padding: 18px;
   }
   .search {
-    padding: 16px 14px;
+    padding: 18px 16px;
   }
   .search-title {
     flex-direction: column;
@@ -1181,16 +1184,17 @@ footer {
   .search-guide {
     flex-direction: column;
     gap: 4px;
-    padding: 10px 12px;
-    font-size: 12px;
+    padding: 12px 14px;
+    font-size: 14px;
   }
   .fields {
     grid-template-columns: 1fr;
-    gap: 8px;
+    gap: 10px;
   }
   .fields .go {
     grid-column: 1;
-    min-height: 46px;
+    min-height: 50px;
+    font-size: 17px;
     width: 100%;
   }
   .search-agency-pills {
@@ -1198,54 +1202,57 @@ footer {
     padding-top: 12px;
   }
   .search-agency-pills .pills {
-    gap: 6px;
+    gap: 8px;
   }
   .pill {
-    padding: 7px 12px;
-    font-size: 12px;
+    padding: 9px 14px;
+    font-size: 14px;
   }
   .section {
     padding: 16px 0 32px;
   }
   .section .head h2 {
-    font-size: 22px;
+    font-size: 25px;
   }
   .cards {
     grid-template-columns: 1fr;
-    gap: 14px;
+    gap: 16px;
   }
   .card {
-    padding: 16px;
+    padding: 18px;
   }
   .card-header-dest .dest-city-large {
-    font-size: 24px;
+    font-size: 26px;
   }
   .route-box {
-    padding: 10px 12px;
+    padding: 12px 14px;
     margin: 10px 0;
   }
   .route-iata {
-    font-size: 20px;
+    font-size: 22px;
   }
   .fare-amount {
-    font-size: 24px;
+    font-size: 28px;
   }
   .card-booking-btn {
-    padding: 12px 14px;
-    font-size: 13.5px;
-    min-height: 44px;
+    padding: 13px 16px;
+    font-size: 15.5px;
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
   .pagination-inner {
-    padding: 12px 14px;
+    padding: 14px 16px;
   }
   .page-controls {
-    gap: 4px;
+    gap: 6px;
   }
   .page-btn {
-    min-width: 34px;
-    height: 34px;
-    padding: 0 8px;
-    font-size: 12px;
+    min-width: 38px;
+    height: 38px;
+    padding: 0 10px;
+    font-size: 14px;
   }
   .mini-fields {
     grid-template-columns: 1fr;
@@ -1263,22 +1270,22 @@ footer {
     padding: 0 12px;
   }
   .logo {
-    font-size: 18px;
+    font-size: 20px;
   }
   .mark {
-    padding: 4px 8px;
-    font-size: 16px;
+    padding: 5px 9px;
+    font-size: 18px;
   }
   .login {
-    padding: 6px 12px;
-    font-size: 12px;
+    padding: 7px 14px;
+    font-size: 13.5px;
   }
   .page-btn.page-nav:first-child,
   .page-btn.page-nav:last-child {
     display: none; /* 小手機隱藏首頁/末頁按鈕，保留上一頁與下一頁，防止橫向超出 */
   }
   .flight-meta-row {
-    font-size: 12px;
+    font-size: 13.5px;
   }
   .card-foot-pricing {
     flex-direction: column;
