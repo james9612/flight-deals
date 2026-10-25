@@ -1,6 +1,6 @@
 {
   "source": "各航空公司官方促銷專區與 0 元機票特報",
-  "collectedAt": "2026-10-24T18:45:44.504Z",
+  "collectedAt": "2026-10-25T00:21:24.994Z",
   "count": 5,
   "promos": [
     {
@@ -53,8 +53,8 @@
       "promoTips": "每週三凌晨準時開搶，富國島免簽證航線搶購最熱門，建議先備妥護照中英文姓名與信用卡資料。",
       "sourceUrl": "https://www.vietjetair.com/zh-tw",
       "status": "active",
-      "checked": "2026-10-24",
-      "collectedAt": "2026-10-24T18:45:44.504Z"
+      "checked": "2026-10-25",
+      "collectedAt": "2026-10-25T00:21:24.994Z"
     },
     {
       "id": "airasia-big-sale-zero",
@@ -106,8 +106,8 @@
       "promoTips": "AirAsia 會員通常享有提前一日優先購票權；長程航點可利用吉隆坡 Fly-Thru 轉機跳轉澳洲或馬爾地夫。",
       "sourceUrl": "https://www.airasia.com/zh/tw",
       "status": "upcoming",
-      "checked": "2026-10-24",
-      "collectedAt": "2026-10-24T18:45:44.504Z"
+      "checked": "2026-10-25",
+      "collectedAt": "2026-10-25T00:21:24.994Z"
     },
     {
       "id": "tigerair-payday-sale",
@@ -169,8 +169,8 @@
       "promoTips": "開賣前 10 分鐘先進官網排隊等候室，勿頻繁刷新頁面；建議避開週五去週日回等熱門時段更容易刷出超低價。",
       "sourceUrl": "https://www.tigerairtw.com/zh-TW/index",
       "status": "active",
-      "checked": "2026-10-24",
-      "collectedAt": "2026-10-24T18:45:44.504Z"
+      "checked": "2026-10-25",
+      "collectedAt": "2026-10-25T00:21:24.994Z"
     },
     {
       "id": "peach-special-sale",
@@ -222,8 +222,8 @@
       "promoTips": "樂桃不另收燃油費是一大優勢；深夜紅眼航班（如羽田、大阪）促銷釋票量最多，適合安排極致特攻行程。",
       "sourceUrl": "https://www.flypeach.com/tw/um/specials/sale/sale",
       "status": "active",
-      "checked": "2026-10-24",
-      "collectedAt": "2026-10-24T18:45:44.504Z"
+      "checked": "2026-10-25",
+      "collectedAt": "2026-10-25T00:21:24.994Z"
     },
     {
       "id": "scoot-got-to-go",
@@ -265,8 +265,8 @@
       "promoTips": "台北飛東京與首爾為第五航權執飛，常有波音 787 夢幻客機執飛，空間更舒適。",
       "sourceUrl": "https://www.flyscoot.com/zhtw",
       "status": "active",
-      "checked": "2026-10-24",
-      "collectedAt": "2026-10-24T18:45:44.504Z"
+      "checked": "2026-10-25",
+      "collectedAt": "2026-10-25T00:21:24.994Z"
     }
   ]
 }

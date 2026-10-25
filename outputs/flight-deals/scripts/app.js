@@ -302,6 +302,55 @@ function renderDeals() {
   }
 }
 
+function populateDestinationDropdown() {
+  const destSelect = document.getElementById('dest');
+  if (!destSelect || !deals.length) return;
+
+  const currentVal = destSelect.value;
+  const cityCounts = {};
+  for (const deal of deals) {
+    if (deal.city && deal.city !== '精選航點' && deal.city !== '其他城市') {
+      cityCounts[deal.city] = (cityCounts[deal.city] || 0) + 1;
+    }
+  }
+
+  const sortedCities = Object.entries(cityCounts).sort((a, b) => b[1] - a[1]);
+
+  let html = `<option value="">所有目的地（全部航點共 ${deals.length} 筆）</option>`;
+  for (const [city, count] of sortedCities) {
+    const selected = city === currentVal ? 'selected' : '';
+    html += `<option value="${city}" ${selected}>${city}（${count} 筆機票）</option>`;
+  }
+
+  destSelect.innerHTML = html;
+  if (currentVal && cityCounts[currentVal]) {
+    destSelect.value = currentVal;
+  }
+}
+
+function populateOriginDropdown() {
+  const originSelect = document.getElementById('origin');
+  if (!originSelect || !deals.length) return;
+
+  const currentVal = originSelect.value;
+  const originCounts = {};
+  for (const deal of deals) {
+    const from = deal.from || '台北';
+    originCounts[from] = (originCounts[from] || 0) + 1;
+  }
+
+  let html = `<option value="">不限出發地（全部共 ${deals.length} 筆）</option>`;
+  for (const [orig, count] of Object.entries(originCounts)) {
+    const selected = orig === currentVal ? 'selected' : '';
+    html += `<option value="${orig}" ${selected}>${orig} 出發（${count} 筆）</option>`;
+  }
+
+  originSelect.innerHTML = html;
+  if (currentVal && originCounts[currentVal]) {
+    originSelect.value = currentVal;
+  }
+}
+
 async function loadData() {
   try {
     const [dealsRes, promosRes] = await Promise.all([
@@ -316,6 +365,8 @@ async function loadData() {
       promos = await promosRes.json();
     }
 
+    populateDestinationDropdown();
+    populateOriginDropdown();
     renderPromos();
     renderDeals();
   } catch (err) {

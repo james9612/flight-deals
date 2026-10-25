@@ -29,17 +29,17 @@ async function safeReadJson(fileUrl, fallback = []) {
 const countryByDestination = {
   東京: 'japan', 成田: 'japan', 羽田: 'japan', 大阪: 'japan', 關西: 'japan',
   沖繩: 'japan', 名古屋: 'japan', 福岡: 'japan', 石垣島: 'japan', 函館: 'japan', 札幌: 'japan', 北海道: 'japan',
-  高松: 'japan', 小松: 'japan', 高知: 'japan',
-  首爾: 'korea', 釜山: 'korea', 仁川: 'korea',
-  曼谷: 'asia', 香港: 'asia', 新加坡: 'asia', 澳門: 'asia', 清邁: 'asia', 富國島: 'asia'
+  高松: 'japan', 小松: 'japan', 高知: 'japan', 福島: 'japan',
+  首爾: 'korea', 釜山: 'korea', 仁川: 'korea', 濟州: 'korea', 大邱: 'korea', 清州: 'korea',
+  曼谷: 'asia', 香港: 'asia', 新加坡: 'asia', 澳門: 'asia', 清邁: 'asia', 富國島: 'asia', 峴港: 'asia'
 };
 
 const codeByDestination = {
   東京: 'TYO', 成田: 'NRT', 羽田: 'HND', 大阪: 'OSA', 關西: 'KIX',
   沖繩: 'OKA', 名古屋: 'NGO', 福岡: 'FUK', 石垣島: 'ISG', 函館: 'HKD', 札幌: 'CTS', 北海道: 'CTS',
-  高松: 'TAK', 小松: 'KMQ', 高知: 'KCZ',
-  首爾: 'ICN', 釜山: 'PUS', 仁川: 'ICN',
-  曼谷: 'BKK', 香港: 'HKG', 新加坡: 'SIN', 澳門: 'MFM', 清邁: 'CNX', 富國島: 'PQC'
+  高松: 'TAK', 小松: 'KMQ', 高知: 'KCZ', 福島: 'FKS',
+  首爾: 'ICN', 釜山: 'PUS', 仁川: 'ICN', 濟州: 'CJU', 大邱: 'TAE', 清州: 'CJJ',
+  曼谷: 'BKK', 香港: 'HKG', 新加坡: 'SIN', 澳門: 'MFM', 清邁: 'CNX', 富國島: 'PQC', 峴港: 'DAD'
 };
 
 const daysBetween = (depart, returnDate) => {
@@ -153,7 +153,8 @@ export async function mergeCollected() {
       tag: deal.tag || '旅行社計畫票',
       agency: deal.agency || '旅行社',
       kind: 'plan',
-      detail: deal.detail || `${deal.title || ''}｜含稅金與行李，固定去回程不可改期`
+      detail: deal.detail || `${deal.title || ''}｜含稅金與行李，固定去回程不可改期`,
+      availableDates: deal.availableDates || ''
     };
     byId.set(normalized.id, normalized);
   }
