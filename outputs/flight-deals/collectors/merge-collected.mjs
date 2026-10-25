@@ -89,7 +89,7 @@ export async function mergeCollected() {
   const directDeals = [
     ...lionDeals.map(d => ({ ...d, agency: '雄獅旅遊', tag: '雄獅旅遊計畫票' })),
     ...colatourDeals.map(d => ({ ...d, agency: '可樂旅遊', tag: '可樂旅遊計畫票' })),
-    ...ezflyDeals.map(d => ({ ...d, agency: '易飛網', tag: '易飛網清艙快閃' })),
+    ...ezflyDeals.map(d => ({ ...d, agency: '易飛網', tag: d.tag || '易飛網神秘機票' })),
     ...kkdayDeals.map(d => ({ ...d, agency: 'KKday', tag: 'KKday清艙特惠' })),
     ...ehsDeals.map(d => ({ ...d, agency: '東森旅遊', tag: '東森清艙特惠' })),
     ...settourDeals.map(d => ({ ...d, agency: '東南旅遊', tag: '東南計畫旅遊票' }))
@@ -214,6 +214,7 @@ export async function mergeCollected() {
       kind: 'plan',
       detail: deal.detail || `${deal.title || ''}｜含稅金與行李，固定去回程不可改期`,
       availableDates: deal.availableDates || '',
+      flightTime: deal.flightTime || (deal.detail && deal.detail.match(/早去晚回|早去午回|午去晚回|早去早回|午去午回|晚去晚回/) ? deal.detail.match(/早去晚回|早去午回|午去晚回|早去早回|午去午回|晚去晚回/)[0] : '') || '',
       originalPrice: Number(deal.originalPrice) || 0,
       priceSaved: Number(deal.priceSaved) || 0,
       comparedAgency: deal.comparedAgency || ''

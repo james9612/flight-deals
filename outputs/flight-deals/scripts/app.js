@@ -245,6 +245,8 @@ function renderDeals() {
       btnText = `前往 東南旅遊官方機位預訂 ↗`;
     } else if ((d.agency || '').includes('東森')) {
       btnText = `前往 東森旅遊官方商品頁 ↗`;
+    } else if ((d.agency || '').includes('易飛網')) {
+      btnText = `前往 易飛網商品頁（直達本張票訂購）↗`;
     }
 
     let tagText = d.tag;
@@ -257,6 +259,23 @@ function renderDeals() {
       else if (d.sourceUrl.includes('gounitravel.com')) tagText = 'FunTime彙整・旅天下開票';
       else if (d.sourceUrl.includes('kkday.com')) tagText = 'FunTime彙整・KKday開票';
     }
+
+    // Extract flight schedule/times if available
+    let flightTime = d.flightTime || '';
+    if (!flightTime) {
+      const text = `${d.title || ''} ${d.detail || ''}`;
+      const timeKeywords = ['早去晚回', '早去午回', '午去晚回', '早去早回', '晚去晚回', '午去午回'];
+      for (const kw of timeKeywords) {
+        if (text.includes(kw)) {
+          flightTime = kw;
+          break;
+        }
+      }
+    }
+    const flightTimeHtml = flightTime ? `
+      <div class="flight-time-row">
+        <span class="flight-time-badge">🕒 班機時間：<b>${flightTime}</b></span>
+      </div>` : '';
 
     return `
       <article class="card">
@@ -279,6 +298,8 @@ function renderDeals() {
             <span>·</span>
             <span class="airline-highlight">✈ ${d.airline || d.air}</span>
           </div>
+
+          ${flightTimeHtml}
 
           <div><span class="baggage-pill">🧳 ${d.baggage || '含來回託運行李'}</span></div>
 
