@@ -16,48 +16,19 @@ const countryMap = {
   曼谷: 'asia', 清邁: 'asia', 富國島: 'asia', 峴港: 'asia', 新加坡: 'asia', 吉隆坡: 'asia'
 };
 
-const routeFlightTimes = {
-  // 台北（桃園 TPE）出發
-  '台北-長榮航空-福岡': '去程 BR106 08:10-11:15／回程 BR105 12:15-13:50（早去午回）',
-  '台北-中華航空-廣島': '去程 CI112 17:20-20:40／回程 CI113 09:00-10:50（晚去早回）',
-  '台北-中華航空-高松': '去程 CI178 14:30-18:00／回程 CI179 19:00-21:00（午去晚回）',
-  '台北-酷航-東京': '去程 TR898 06:40-10:45／回程 TR899 11:45-15:10（早去午回）',
-  '台北-酷航-北海道': '去程 TR892 11:30-16:15／回程 TR893 17:35-21:05（午去晚回）',
-  '台北-台灣虎航-福島': '去程 IT266 08:40-12:30／回程 IT267 13:20-16:20（早去午回）',
-  '台北-台灣虎航-高知': '去程 IT250 08:40-12:00／回程 IT251 13:00-15:35（早去午回）',
-  '台北-台灣虎航-石垣島': '去程 IT736 06:35-08:35／回程 IT737 09:25-09:35（早去早回・航程約50分）',
-  '台北-台灣虎航-大分': '去程 IT274 07:30-10:55／回程 IT275 11:55-13:40（早去午回）',
-  '台北-台灣虎航-佐賀大分': '去程台北-佐賀 IT246 07:00-10:25／回程大分-台北 IT275 11:55-13:40（雙點進出）',
-  '台北-台灣虎航-大分佐賀': '去程台北-大分 IT274 07:30-10:55／回程佐賀-台北 IT247 11:25-13:10（雙點進出）',
-  '台北-台灣虎航-岡山': '去程 IT214 13:30-17:00／回程 IT215 17:55-19:55（午去晚回）',
-  '台北-樂桃航空-東京': '去程 MM620 02:30-06:45／回程 MM627 22:00-00:45（紅眼早去晚回）',
-  '台北-樂桃航空-大阪': '去程 MM022 09:35-13:05／回程 MM027 16:00-18:15（早去晚回）',
-  '台北-樂桃航空-沖繩': '去程 MM924 09:30-12:15／回程 MM927 16:40-17:20（早去晚回）',
-  '台北-亞洲航空-沖繩': '去程 FD230 13:30-16:00／回程 FD231 16:55-17:35（午去晚回）',
-  '台北-亞洲航空-北海道': '去程 FD242 07:05-12:05／回程 FD243 14:40-18:00（早去午回）',
-
-  // 高雄（小港 KHH）出發（真實核實航班，不再誤植台北班機）
-  '高雄-中華航空-高松': '去程 CI7760 06:35-10:30／回程 CI7761 11:50-13:55（早去午回・華航A321neo客機）',
-  '高雄-泰國獅航-北海道': '去程 SL392 10:50-16:00／回程 SL393 17:00-21:00（午去晚回・直飛札幌）',
-  '高雄-台灣虎航-北海道': '去程 IT260 08:00-12:55／回程 IT261 13:55-18:05（早去午回・直飛札幌）',
-  '高雄-台灣虎航-岡山': '去程 IT262 12:40-16:30／回程 IT263 17:30-20:00（午去晚回）',
-  '高雄-亞洲航空-大阪': '去程 AK170 08:30-12:40／回程 AK171 13:40-16:30（早去午回・直飛關西）'
-};
-
-function lookupFlightTime(from, airline, city, rawDesc = '') {
-  if (rawDesc.includes('佐賀大分')) {
-    return routeFlightTimes[`${from}-${airline}-佐賀大分`] || '去程台北-佐賀 IT246／回程大分-台北 IT275（雙點進出）';
-  }
-  if (rawDesc.includes('大分佐賀')) {
-    return routeFlightTimes[`${from}-${airline}-大分佐賀`] || '去程台北-大分 IT274／回程佐賀-台北 IT247（雙點進出）';
-  }
-  const key = `${from}-${airline}-${city}`;
-  if (routeFlightTimes[key]) return routeFlightTimes[key];
-
-  const timeKeywords = ['早去晚回', '早去午回', '午去晚回', '早去早回', '晚去晚回', '午去午回'];
+/**
+ * 擷取班機時間：嚴格原則，只有在原文確實有提供時才顯示；若貼文未提及，一律為空字串（不無中生有）
+ * @param {string} rawText 原始文字
+ * @returns {string} 班機時間或空字串
+ */
+function extractFlightTimeFromText(rawText = '') {
+  const timeKeywords = ['早去晚回', '早去午回', '午去晚回', '早去早回', '晚去晚回', '午去午回', '紅眼早去晚回', '晚去早回'];
   for (const kw of timeKeywords) {
-    if (rawDesc.includes(kw)) return kw;
+    if (rawText.includes(kw)) return kw;
   }
+  const flightMatch = rawText.match(/(?:去程\s*[A-Z0-9\s:／-]+回程\s*[A-Z0-9\s:／-]+)/);
+  if (flightMatch) return flightMatch[0].trim();
+
   return '';
 }
 
@@ -129,7 +100,7 @@ export function parseSocialDeals(rawText, sourceUrl = 'https://line.me/R/ti/p/%4
         retObj.setDate(retObj.getDate() + (activeDays - 1));
         const returnDate = retObj.toISOString().slice(0, 10);
 
-        const flightTime = lookupFlightTime(blockFrom, blockAirline, blockCity, line);
+        const flightTime = extractFlightTimeFromText(line);
 
         results.push({
           id: `goflytrip-${cityCodeMap[blockCity] || 'INT'}-${m}${d}-${activePrice}-${Math.random().toString(36).slice(2, 5)}`,
@@ -196,7 +167,7 @@ export function parseSocialDeals(rawText, sourceUrl = 'https://line.me/R/ti/p/%4
       else if (desc.includes('泰亞航') || desc.includes('亞航')) airline = '亞洲航空';
       else if (desc.includes('星宇')) airline = '星宇航空';
 
-      const flightTime = lookupFlightTime(from, airline, city, desc);
+      const flightTime = extractFlightTimeFromText(desc);
 
       const dateParts = datesStr.split(/[、,]/);
       for (const dPart of dateParts) {
