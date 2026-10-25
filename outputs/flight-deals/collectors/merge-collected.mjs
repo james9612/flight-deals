@@ -73,42 +73,88 @@ export async function mergeCollected() {
 
   console.log(`讀取各來源筆數：雄獅 ${lionDeals.length} 筆，飛遊網 ${flytourDeals.length} 筆，可樂 ${colatourDeals.length} 筆，易飛網 ${ezflyDeals.length} 筆，KKday ${kkdayDeals.length} 筆，東森旅遊 ${ehsDeals.length} 筆，東南旅遊 ${settourDeals.length} 筆，FunTime ${funtimeDeals.length} 筆，航空公司特報 ${zeroPromos.length} 筆`);
 
+  // 智能比價與去重邏輯：FunTime 會先比對其他旅行社已有的商品
+  // 1. 若 FunTime 價格更便宜：保留 FunTime，標註現省金額，並剔除原旅行社較貴的重複卡片
+  // 2. 若 FunTime 價格相同或較貴：視為無價格優勢的重複項目，直接過濾掉 FunTime
+  // 3. 若為其他旅行社沒爬到的獨家票源：保留展示
+  function extractProductKey(url) {
+    if (!url) return '';
+    const normMatch = url.match(/NormGroupID=([a-zA-Z0-9-]+)/i);
+    if (normMatch) return 'norm_' + normMatch[1];
+    const kkMatch = url.match(/product\/(\d+)/i);
+    if (kkMatch) return 'kk_' + kkMatch[1];
+    return '';
+  }
+
+  const directDeals = [
+    ...lionDeals.map(d => ({ ...d, agency: '雄獅旅遊', tag: '雄獅旅遊計畫票' })),
+    ...colatourDeals.map(d => ({ ...d, agency: '可樂旅遊', tag: '可樂旅遊計畫票' })),
+    ...ezflyDeals.map(d => ({ ...d, agency: '易飛網', tag: '易飛網清艙快閃' })),
+    ...kkdayDeals.map(d => ({ ...d, agency: 'KKday', tag: 'KKday清艙特惠' })),
+    ...ehsDeals.map(d => ({ ...d, agency: '東森旅遊', tag: '東森清艙特惠' })),
+    ...settourDeals.map(d => ({ ...d, agency: '東南旅遊', tag: '東南計畫旅遊票' }))
+  ];
+
+  const excludedDirectIds = new Set();
+  const filteredFuntimeDeals = [];
+  let cheaperCount = 0;
+  let discardedCount = 0;
+  let uniqueCount = 0;
+
+  for (const f of funtimeDeals) {
+    const fKey = extractProductKey(f.sourceUrl);
+    const fTitle = (f.title || '').trim();
+
+    let matched = null;
+    for (const d of directDeals) {
+      const dKey = extractProductKey(d.sourceUrl);
+      if (fKey && dKey && fKey === dKey) {
+        matched = d;
+        break;
+      }
+      const dTitle = (d.title || '').trim();
+      if (fTitle && dTitle && (fTitle === dTitle || (fTitle.length > 8 && dTitle.length > 8 && (fTitle.includes(dTitle) || dTitle.includes(fTitle))))) {
+        matched = d;
+        break;
+      }
+    }
+
+    if (matched) {
+      if (f.price < matched.price) {
+        // FunTime 較便宜！保留 FunTime 並標記現省金額，剔除原旅行社較貴項目
+        cheaperCount++;
+        excludedDirectIds.add(matched.id);
+        filteredFuntimeDeals.push({
+          ...f,
+          originalPrice: matched.price,
+          priceSaved: matched.price - f.price,
+          comparedAgency: matched.agency,
+          tag: `🔥 比價現省 $${(matched.price - f.price).toLocaleString()}`,
+          agency: 'FunTime'
+        });
+      } else {
+        // FunTime 同價或較貴，不顯示該重複項
+        discardedCount++;
+      }
+    } else {
+      // 獨家特惠，保留展示
+      uniqueCount++;
+      filteredFuntimeDeals.push({
+        ...f,
+        agency: 'FunTime',
+        tag: 'FunTime計畫機票'
+      });
+    }
+  }
+
+  console.log(`[FunTime 智能比價] 比原旅行社更便宜: ${cheaperCount} 筆，同價或較貴自動剔除: ${discardedCount} 筆，獨家特惠: ${uniqueCount} 筆`);
+
   const allRawDeals = [
-    ...lionDeals.map(d => ({
-      ...d,
-      agency: '雄獅旅遊',
-      tag: '雄獅旅遊計畫票'
-    })),
-    ...colatourDeals.map(d => ({
-      ...d,
-      agency: '可樂旅遊',
-      tag: '可樂旅遊計畫票'
-    })),
-    ...ezflyDeals.map(d => ({
-      ...d,
-      agency: '易飛網',
-      tag: '易飛網清艙快閃'
-    })),
-    ...kkdayDeals.map(d => ({
-      ...d,
-      agency: 'KKday',
-      tag: 'KKday清艙特惠'
-    })),
-    ...ehsDeals.map(d => ({
-      ...d,
-      agency: '東森旅遊',
-      tag: '東森清艙特惠'
-    })),
-    ...settourDeals.map(d => ({
-      ...d,
-      agency: '東南旅遊',
-      tag: '東南計畫旅遊票'
-    })),
-    ...funtimeDeals.map(d => ({
-      ...d,
-      agency: 'FunTime',
-      tag: 'FunTime計畫機票'
-    })),
+    // 加入未被便宜 FunTime 替換的原旅行社機票
+    ...directDeals.filter(d => !excludedDirectIds.has(d.id)),
+    // 加入經比價篩選後的 FunTime 機票
+    ...filteredFuntimeDeals,
+    // 加入飛遊網清艙日曆機票
     ...flytourDeals.map(d => {
       const city = d.city || d.destination || '精選航點';
       const from = d.from || (d.origin === '桃園' ? '台北' : (d.origin || '台北'));
@@ -167,7 +213,10 @@ export async function mergeCollected() {
       agency: deal.agency || '旅行社',
       kind: 'plan',
       detail: deal.detail || `${deal.title || ''}｜含稅金與行李，固定去回程不可改期`,
-      availableDates: deal.availableDates || ''
+      availableDates: deal.availableDates || '',
+      originalPrice: Number(deal.originalPrice) || 0,
+      priceSaved: Number(deal.priceSaved) || 0,
+      comparedAgency: deal.comparedAgency || ''
     };
     byId.set(normalized.id, normalized);
   }

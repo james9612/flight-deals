@@ -215,7 +215,9 @@ function renderDeals() {
     if (d.sourceUrl && d.sourceUrl.includes('line.me')) {
       btnText = `前往 飛遊網官方 LINE 即時開票 ↗`;
     } else if ((d.agency || '').includes('FunTime')) {
-      if (d.sourceUrl && d.sourceUrl.includes('liontravel.com')) {
+      if (d.priceSaved > 0) {
+        btnText = `前往 ${d.comparedAgency || '原廠'} 預訂（比價現省 $${d.priceSaved.toLocaleString()}）↗`;
+      } else if (d.sourceUrl && d.sourceUrl.includes('liontravel.com')) {
         btnText = `前往 雄獅旅遊 預訂（FunTime特惠）↗`;
       } else if (d.sourceUrl && d.sourceUrl.includes('gounitravel.com')) {
         btnText = `前往 旅天下 預訂（FunTime特惠）↗`;
@@ -231,8 +233,13 @@ function renderDeals() {
     } else if ((d.agency || '').includes('東森')) {
       btnText = `前往 東森旅遊官方商品頁 ↗`;
     }
+
     let tagText = d.tag;
-    if ((d.agency || '').includes('FunTime') && d.sourceUrl) {
+    let tagClass = 'tag';
+    if (d.priceSaved > 0) {
+      tagText = `🔥 比價現省 $${d.priceSaved.toLocaleString()}`;
+      tagClass = 'tag tag-savings';
+    } else if ((d.agency || '').includes('FunTime') && d.sourceUrl) {
       if (d.sourceUrl.includes('liontravel.com')) tagText = 'FunTime彙整・雄獅開票';
       else if (d.sourceUrl.includes('gounitravel.com')) tagText = 'FunTime彙整・旅天下開票';
       else if (d.sourceUrl.includes('kkday.com')) tagText = 'FunTime彙整・KKday開票';
@@ -244,7 +251,7 @@ function renderDeals() {
           <div class="cardtop">
             <div>
               <span class="agency-badge ${agencyClass}">${d.agency || d.source}</span>
-              <span class="tag">${tagText}</span>
+              <span class="${tagClass}">${tagText}</span>
             </div>
             <button class="heart" onclick="event.stopPropagation();this.textContent=this.textContent==='♡'?'♥':'♡'">♡</button>
           </div>
@@ -287,6 +294,7 @@ function renderDeals() {
               含稅金與行李額度
             </div>
             <div class="fare-price-box">
+              ${d.priceSaved ? `<div class="original-price-del">${d.comparedAgency || '原廠'} NT$ ${(d.originalPrice || 0).toLocaleString()}</div>` : ''}
               <span class="fare-currency">NT$</span>
               <span class="fare-amount">${d.price.toLocaleString()}</span>
               <span class="fare-suffix">起</span>
