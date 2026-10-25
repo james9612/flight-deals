@@ -102,9 +102,65 @@ function parsePlynetEvent(event) {
   };
 }
 
+const modalCacheFile = new URL('plynet-modal-cache.json', outputDir);
+
+function parseModalHtml(modalHtml) {
+  const boxIdx = modalHtml.indexOf('class="modal-box');
+  const formIdx = modalHtml.indexOf('class="lg:hidden');
+  if (boxIdx === -1 || formIdx === -1) return null;
+
+  const clean = modalHtml.slice(boxIdx, formIdx)
+    .replace(/<!--[\s\S]*?-->/g, '')
+    .replace(/<[^>]+>/g, '')
+    .replace(/&nbsp;/g, ' ')
+    .split('\n')
+    .map(l => l.trim())
+    .filter(Boolean);
+
+  let outFlight = '';
+  let inFlight = '';
+  let baggage = '';
+  let productCode = '';
+
+  for (let i = 0; i < clean.length; i++) {
+    const line = clean[i];
+    if (line.includes('商品代碼：')) {
+      productCode = clean[i + 1] || '';
+    }
+    if (line.startsWith('去程：') || line.startsWith('去程:')) {
+      outFlight = line.replace(/^去程[：:]\s*/, '').trim() || clean[i + 1] || '';
+    }
+    if (line.startsWith('回程：') || line.startsWith('回程:')) {
+      inFlight = line.replace(/^回程[：:]\s*/, '').trim() || clean[i + 1] || '';
+    }
+    if (line.includes('托運行李') || line.includes('託運行李')) {
+      if (!baggage && !line.includes('手提行李')) baggage = line;
+    }
+  }
+
+  let flightTime = '';
+  if (outFlight && inFlight) {
+    flightTime = `去程 ${outFlight}／回程 ${inFlight}`;
+  } else if (outFlight) {
+    flightTime = `去程 ${outFlight}`;
+  }
+
+  return {
+    flightTime,
+    baggage: baggage || '含來回託運行李（依清艙商品規格）',
+    productCode
+  };
+}
+
 export async function collectPlynet() {
   await mkdir(outputDir, { recursive: true });
   let collected = [];
+
+  // 讀取既有詳細彈窗快取
+  let modalCache = {};
+  try {
+    modalCache = JSON.parse(await readFile(modalCacheFile, 'utf8'));
+  } catch {}
 
   try {
     // 1. 首頁取得 CSRF token, Session cookie 與 Livewire snapshot
@@ -132,6 +188,10 @@ export async function collectPlynet() {
     const snapshotMatch = html.match(/wire:snapshot=\"([^\"]+)\"[^>]*wire:name=\"on-sale\.ticket-calendar\"/i);
     if (!snapshotMatch) throw new Error('未找到 on-sale.ticket-calendar snapshot');
     const snapshotStr = snapshotMatch[1].replaceAll('&quot;', '"');
+
+    const modalMatch = html.match(/wire:snapshot=\"([^\"]+)\"[^>]*wire:name=\"on-sale\.ticket-modal\"/i)
+      || html.match(/wire:name=\"on-sale\.ticket-modal\"[^>]*wire:snapshot=\"([^\"]+)\"/i);
+    const modalSnapshot = modalMatch ? (modalMatch[1] || modalMatch[2]).replaceAll('&quot;', '"') : null;
 
     // 2. 呼叫 Livewire getEvents API 抓取近三個月完整清艙日曆
     const updateUrl = `https://www.plynet.com.tw/${prefix}/update`;
@@ -175,13 +235,71 @@ export async function collectPlynet() {
         // filter valid clearance tickets with price > 0
         const validEvents = rawEvents.filter(e => e.id && (e.extendedProps?.listTitle || e.title));
         collected = validEvents.map(parsePlynetEvent);
+
+        // 3. 自動爬取未快取的機票彈窗詳細時刻與行李規格
+        if (modalSnapshot) {
+          const pendingTickets = collected.filter(d => d.ticketId && !modalCache[d.ticketId]);
+          if (pendingTickets.length > 0) {
+            console.log(`[飛遊網] 發現 ${pendingTickets.length} 筆新機票，開始抓取官方彈窗詳細資訊...`);
+            const CONCURRENCY = 8;
+            for (let i = 0; i < pendingTickets.length; i += CONCURRENCY) {
+              const chunk = pendingTickets.slice(i, i + CONCURRENCY);
+              await Promise.all(chunk.map(async (deal) => {
+                try {
+                  const mRes = await fetch(updateUrl, {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json',
+                      'X-Livewire': 'true',
+                      'X-CSRF-TOKEN': csrfToken,
+                      'X-XSRF-TOKEN': xsrfToken,
+                      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+                      'Cookie': cookieHeader,
+                      'Referer': sourceUrl
+                    },
+                    body: JSON.stringify({
+                      _token: csrfToken,
+                      components: [
+                        {
+                          snapshot: modalSnapshot,
+                          updates: { showTicketId: deal.ticketId },
+                          calls: []
+                        }
+                      ]
+                    })
+                  });
+                  if (mRes.ok) {
+                    const mJson = await mRes.json();
+                    const mHtml = mJson.components?.[0]?.effects?.html || '';
+                    const detail = parseModalHtml(mHtml);
+                    modalCache[deal.ticketId] = detail || { flightTime: '', baggage: '', productCode: '' };
+                  }
+                } catch {}
+              }));
+              await new Promise(r => setTimeout(r, 50));
+            }
+            // 寫回快取檔
+            await writeFile(modalCacheFile, JSON.stringify(modalCache, null, 2), 'utf8');
+            console.log(`[飛遊網] 詳細航班彈窗快取已更新！目前快取數: ${Object.keys(modalCache).length}`);
+          }
+        }
+
+        // 4. 將官方詳細資訊回填至每一筆機票
+        for (const deal of collected) {
+          const info = modalCache[deal.ticketId];
+          if (info) {
+            if (info.flightTime) deal.flightTime = info.flightTime;
+            if (info.baggage) deal.baggage = info.baggage;
+            if (info.productCode) deal.productCode = info.productCode;
+          }
+        }
       }
     }
   } catch (err) {
     console.warn('[飛遊網] Livewire API 讀取異常，嘗試讀取快取:', err.message);
   }
 
-  // 3. 快取防呆備援
+  // 5. 快取防呆備援
   if (!collected.length) {
     try {
       const cached = JSON.parse(await readFile(outputFile, 'utf8'));
@@ -207,3 +325,4 @@ export async function collectPlynet() {
 if (process.argv[1] === import.meta.filename) {
   collectPlynet();
 }
+
