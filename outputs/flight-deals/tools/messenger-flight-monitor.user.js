@@ -1,11 +1,11 @@
 // ==UserScript==
-// @name         ✈️ 飛行便宜・Messenger 清艙即時監聽外掛
+// @name         ✈️ 飛行便宜・Facebook 粉專貼文 ＆ Messenger 清艙即時監聽外掛
 // @namespace    https://james9612.github.io/flight-deals/
-// @version      1.0.0
-// @description  自動即時監聽 Facebook Messenger 廣播專區（如飛趣旅遊）之清艙機票訊息，並一鍵/自動同步至「飛行便宜」比價網！
+// @version      1.1.0
+// @description  自動即時監聽 Facebook 粉絲專頁貼文與 Messenger 廣播專區（如飛趣旅遊）之清艙機票，並一鍵/自動同步至「飛行便宜」比價網！
 // @author       飛行便宜
 // @match        https://www.messenger.com/*
-// @match        https://www.facebook.com/messages/*
+// @match        https://www.facebook.com/*
 // @grant        GM_xmlhttpRequest
 // @grant        GM_setValue
 // @grant        GM_getValue
@@ -163,7 +163,7 @@
         box-shadow: 0 16px 36px rgba(15,23,42,0.2); padding: 18px; color: #0f172a;
       ">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px;">
-          <b style="font-size: 15px;">📡 飛趣 Messenger 清艙即時監聽</b>
+          <b style="font-size: 15px;">📡 Facebook 粉專 ＆ Messenger 監聽</b>
           <button id="flight-close" style="background: none; border: 0; font-size: 16px; cursor: pointer; color: #64748b;">✕</button>
         </div>
 
@@ -250,9 +250,17 @@
     }
   }
 
-  // 擷取最新一則訊息
+  // 擷取最新一則訊息或粉專貼文
   function captureLatestMessage(isManual = false) {
-    const messages = Array.from(document.querySelectorAll('div[dir="auto"], div[role="row"], span[dir="auto"]'));
+    const selectors = [
+      'div[data-ad-preview="message"]',
+      'div[data-ad-comet-preview="message"]',
+      'div[role="article"]',
+      'div[dir="auto"]',
+      'div[role="row"]',
+      'span[dir="auto"]'
+    ];
+    const messages = Array.from(document.querySelectorAll(selectors.join(', ')));
     let latestValid = null;
 
     for (let i = messages.length - 1; i >= 0; i--) {
