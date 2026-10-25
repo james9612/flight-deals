@@ -225,8 +225,11 @@ function renderDeals() {
 
     // Direct booking button text
     let btnText = `前往 ${d.agency || '旅行社'} 商品頁預訂 ↗`;
-    if (d.sourceUrl && d.sourceUrl.includes('line.me')) {
-      btnText = `前往 飛遊網官方 LINE 即時開票 ↗`;
+    let directUrl = d.sourceUrl || '#';
+
+    if ((d.agency || '').includes('飛遊網') || (d.source || '').includes('飛遊網')) {
+      btnText = `前往 飛遊網官網查看清艙機票 ↗`;
+      directUrl = 'https://www.plynet.com.tw/';
     } else if ((d.agency || '').includes('FunTime')) {
       if (d.priceSaved > 0) {
         btnText = `前往 ${d.comparedAgency || '原廠'} 預訂（比價現省 $${d.priceSaved.toLocaleString()}）↗`;
@@ -247,6 +250,11 @@ function renderDeals() {
       btnText = `前往 東森旅遊官方商品頁 ↗`;
     } else if ((d.agency || '').includes('易飛網')) {
       btnText = `前往 易飛網商品頁（直達本張票訂購）↗`;
+    }
+
+    // Safety fallback: ensure no card links to LINE
+    if (directUrl.includes('line.me')) {
+      directUrl = 'https://www.plynet.com.tw/';
     }
 
     let tagText = d.tag;
@@ -341,7 +349,7 @@ function renderDeals() {
               <span>來源：<b>${d.source}</b></span>
               <span>更新：${d.checked}</span>
             </div>
-            <a class="card-booking-btn" href="${d.sourceUrl}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">
+            <a class="card-booking-btn" href="${directUrl}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">
               ${btnText}
             </a>
           </div>

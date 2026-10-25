@@ -64,8 +64,30 @@ function parsePlynetEvent(event) {
   const code = cityCodeMap[city] || 'INT';
   const country = countryMap[city] || 'asia';
 
-  const lineMsg = `您好，我想訂購飛遊網清艙機票：\n【${city} ${days}天機票】${fullTitle}\n出發日期：${depart || '依清艙排程'} ~ ${returnDate || ''}\n特惠價格：NT$ ${price.toLocaleString()}\n請問目前還有機位可預訂嗎？`;
-  const directBookingUrl = `https://line.me/R/oaMessage/%40msc8686z/?${encodeURIComponent(lineMsg)}`;
+  const routeSchedules = {
+    '易斯達航空-首爾': '去程 ZE882 10:30-14:05／回程 ZE881 07:45-09:30（午去早回）',
+    '易斯達航空-釜山': '去程 ZE984 02:50-06:05／回程 ZE983 22:00-00:15（紅眼早去晚回）',
+    '樂桃航空-沖繩': '去程 MM924 09:30-12:15／回程 MM927 16:40-17:20（早去晚回）',
+    '樂桃航空-東京': '去程 MM620 02:30-06:45／回程 MM627 22:00-00:45（紅眼早去晚回）',
+    '樂桃航空-大阪': '去程 MM022 09:35-13:05／回程 MM027 16:00-18:15（早去晚回）',
+    '台灣虎航-沖繩': origin === '高雄' ? '去程 IT288 12:40-16:00／回程 IT289 16:50-17:40（午去晚回）' : '去程 IT230 06:35-09:00／回程 IT231 10:00-10:45（早去早回）',
+    '台灣虎航-東京': '去程 IT200 06:35-10:45／回程 IT201 11:35-14:45（早去午回）',
+    '台灣虎航-大阪': origin === '高雄' ? '去程 IT284 08:35-12:20／回程 IT285 13:10-15:25（早去午回）' : '去程 IT210 06:55-10:25／回程 IT211 11:15-13:30（早去午回）',
+    '台灣虎航-福岡': '去程 IT240 06:45-10:00／回程 IT241 10:55-12:35（早去午回）',
+    '台灣虎航-名古屋': '去程 IT206 09:00-12:50／回程 IT207 13:45-16:05（早去午回）',
+    '台灣虎航-石垣島': origin === '高雄' ? '去程 IT282 11:15-13:20／回程 IT283 14:10-14:25（午去午回）' : '去程 IT280 12:15-14:10／回程 IT281 15:00-15:05（午去午回）',
+    '台灣虎航-函館': '去程 IT236 07:00-11:40／回程 IT237 12:40-16:00（早去午回）',
+    '台灣虎航-高知': '去程 IT250 08:40-12:00／回程 IT251 13:00-15:35（早去午回）',
+    '台灣虎航-小松': '去程 IT252 12:00-15:55／回程 IT253 16:55-19:30（午去晚回）',
+    '台灣虎航-高松': '去程 IT214 06:55-10:35／回程 IT215 11:35-13:40（早去午回）',
+    '酷航-札幌': '去程 TR892 11:30-16:15／回程 TR893 17:35-21:05（午去晚回）',
+    '酷航-東京': '去程 TR898 06:40-10:45／回程 TR899 11:45-15:10（早去午回）',
+    '德威航空-首爾': '去程 TW668 11:40-15:25／回程 TW667 08:50-10:40（午去早回）',
+    '濟州航空-首爾': '去程 7C2678 03:00-06:30／回程 7C2677 22:45-00:40（紅眼早去晚回）',
+    '真航空-首爾': '去程 LJ732 10:35-14:15／回程 LJ731 07:50-09:35（午去早回）'
+  };
+  const flightKey = `${airline}-${city}`;
+  const flightTime = routeSchedules[flightKey] || (fullTitle.includes('早去晚回') ? '早去晚回' : (fullTitle.includes('早去午回') ? '早去午回' : (fullTitle.includes('午去晚回') ? '午去晚回' : '')));
 
   return {
     id: `plynet-${event.id}`,
@@ -84,12 +106,13 @@ function parsePlynetEvent(event) {
     date: depart && returnDate ? `${depart.slice(5).replace('-', '/')} – ${returnDate.slice(5).replace('-', '/')}` : `${days} 天清艙票`,
     airline,
     air: airline,
+    flightTime,
     baggage: '含託運行李（依清艙商品規格）',
     kind: 'plan',
     tag: '飛遊網清艙日曆',
     source: '飛遊網特價清艙',
-    sourceUrl: directBookingUrl,
-    detail: `${fullTitle}｜飛遊網特價清艙機票，固定去回程時間，不可退票與改期。點擊預訂直達飛遊網官方專人在線開票！`,
+    sourceUrl: 'https://www.plynet.com.tw/',
+    detail: `${fullTitle}｜飛遊網特價清艙機票，固定去回程時間，不可退票與改期。點擊直接前往飛遊網官網查看完整機票與出發日曆！`,
     checked: now.slice(0, 10),
     collectedAt: now
   };

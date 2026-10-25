@@ -177,12 +177,13 @@ export async function mergeCollected() {
         air: d.airline || d.air || '特價清艙航空',
         baggage: d.baggage || '含託運行李',
         source: d.source || '飛遊網特價清艙',
-        sourceUrl: (d.sourceUrl && !d.sourceUrl.endsWith('plynet.com.tw/')) ? d.sourceUrl : `https://line.me/R/oaMessage/%40msc8686z/?${encodeURIComponent(`您好，我想訂購飛遊網清艙機票：\n【${city} ${d.duration || '5 天'}】${d.title || ''}\n出發日期：${d.depart || ''} ~ ${d.return || ''}\n特惠價格：NT$ ${(d.price || 0).toLocaleString()}\n請問目前還有機位可預訂嗎？`)}`,
+        sourceUrl: 'https://www.plynet.com.tw/',
+        flightTime: d.flightTime || '',
         checked: d.checked || (d.collectedAt ? d.collectedAt.slice(0, 10) : new Date().toISOString().slice(0, 10)),
         tag: '飛遊網清艙日曆',
         agency: '飛遊網',
         kind: 'plan',
-        detail: d.detail || `${d.title || ''}｜飛遊網特價清艙，去回程固定不可改期。點擊直達飛遊網官方專人在線開票！`
+        detail: d.detail || `${d.title || ''}｜飛遊網特價清艙，去回程固定不可改期。點擊直接前往飛遊網官網查看完整機票與出發日曆！`
       };
     })
   ];
