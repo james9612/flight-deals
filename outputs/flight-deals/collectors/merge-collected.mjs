@@ -188,8 +188,12 @@ export async function mergeCollected() {
     })
   ];
 
+  const todayStr = new Date().toISOString().slice(0, 10);
   const byId = new Map();
   for (const deal of allRawDeals) {
+    // 過期機票自動排除（出發日期已小於今天）
+    if (deal.depart && deal.depart < todayStr) continue;
+
     const city = deal.city || deal.destination || '精選航點';
     const normalized = {
       id: deal.id,

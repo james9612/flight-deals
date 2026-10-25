@@ -192,6 +192,10 @@ function renderDeals() {
     if (activeFilter === 'funtime' && !src.includes('funtime') && !agn.includes('funtime')) return false;
     if (['japan', 'korea', 'asia'].includes(activeFilter) && deal.country !== activeFilter) return false;
 
+    // 過期機票自動過濾：出發日期已過（小於今天）自動排除
+    const todayStr = new Date().toLocaleDateString('en-CA');
+    if (deal.depart && deal.depart < todayStr) return false;
+
     // Form criteria
     if (originVal && deal.from !== originVal) return false;
     if (destVal && !deal.city.includes(destVal)) return false;
