@@ -121,8 +121,62 @@ h1 em:after {
   font-size: 15px;
   line-height: 1.85;
   color: var(--muted);
-  max-width: 520px;
+  max-width: 580px;
   font-weight: 500;
+}
+.lead b {
+  color: #0f172a;
+  font-weight: 800;
+}
+.hero-sources-banner {
+  margin-top: 16px;
+  max-width: 600px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 12px 14px;
+}
+.hero-sources-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 800;
+  color: #334155;
+  margin-bottom: 8px;
+}
+.hero-sources-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.source-chip {
+  display: inline-flex;
+  align-items: center;
+  background: white;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #1e293b;
+  text-decoration: none;
+  transition: all .18s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+}
+.source-chip:hover {
+  border-color: var(--green);
+  color: var(--green);
+  background: #f1f5f9;
+}
+.source-chip-more {
+  background: #ecfdf5;
+  color: #065f46;
+  border-color: #a7f3d0;
+  font-weight: 800;
+}
+.source-chip-more:hover {
+  background: #d1fae5;
+  border-color: #059669;
+  color: #047857;
 }
 .art {
   height: 220px;
@@ -454,21 +508,46 @@ h1 em:after {
 }
 .fields {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr auto;
+  grid-template-columns: 1.2fr 1.4fr 1.15fr 1.15fr 1fr 1fr auto;
   gap: 10px;
+  align-items: stretch;
+}
+@media (max-width: 1200px) {
+  .fields {
+    grid-template-columns: 1fr 1.3fr 1fr 1fr;
+    gap: 12px;
+  }
+  .fields .go {
+    grid-column: span 2;
+    padding: 12px 20px;
+  }
+}
+@media (max-width: 768px) {
+  .fields {
+    grid-template-columns: 1fr;
+  }
+  .fields .go {
+    grid-column: 1;
+    padding: 12px 20px;
+  }
 }
 .field {
   border: 1px solid #cbd5e1;
   border-radius: 10px;
-  padding: 10px 14px;
+  padding: 8px 12px;
   background: #fff;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 .field label {
   display: block;
-  font-size: 12px;
+  font-size: 11.5px;
   font-weight: 800;
   color: #334155;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
+  white-space: nowrap;
 }
 .field label small {
   font-size: 11px;
@@ -477,13 +556,22 @@ h1 em:after {
 }
 .field select, .field input {
   border: 0;
-  background: white;
+  background: transparent;
   width: 100%;
   outline: 0;
   color: #0f172a;
   font-weight: 700;
-  font-size: 14px;
+  font-size: 13.5px;
   min-width: 0;
+  padding: 2px 0;
+  margin: 0;
+}
+.field select {
+  cursor: pointer;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  padding-right: 18px;
 }
 .go {
   background: var(--green);

@@ -6,7 +6,7 @@
     "url": "https://travel.liontravel.com/",
     "access": "官方搜尋與計畫票專區 API；自動解析日韓東南亞固定日期、天數、含稅價格、航空公司與20KG行李",
     "frequency": "每日排程自動蒐集更新；熱門出發日前加頻查核",
-    "status": "自動蒐集已上線",
+    "status": "自動爬取已上線",
     "notes": "已串接自動爬蟲管線，即時抓取東京、大阪、沖繩、名古屋、首爾、石垣島、澳門等固定日期計畫湊票，標示含稅與行李規格。"
   },
   {
@@ -16,7 +16,7 @@
     "url": "https://www.plynet.com.tw/",
     "access": "公開清艙頁與出發日曆；自動讀取固定出發日、天數、售價、航班與退改規則",
     "frequency": "每日排程自動蒐集；出發 14 日內即將起飛清艙票優先同步",
-    "status": "自動蒐集已上線",
+    "status": "自動爬取已上線",
     "notes": "日曆化展示日本、韓國與東南亞固定日期特價清艙票，內含託運行李與票規，過期項目自動下架。"
   },
   {
@@ -26,7 +26,7 @@
     "url": "https://www.colatour.com.tw/webDM/airticket/promotion/holidays/sale.html",
     "access": "公開機票與自由行湊票專區；定期彙整各航線固定日期計畫票",
     "frequency": "每週排程更新；促銷檔期每日查核",
-    "status": "計畫票已整合",
+    "status": "自動爬取已上線",
     "notes": "彙整釜山、沖繩、東京等固定日期團體機位湊票，標明含稅總價與託運行李。"
   },
   {
@@ -36,7 +36,7 @@
     "url": "https://intl.ezfly.com/",
     "access": "國際機票首頁與神秘清艙專區；定期萃取晚鳥清艙與團體湊票資訊",
     "frequency": "每週排程更新；旅展及限時促銷期間每日確認",
-    "status": "清艙票已整合",
+    "status": "自動爬取已上線",
     "notes": "收錄大阪、首爾、福岡等神秘清艙機票與團體湊票，提供極具競爭力的晚鳥地板價。"
   },
   {
@@ -45,9 +45,9 @@
     "type": "plan-clearance",
     "url": "https://www.kkday.com/zh-tw/promo/flight_hotel",
     "access": "官方計劃機票專區；彙整日韓東南亞團體湊票、包機清艙與含行李特惠",
-    "frequency": "每週排程更新；檔期清倉機票每日確認",
-    "status": "清艙票已整合",
-    "notes": "精選東京、大阪、沖繩、首爾、富國島直飛計畫機票，大多含來回20KG託運行李與機場稅。"
+    "frequency": "每日定時排程更新；檔期清倉機票優先確認",
+    "status": "自動爬取已上線",
+    "notes": "精選東京、大阪、沖繩、首爾、富國島、石垣島直飛計畫機票，大多含來回20KG託運行李與機場稅。"
   },
   {
     "id": "ehs-plan-ticket",
@@ -56,7 +56,7 @@
     "url": "https://www.etmall.com.tw/Search?keyword=%E6%A9%9F%E7%A5%A8",
     "access": "ETMall 旅遊與機票搜尋 API；自動篩選含稅含行李之計畫旅遊票與自由行清艙機位",
     "frequency": "每日定時排程抓取最新促銷梯次",
-    "status": "清艙票已整合",
+    "status": "自動爬取已上線",
     "notes": "收錄名古屋、大阪、石垣島、沖繩等超值計畫票與清艙專案，主打 1 人即可成行與含行李優勢。"
   },
   {
@@ -65,8 +65,8 @@
     "type": "plan-clearance",
     "url": "https://www.settour.com.tw/",
     "access": "官方計劃機票與團體湊票（TKT Only）專區；定期彙整傳統國籍航空與精品星宇湊票",
-    "frequency": "每週排程更新；熱門檔期定時確認",
-    "status": "計畫票已整合",
+    "frequency": "每日定時排程更新；熱門檔期定時確認",
+    "status": "自動爬取已上線",
     "notes": "收錄東京、大阪、沖繩、福岡、首爾、曼谷等固定日期團體機票，搭配華航、長榮、星宇、虎航，含稅含行李。"
   },
   {
@@ -76,8 +76,8 @@
     "url": "https://www.funtime.com.tw/localtour/topic/index.php?theme=GroupAffinity-Ticket",
     "access": "localtour 計劃機票與團體湊票專題 API；自動萃取日韓泰越各航點計劃機票與即時售價",
     "frequency": "每日排程自動萃取更新",
-    "status": "計畫票已整合",
-    "notes": "收錄東京、大阪、沖繩、名古屋、北海道、首爾、釜山、曼谷、富國島等各旅行社釋出之即時計劃機票，點擊直達預訂頁。"
+    "status": "自動爬取已上線",
+    "notes": "收錄東京、大阪、沖繩、名古屋、北海道、首爾、釜山、曼谷、富國島等各旅行社釋出之即時計劃機票，支援自動交叉比價。"
   },
   {
     "id": "vietjet-zero-promo",
@@ -86,7 +86,7 @@
     "url": "https://www.vietjetair.com/zh-tw",
     "access": "每週三至週五官網 0 元 Eco 機票公告；自動換算預估機場稅費與含稅到手總價",
     "frequency": "每週活動日前後自動更新活動公告",
-    "status": "0 元特報監控中",
+    "status": "0 元大促自動監控",
     "notes": "台灣飛胡志明市、河內、富國島 0 元大促常態化，提醒使用者備妥護照資訊與留意附加稅費。"
   },
   {
@@ -96,7 +96,7 @@
     "url": "https://www.airasia.com/zh/tw",
     "access": "年度全球 Free Seats 大促公告；自動追蹤會員優先購與航線稅費",
     "frequency": "大促發布時優先推播與定時測價",
-    "status": "0 元特報監控中",
+    "status": "0 元大促自動監控",
     "notes": "台北／高雄往吉隆坡、沙巴、曼谷廊曼、清邁等航點 0 元促銷情報，提供搶票技巧。"
   },
   {
@@ -106,7 +106,7 @@
     "url": "https://www.tigerairtw.com/zh-TW/index",
     "access": "官網最新消息與開賣促銷專頁；監控 0 元／99 元／599 元等超低階梯票價",
     "frequency": "每月發薪日與開賣檔期每日更新",
-    "status": "官方特報監控中",
+    "status": "促銷特報自動監控",
     "notes": "日韓泰全航線熱門促銷即時回報，標示搶票注意事項、手提行李限額與預估兩地機場稅。"
   },
   {
@@ -116,7 +116,7 @@
     "url": "https://www.flypeach.com/tw/um/specials/sale/sale",
     "access": "官方特別專案頁面；監控日本各航點單程未稅 1,440 元起超低快閃",
     "frequency": "每週五或快閃期間即時更新",
-    "status": "官方特報監控中",
+    "status": "促銷特報自動監控",
     "notes": "免燃油附加費特色標示，紅眼特攻航班與平日機位促銷監控。"
   },
   {
@@ -126,7 +126,7 @@
     "url": "https://www.flyscoot.com/zhtw",
     "access": "官方促銷頁面；追蹤台北直飛新加坡、東京成田、首爾仁川促銷",
     "frequency": "每週二或專案大促時定時確認",
-    "status": "官方特報監控中",
+    "status": "促銷特報自動監控",
     "notes": "波音 787 大機型舒適度特色標示，單程含稅低價追蹤。"
   },
   {

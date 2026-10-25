@@ -338,10 +338,10 @@ function populateDestinationDropdown() {
 
   const sortedCities = Object.entries(cityCounts).sort((a, b) => b[1] - a[1]);
 
-  let html = `<option value="">所有目的地（全部航點共 ${deals.length} 筆）</option>`;
+  let html = `<option value="">所有航點 (${deals.length})</option>`;
   for (const [city, count] of sortedCities) {
     const selected = city === currentVal ? 'selected' : '';
-    html += `<option value="${city}" ${selected}>${city}（${count} 筆機票）</option>`;
+    html += `<option value="${city}" ${selected}>${city} (${count})</option>`;
   }
 
   destSelect.innerHTML = html;
@@ -361,10 +361,10 @@ function populateOriginDropdown() {
     originCounts[from] = (originCounts[from] || 0) + 1;
   }
 
-  let html = `<option value="">不限出發地（全部共 ${deals.length} 筆）</option>`;
+  let html = `<option value="">不限出發 (${deals.length})</option>`;
   for (const [orig, count] of Object.entries(originCounts)) {
     const selected = orig === currentVal ? 'selected' : '';
-    html += `<option value="${orig}" ${selected}>${orig} 出發（${count} 筆）</option>`;
+    html += `<option value="${orig}" ${selected}>${orig} (${count})</option>`;
   }
 
   originSelect.innerHTML = html;

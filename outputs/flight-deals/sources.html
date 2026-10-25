@@ -1,1 +1,140 @@
-<!doctype html><html lang="zh-Hant"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>票源清單｜飛行便宜</title><link rel="stylesheet" href="styles/site.css"><style>.source-list{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;padding:10px 0 45px}.source-card{background:white;border:1px solid var(--line);border-radius:14px;padding:18px}.source-card h2{font-size:16px;margin:10px 0}.source-card p{font-size:12px;color:var(--muted);line-height:1.7}.source-card a{font-size:11px;color:var(--green);font-weight:700}.status{font-size:9px;background:#f0f4eb;padding:5px 8px;border-radius:20px;color:#567443}.status.partner{background:#fff1e8;color:#9b573b}.source-type{font-size:10px;color:var(--muted)}.back{font-size:12px;color:var(--green);text-decoration:none}.notice{padding:14px 16px;background:#eef4e5;border-radius:10px;color:#52664b;font-size:11px;line-height:1.7;margin:14px 0 22px}@media(max-width:650px){.source-list{grid-template-columns:1fr}}</style><body><div class="wrap"><header><div class="logo"><span class="mark">✈</span>飛行便宜</div><a class="back" href="index.html">← 回優惠列表</a></header><section class="hero"><div><div class="eyebrow">SOURCE DIRECTORY</div><h1>從哪裡，<br>找到<em>好票源？</em></h1><p class="lead">先整理公開優惠，再逐步申請合作資料。每個來源都標清楚能提供什麼，以及哪些資訊仍需人工確認。</p></div></section><div class="notice">試行原則：公開頁面先人工確認並連回原始來源。未取得授權前，不自動抓取網站內容；一般航班 API 也不等於旅行社清艙庫存。</div><div class="source-list" id="sources"></div><footer><span>飛行便宜｜票源目錄</span><span>來源狀態會隨合作與頁面變更更新</span></footer></div><script src="scripts/sources.js" defer></script></body></html>
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>即時爬蟲票源清單網站目錄｜飛行便宜</title>
+  <link rel="stylesheet" href="styles/site.css?v=20261025-15">
+  <style>
+    .source-list {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      padding: 10px 0 45px;
+    }
+    .source-card {
+      background: white;
+      border: 1px solid #cbd5e1;
+      border-radius: 16px;
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 0 4px 14px rgba(15, 30, 23, 0.03);
+      transition: transform .2s, box-shadow .2s;
+    }
+    .source-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 24px rgba(15, 30, 23, 0.07);
+    }
+    .source-card h2 {
+      font-size: 18px;
+      font-weight: 800;
+      margin: 10px 0 6px;
+      color: #0f172a;
+    }
+    .source-card p {
+      font-size: 13px;
+      color: #334155;
+      line-height: 1.7;
+      margin: 4px 0;
+    }
+    .source-card .open-btn {
+      display: inline-block;
+      margin-top: 14px;
+      padding: 8px 16px;
+      background: #f1f5f9;
+      color: #0f172a;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 800;
+      text-decoration: none;
+      align-self: flex-start;
+      transition: all .2s;
+      border: 1px solid #cbd5e1;
+    }
+    .source-card .open-btn:hover {
+      background: var(--green);
+      color: white;
+      border-color: var(--green);
+    }
+    .status-badge {
+      font-size: 11px;
+      background: #ecfdf5;
+      border: 1px solid #a7f3d0;
+      padding: 4px 10px;
+      border-radius: 20px;
+      color: #065f46;
+      font-weight: 800;
+      align-self: flex-start;
+    }
+    .status-badge.online {
+      background: #dcfce7;
+      color: #15803d;
+    }
+    .status-badge.airline {
+      background: #ffedd5;
+      color: #c2410c;
+      border-color: #fed7aa;
+    }
+    .source-type {
+      font-size: 11px;
+      color: #64748b;
+      font-weight: 700;
+      margin-top: 6px;
+    }
+    .back {
+      font-size: 13px;
+      color: var(--green);
+      text-decoration: none;
+      font-weight: 700;
+    }
+    .notice-banner {
+      padding: 16px 20px;
+      background: #ecfdf5;
+      border: 1px solid #a7f3d0;
+      border-radius: 12px;
+      color: #065f46;
+      font-size: 13px;
+      line-height: 1.7;
+      margin: 16px 0 24px;
+    }
+    .notice-banner b {
+      color: #047857;
+    }
+    @media(max-width: 768px) {
+      .source-list {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="logo"><span class="mark">✈</span>飛行便宜</div>
+      <a class="back" href="index.html">← 回首頁比價列表</a>
+    </header>
+
+    <section class="hero">
+      <div>
+        <div class="eyebrow">SOURCE DIRECTORY</div>
+        <h1>全台旅行社計畫票 ＆ 廉航 0 元特報<br><em>即時爬蟲票源清單網站</em></h1>
+        <p class="lead">全天候定時自動採集全台 8 大旅行社計畫票專區與 5 大廉價航空官方促銷情報，資料透明公開，點擊即可直達官方預訂來源。</p>
+      </div>
+    </section>
+
+    <div class="notice-banner">
+      <b>⚡ 即時爬蟲管線運作中：</b>全站包含 <b>雄獅旅遊、飛遊網、可樂旅遊、易飛網、KKday、東森旅遊、東南旅遊、FunTime</b> 以及 <b>越捷航空、亞洲航空、台灣虎航、樂桃航空、酷航</b> 等票源網站，皆已實裝自動化爬蟲採集並經比價與去重清洗。
+    </div>
+
+    <div class="source-list" id="sources"></div>
+
+    <footer>
+      <span>飛行便宜｜爬蟲票源網站清單目錄</span>
+      <span>來源狀態每日定時自動更新</span>
+    </footer>
+  </div>
+  <script src="scripts/sources.js" defer></script>
+</body>
+</html>
