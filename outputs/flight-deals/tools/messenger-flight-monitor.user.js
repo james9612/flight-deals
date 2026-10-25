@@ -1,17 +1,20 @@
 // ==UserScript==
 // @name         ✈️ 飛行便宜・Facebook 粉專貼文 ＆ Messenger 清艙即時監聽外掛
 // @namespace    https://james9612.github.io/flight-deals/
-// @version      1.1.0
+// @version      1.2.0
 // @description  自動即時監聽 Facebook 粉絲專頁貼文與 Messenger 廣播專區（如飛趣旅遊）之清艙機票，並一鍵/自動同步至「飛行便宜」比價網！
 // @author       飛行便宜
-// @match        https://www.messenger.com/*
-// @match        https://www.facebook.com/*
+// @match        *://*.messenger.com/*
+// @match        *://messenger.com/*
+// @match        *://*.facebook.com/*
+// @match        *://facebook.com/*
 // @grant        GM_xmlhttpRequest
 // @grant        GM_setValue
 // @grant        GM_getValue
 // @grant        GM_notification
+// @grant        window.onurlchange
 // @connect      localhost
-// @run-at       document-idle
+// @run-at       document-end
 // ==/UserScript==
 
 (function() {
@@ -335,10 +338,32 @@
   }
 
   // 啟動腳本
-  setTimeout(() => {
+  function init() {
     createUI();
     setupObserver();
     console.log('✈️ [飛行便宜] Messenger 清艙即時監聽外掛已就緒！');
-  }, 2500);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => setTimeout(init, 1500));
+  } else {
+    setTimeout(init, 1500);
+  }
+
+  // 監聽單頁應用程式（SPA）路由變化
+  if (window.onurlchange === null) {
+    window.addEventListener('urlchange', (info) => {
+      console.log('✈️ [飛行便宜] 偵測到頁面網址變更：', info.url);
+      createUI();
+      setTimeout(() => captureLatestMessage(false), 2000);
+    });
+  }
+
+  // 確保 SPA 切換頁面時浮動按鈕不被移除
+  setInterval(() => {
+    if (!document.getElementById('flight-deals-widget') && document.body) {
+      createUI();
+    }
+  }, 4000);
 
 })();
