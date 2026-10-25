@@ -9,7 +9,8 @@
     "collect:cola": "node collectors/collect-colatour.mjs",
     "collect:ezfly": "node collectors/collect-ezfly.mjs",
     "collect:zero": "node collectors/collect-zero-promos.mjs",
-    "merge": "node collectors/merge-collected.mjs"
+    "merge": "node collectors/merge-collected.mjs",
+    "receiver": "node collectors/messenger-receiver.mjs"
   },
   "devDependencies": {
     "playwright": "^1.57.0"

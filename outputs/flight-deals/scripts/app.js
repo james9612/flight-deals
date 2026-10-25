@@ -33,7 +33,9 @@ const agencyClassMap = {
   '東南旅遊': 'agency-settour',
   '東南旅遊（SETtour）機票館': 'agency-settour',
   'FunTime': 'agency-funtime',
-  'FunTime旅遊比價網（localtour）': 'agency-funtime'
+  'FunTime旅遊比價網（localtour）': 'agency-funtime',
+  '飛趣旅遊': 'agency-goflytrip',
+  '飛趣旅遊 Messenger 清艙': 'agency-goflytrip'
 };
 
 function renderPromos() {
@@ -190,6 +192,7 @@ function renderDeals() {
     if (activeFilter === 'ehs' && !deal.source.includes('東森') && !deal.agency?.includes('東森')) return false;
     if (activeFilter === 'settour' && !deal.source.includes('東南') && !deal.agency?.includes('東南')) return false;
     if (activeFilter === 'funtime' && !src.includes('funtime') && !agn.includes('funtime')) return false;
+    if (activeFilter === 'goflytrip' && !deal.source.includes('飛趣') && !deal.agency?.includes('飛趣')) return false;
     if (['japan', 'korea', 'asia'].includes(activeFilter) && deal.country !== activeFilter) return false;
 
     // 過期機票自動過濾：出發日期已過（小於今天）自動排除
@@ -254,6 +257,8 @@ function renderDeals() {
       btnText = `前往 東森旅遊官方商品頁 ↗`;
     } else if ((d.agency || '').includes('易飛網')) {
       btnText = `前往 易飛網商品頁（直達本張票訂購）↗`;
+    } else if ((d.agency || '').includes('飛趣')) {
+      btnText = `前往 飛趣 Messenger 搶票 ↗`;
     }
 
     // Safety fallback: ensure no card links to LINE

@@ -11,6 +11,7 @@ const kkdayFile = new URL('../data/collected/kkday-plan.json', import.meta.url);
 const ehsFile = new URL('../data/collected/ehs-plan.json', import.meta.url);
 const settourFile = new URL('../data/collected/settour-plan.json', import.meta.url);
 const funtimeFile = new URL('../data/collected/funtime-plan.json', import.meta.url);
+const goflytripFile = new URL('../data/collected/goflytrip-deals.json', import.meta.url);
 const zeroPromosFile = new URL('../data/collected/zero-promos.json', import.meta.url);
 
 async function safeReadJson(fileUrl, fallback = []) {
@@ -56,6 +57,7 @@ export async function mergeCollected() {
   let ehsDeals = await safeReadJson(ehsFile);
   let settourDeals = await safeReadJson(settourFile);
   let funtimeDeals = await safeReadJson(funtimeFile);
+  let goflytripDeals = await safeReadJson(goflytripFile);
   const zeroPromos = await safeReadJson(zeroPromosFile);
 
   // 備援防護：若有任何單一來源因為網路或防爬限制回傳 0 筆，從現有 deals.json 恢復資料，防止資料被清空
@@ -69,9 +71,10 @@ export async function mergeCollected() {
     if (!ehsDeals.length) ehsDeals = existingDeals.filter(d => d.agency === '東森旅遊');
     if (!settourDeals.length) settourDeals = existingDeals.filter(d => d.agency === '東南旅遊');
     if (!funtimeDeals.length) funtimeDeals = existingDeals.filter(d => d.agency === 'FunTime');
+    if (!goflytripDeals.length) goflytripDeals = existingDeals.filter(d => d.agency === '飛趣旅遊');
   }
 
-  console.log(`讀取各來源筆數：雄獅 ${lionDeals.length} 筆，飛遊網 ${flytourDeals.length} 筆，可樂 ${colatourDeals.length} 筆，易飛網 ${ezflyDeals.length} 筆，KKday ${kkdayDeals.length} 筆，東森旅遊 ${ehsDeals.length} 筆，東南旅遊 ${settourDeals.length} 筆，FunTime ${funtimeDeals.length} 筆，航空公司特報 ${zeroPromos.length} 筆`);
+  console.log(`讀取各來源筆數：雄獅 ${lionDeals.length} 筆，飛遊網 ${flytourDeals.length} 筆，可樂 ${colatourDeals.length} 筆，易飛網 ${ezflyDeals.length} 筆，KKday ${kkdayDeals.length} 筆，東森旅遊 ${ehsDeals.length} 筆，東南旅遊 ${settourDeals.length} 筆，FunTime ${funtimeDeals.length} 筆，飛趣旅遊 ${goflytripDeals.length} 筆，航空公司特報 ${zeroPromos.length} 筆`);
 
   // 智能比價與去重邏輯：FunTime 會先比對其他旅行社已有的商品
   // 1. 若 FunTime 價格更便宜：保留 FunTime，標註現省金額，並剔除原旅行社較貴的重複卡片
@@ -92,7 +95,8 @@ export async function mergeCollected() {
     ...ezflyDeals.map(d => ({ ...d, agency: '易飛網', tag: d.tag || '易飛網神秘機票' })),
     ...kkdayDeals.map(d => ({ ...d, agency: 'KKday', tag: 'KKday清艙特惠' })),
     ...ehsDeals.map(d => ({ ...d, agency: '東森旅遊', tag: '東森清艙特惠' })),
-    ...settourDeals.map(d => ({ ...d, agency: '東南旅遊', tag: '東南計畫旅遊票' }))
+    ...settourDeals.map(d => ({ ...d, agency: '東南旅遊', tag: '東南計畫旅遊票' })),
+    ...goflytripDeals.map(d => ({ ...d, agency: '飛趣旅遊', tag: d.tag || '飛趣突發清艙' }))
   ];
 
   const excludedDirectIds = new Set();

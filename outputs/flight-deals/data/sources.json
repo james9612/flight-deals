@@ -80,6 +80,16 @@
     "notes": "收錄東京、大阪、沖繩、名古屋、北海道、首爾、釜山、曼谷、富國島等各旅行社釋出之即時計劃機票，支援自動交叉比價。"
   },
   {
+    "id": "goflytrip-messenger",
+    "name": "飛趣旅遊（Go Fly Trip・馬上飛國際旅行社）",
+    "type": "plan-clearance",
+    "url": "https://www.messenger.com/channel/goflytripTW",
+    "access": "Messenger 官方清艙廣播專區；支援專屬瀏覽器監聽外掛即時擷取與 AI 自動解析",
+    "frequency": "小編發布時即時監聽同步",
+    "status": "即時監聽已上線",
+    "notes": "專營日韓突發機位、晚鳥清艙與包機機加酒，透過 Messenger 廣播頻道釋出特惠，點擊可直接開啟頻道私訊搶票。"
+  },
+  {
     "id": "vietjet-zero-promo",
     "name": "越捷航空（Vietjet Air）官方 0 元機票大促",
     "type": "airline-promo",
