@@ -96,7 +96,7 @@ export async function mergeCollected() {
     ...kkdayDeals.map(d => ({ ...d, agency: 'KKday', tag: 'KKday清艙特惠' })),
     ...ehsDeals.map(d => ({ ...d, agency: '東森旅遊', tag: '東森清艙特惠' })),
     ...settourDeals.map(d => ({ ...d, agency: '東南旅遊', tag: '東南計畫旅遊票' })),
-    ...goflytripDeals.map(d => ({ ...d, agency: '飛趣旅遊', tag: d.tag || '飛趣突發清艙' }))
+    ...goflytripDeals.map(d => ({ ...d, agency: '飛趣旅遊', tag: '飛趣旅遊清艙' }))
   ];
 
   const excludedDirectIds = new Set();

@@ -22,7 +22,7 @@ const countryMap = {
  * @param {string} sourceUrl 來源連結（預設為 Messenger 廣播專區）
  * @returns {Array<object>} 解析完成的機票資料陣列
  */
-export function parseSocialDeals(rawText, sourceUrl = 'https://www.messenger.com/channel/goflytripTW') {
+export function parseSocialDeals(rawText, sourceUrl = 'https://line.me/R/ti/p/%40flynow01') {
   if (!rawText || typeof rawText !== 'string') return [];
 
   const text = rawText.trim();
@@ -99,14 +99,14 @@ export function parseSocialDeals(rawText, sourceUrl = 'https://www.messenger.com
             airline,
             air: airline,
             baggage: '含託運行李（依清艙商品規格）',
-            source: '飛趣旅遊 Messenger/粉專清艙',
+            source: '飛趣旅遊官方 LINE 清艙',
             sourceUrl,
             checked: new Date().toISOString().slice(0, 10),
-            tag: '飛趣突發清艙',
+            tag: '飛趣旅遊清艙',
             agency: '飛趣旅遊',
             kind: 'plan',
             flightTime: combined.includes('早去晚回') ? '早去晚回' : (combined.includes('早去午回') ? '早去午回' : ''),
-            detail: `【飛趣旅遊 突發清艙】${airline}直飛${city}${blockDays}日機票｜出發日：${depart}，含稅特惠價 NT$ ${blockPrice.toLocaleString()}，席次有限私訊小編搶位！`,
+            detail: `【飛趣旅遊 清艙機票】${airline}直飛${city}${blockDays}日機票｜出發日：${depart}，含稅特惠價 NT$ ${blockPrice.toLocaleString()}，官方 LINE: @flynow01 私訊搶位！`,
             rawMessage: combined,
             collectedAt: new Date().toISOString()
           });
@@ -174,14 +174,14 @@ export function parseSocialDeals(rawText, sourceUrl = 'https://www.messenger.com
             airline,
             air: airline,
             baggage: '含託運行李（依清艙商品規格）',
-            source: '飛趣旅遊 Messenger/粉專清艙',
+            source: '飛趣旅遊官方 LINE 清艙',
             sourceUrl,
             checked: new Date().toISOString().slice(0, 10),
-            tag: '飛趣突發清艙',
+            tag: '飛趣旅遊清艙',
             agency: '飛趣旅遊',
             kind: 'plan',
             flightTime: desc.includes('早去晚回') ? '早去晚回' : (desc.includes('早去午回') ? '早去午回' : ''),
-            detail: `【飛趣旅遊 突發清艙】${desc}｜出發日：${depart}，含稅特惠價 NT$ ${price.toLocaleString()}，席次有限私訊小編搶位！`,
+            detail: `【飛趣旅遊 清艙機票】${desc}｜出發日：${depart}，含稅特惠價 NT$ ${price.toLocaleString()}，官方 LINE: @flynow01 私訊搶位！`,
             rawMessage: line,
             collectedAt: new Date().toISOString()
           });
@@ -322,14 +322,14 @@ function parseSingleSocialDeal(rawText, sourceUrl) {
     airline,
     air: airline,
     baggage,
-    source: '飛趣旅遊 Messenger/粉專清艙',
-    sourceUrl,
+    source: '飛趣旅遊官方 LINE 清艙',
+    sourceUrl: sourceUrl || 'https://line.me/R/ti/p/%40flynow01',
     checked: new Date().toISOString().slice(0, 10),
-    tag: '飛趣突發清艙',
+    tag: '飛趣旅遊清艙',
     agency: '飛趣旅遊',
     kind: 'plan',
     flightTime,
-    detail: `【飛趣旅遊 突發清艙】${text.slice(0, 180)}`,
+    detail: `【飛趣旅遊 清艙機票】${text.slice(0, 180)}`,
     rawMessage: text,
     collectedAt: new Date().toISOString()
   };

@@ -257,12 +257,13 @@ function renderDeals() {
       btnText = `前往 東森旅遊官方商品頁 ↗`;
     } else if ((d.agency || '').includes('易飛網')) {
       btnText = `前往 易飛網商品頁（直達本張票訂購）↗`;
-    } else if ((d.agency || '').includes('飛趣')) {
-      btnText = `前往 飛趣 Messenger 搶票 ↗`;
+    } else if ((d.agency || '').includes('飛趣') || (d.source || '').includes('飛趣')) {
+      btnText = `前往 飛趣旅遊清艙（LINE: @flynow01）↗`;
+      directUrl = 'https://line.me/R/ti/p/%40flynow01';
     }
 
-    // Safety fallback: ensure no card links to LINE
-    if (directUrl.includes('line.me')) {
+    // Safety fallback: ensure 飛遊網 never links to LINE
+    if (((d.agency || '').includes('飛遊網') || (d.source || '').includes('飛遊網')) && directUrl.includes('line.me')) {
       directUrl = 'https://www.plynet.com.tw/';
     }
 
