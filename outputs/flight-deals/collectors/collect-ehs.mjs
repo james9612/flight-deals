@@ -1,4 +1,4 @@
-import { mkdir, writeFile } from 'node:fs/promises';
+import { mkdir, writeFile, readFile } from 'node:fs/promises';
 
 const outputDir = new URL('../data/collected/', import.meta.url);
 const outputFile = new URL('ehs-plan.json', outputDir);
@@ -130,6 +130,19 @@ export async function collectEhs() {
       checked: now.slice(0, 10),
       collectedAt: now
     });
+  }
+
+  // 快取防呆備援
+  if (!deals.length) {
+    try {
+      const cached = JSON.parse(await readFile(outputFile, 'utf8'));
+      if (Array.isArray(cached.deals) && cached.deals.length > 0) {
+        deals = cached.deals;
+        console.log(`[東森旅遊] 網路抓取受到限制，已啟用現有快取備援共 ${deals.length} 筆！`);
+      }
+    } catch {
+      console.warn('[東森旅遊] 無現成快取資料可用');
+    }
   }
 
   await mkdir(outputDir, { recursive: true });

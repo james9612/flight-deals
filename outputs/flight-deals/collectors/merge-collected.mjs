@@ -48,15 +48,28 @@ const daysBetween = (depart, returnDate) => {
 };
 
 export async function mergeCollected() {
-  const lionDeals = await safeReadJson(lionFile);
-  const flytourDeals = await safeReadJson(flytourFile);
-  const colatourDeals = await safeReadJson(colatourFile);
-  const ezflyDeals = await safeReadJson(ezflyFile);
-  const kkdayDeals = await safeReadJson(kkdayFile);
-  const ehsDeals = await safeReadJson(ehsFile);
-  const settourDeals = await safeReadJson(settourFile);
-  const funtimeDeals = await safeReadJson(funtimeFile);
+  let lionDeals = await safeReadJson(lionFile);
+  let flytourDeals = await safeReadJson(flytourFile);
+  let colatourDeals = await safeReadJson(colatourFile);
+  let ezflyDeals = await safeReadJson(ezflyFile);
+  let kkdayDeals = await safeReadJson(kkdayFile);
+  let ehsDeals = await safeReadJson(ehsFile);
+  let settourDeals = await safeReadJson(settourFile);
+  let funtimeDeals = await safeReadJson(funtimeFile);
   const zeroPromos = await safeReadJson(zeroPromosFile);
+
+  // 備援防護：若有任何單一來源因為網路或防爬限制回傳 0 筆，從現有 deals.json 恢復資料，防止資料被清空
+  const existingDeals = await safeReadJson(dealsFile);
+  if (existingDeals.length > 0) {
+    if (!lionDeals.length) lionDeals = existingDeals.filter(d => d.agency === '雄獅旅遊');
+    if (!flytourDeals.length) flytourDeals = existingDeals.filter(d => d.agency === '飛遊網');
+    if (!colatourDeals.length) colatourDeals = existingDeals.filter(d => d.agency === '可樂旅遊');
+    if (!ezflyDeals.length) ezflyDeals = existingDeals.filter(d => d.agency === '易飛網');
+    if (!kkdayDeals.length) kkdayDeals = existingDeals.filter(d => d.agency === 'KKday');
+    if (!ehsDeals.length) ehsDeals = existingDeals.filter(d => d.agency === '東森旅遊');
+    if (!settourDeals.length) settourDeals = existingDeals.filter(d => d.agency === '東南旅遊');
+    if (!funtimeDeals.length) funtimeDeals = existingDeals.filter(d => d.agency === 'FunTime');
+  }
 
   console.log(`讀取各來源筆數：雄獅 ${lionDeals.length} 筆，飛遊網 ${flytourDeals.length} 筆，可樂 ${colatourDeals.length} 筆，易飛網 ${ezflyDeals.length} 筆，KKday ${kkdayDeals.length} 筆，東森旅遊 ${ehsDeals.length} 筆，東南旅遊 ${settourDeals.length} 筆，FunTime ${funtimeDeals.length} 筆，航空公司特報 ${zeroPromos.length} 筆`);
 

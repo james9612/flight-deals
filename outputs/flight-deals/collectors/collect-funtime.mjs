@@ -1,4 +1,4 @@
-import { mkdir, writeFile } from 'node:fs/promises';
+import { mkdir, writeFile, readFile } from 'node:fs/promises';
 
 const outputDir = new URL('../data/collected/', import.meta.url);
 const outputFile = new URL('funtime-plan.json', outputDir);
@@ -7,7 +7,7 @@ const now = new Date().toISOString();
 export async function collectFuntime() {
   console.log('正在爬取【FunTime旅遊比價網】localtour 計畫機票專區...');
   const targets = ['Japan', 'Korea', 'Thailand', 'Vietnam'];
-  const allDeals = [];
+  let allDeals = [];
   let index = 0;
 
   for (const t of targets) {
@@ -15,12 +15,18 @@ export async function collectFuntime() {
       const url = `https://www.funtime.com.tw/localtour/topic/api_index.php?theme=GroupAffinity-Ticket&target=${t}`;
       const res = await fetch(url, {
         headers: {
-          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-          'Referer': `https://www.funtime.com.tw/localtour/topic/index.php?theme=GroupAffinity-Ticket&target=${t}`
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+          'Accept': 'application/json, text/javascript, */*; q=0.01',
+          'Accept-Language': 'zh-TW,zh;q=0.9,en-US;q=0.8,en;q=0.7',
+          'Referer': `https://www.funtime.com.tw/localtour/topic/index.php?theme=GroupAffinity-Ticket&target=${t}`,
+          'X-Requested-With': 'XMLHttpRequest'
         }
       });
 
-      if (!res.ok) continue;
+      if (!res.ok) {
+        console.warn(`[FunTime] 抓取目標 "${t}" 回傳狀態碼: ${res.status}`);
+        continue;
+      }
       const data = await res.json();
       const blocks = data.data_detail?.block || [];
 
@@ -143,6 +149,19 @@ export async function collectFuntime() {
       }
     } catch (err) {
       console.warn(`[FunTime] 抓取目標 "${t}" 時發生錯誤:`, err.message);
+    }
+  }
+
+  // 快取防呆備援：若遠端伺服器阻擋海外/CI IP 導致 0 筆，自動保留現有快取資料
+  if (!allDeals.length) {
+    try {
+      const cached = JSON.parse(await readFile(outputFile, 'utf8'));
+      if (Array.isArray(cached.deals) && cached.deals.length > 0) {
+        allDeals = cached.deals;
+        console.log(`[FunTime] 網路抓取受到限制，已啟用現有快取備援共 ${allDeals.length} 筆！`);
+      }
+    } catch {
+      console.warn('[FunTime] 無現成快取資料可用');
     }
   }
 

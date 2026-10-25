@@ -1,7 +1,7 @@
 {
   "source": "東南旅遊（SETtour）計劃機票",
   "sourceUrl": "https://www.settour.com.tw/",
-  "collectedAt": "2026-10-25T00:21:24.994Z",
+  "collectedAt": "2026-10-25T00:31:42.124Z",
   "count": 6,
   "deals": [
     {
@@ -30,7 +30,7 @@
       "availableDates": "11/15(日)、11/22(日)、11/29(日)、12/06(日)",
       "detail": "國籍航空正班機團體湊票，含兩地機場稅與23KG託運行李，機上附餐。",
       "checked": "2026-10-25",
-      "collectedAt": "2026-10-25T00:21:24.994Z"
+      "collectedAt": "2026-10-25T00:31:42.124Z"
     },
     {
       "id": "settour-kix-br-5d",
@@ -58,7 +58,7 @@
       "availableDates": "11/17(二)、11/24(二)、12/01(二)",
       "detail": "長榮直飛關西機場，固定5天來回，含稅含餐含行李。",
       "checked": "2026-10-25",
-      "collectedAt": "2026-10-25T00:21:24.994Z"
+      "collectedAt": "2026-10-25T00:31:42.124Z"
     },
     {
       "id": "settour-oka-it-4d",
@@ -86,7 +86,7 @@
       "availableDates": "11/18(三)、11/25(三)、12/02(三)",
       "detail": "虎航沖繩直飛團位出清，4天早去早回，含稅與20KG行李。",
       "checked": "2026-10-25",
-      "collectedAt": "2026-10-25T00:21:24.994Z"
+      "collectedAt": "2026-10-25T00:31:42.124Z"
     },
     {
       "id": "settour-fuk-jx-5d",
@@ -114,7 +114,7 @@
       "availableDates": "11/21(六)、11/28(六)",
       "detail": "星宇航空全新 A321neo 執飛，精品級體驗，含稅金與行李。",
       "checked": "2026-10-25",
-      "collectedAt": "2026-10-25T00:21:24.994Z"
+      "collectedAt": "2026-10-25T00:31:42.124Z"
     },
     {
       "id": "settour-icn-7c-5d",
@@ -142,7 +142,7 @@
       "availableDates": "11/16(一)、11/23(一)、11/30(一)",
       "detail": "直飛首爾仁川，固定5天自由行湊票，已含稅與15KG行李。",
       "checked": "2026-10-25",
-      "collectedAt": "2026-10-25T00:21:24.994Z"
+      "collectedAt": "2026-10-25T00:31:42.124Z"
     },
     {
       "id": "settour-bkk-jx-5d",
@@ -170,7 +170,7 @@
       "availableDates": "11/22(日)、11/29(日)、12/06(日)",
       "detail": "星宇直飛曼谷蘇凡納布機場，免簽出發，含稅含行李。",
       "checked": "2026-10-25",
-      "collectedAt": "2026-10-25T00:21:24.994Z"
+      "collectedAt": "2026-10-25T00:31:42.124Z"
     }
   ]
 }

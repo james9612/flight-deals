@@ -1,4 +1,4 @@
-import { mkdir, writeFile } from 'node:fs/promises';
+import { mkdir, writeFile, readFile } from 'node:fs/promises';
 
 const outputDir = new URL('../data/collected/', import.meta.url);
 const outputFile = new URL('liontravel-plan.json', outputDir);
@@ -139,7 +139,21 @@ export async function collectLionTravel() {
     }
   }
 
-  const results = [...allDeals.values()];
+  let results = [...allDeals.values()];
+
+  // 快取防呆備援
+  if (!results.length) {
+    try {
+      const cached = JSON.parse(await readFile(outputFile, 'utf8'));
+      if (Array.isArray(cached.deals) && cached.deals.length > 0) {
+        results = cached.deals;
+        console.log(`[雄獅旅遊] 網路抓取受到限制，已啟用現有快取備援共 ${results.length} 筆！`);
+      }
+    } catch {
+      console.warn('[雄獅旅遊] 無現成快取資料可用');
+    }
+  }
+
   await mkdir(outputDir, { recursive: true });
   await writeFile(outputFile, JSON.stringify({
     source: '雄獅旅遊旅遊計畫票專區',
