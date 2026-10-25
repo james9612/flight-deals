@@ -46,7 +46,7 @@ const server = http.createServer(async (req, res) => {
       try {
         const payload = JSON.parse(body || '{}');
         const rawText = payload.text || '';
-        const sourceUrl = payload.url || 'https://www.messenger.com/channel/goflytripTW';
+        const sourceUrl = 'https://line.me/R/ti/p/%40flynow01';
 
         if (!rawText.trim()) {
           res.writeHead(400, { 'Content-Type': 'application/json' });
@@ -92,7 +92,7 @@ const server = http.createServer(async (req, res) => {
         }
 
         res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
-        res.end(JSON.stringify({ success: true, deal, duplicate: isDuplicate }));
+        res.end(JSON.stringify({ success: true, addedCount, totalParsed: newDeals.length, deals: newDeals }));
       } catch (err) {
         console.error('[接收錯誤]', err);
         res.writeHead(500, { 'Content-Type': 'application/json' });
