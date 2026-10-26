@@ -195,8 +195,20 @@ export async function mergeCollected() {
   const todayStr = new Date().toISOString().slice(0, 10);
   const byId = new Map();
   for (const deal of allRawDeals) {
-    // 過期機票自動排除（出發日期已小於今天）
+    // 1. 過期機票自動排除（出發日期已小於今天）
     if (deal.depart && deal.depart < todayStr) continue;
+
+    // 2. 排除死連結或無效 URL（如已失效的舊版 404 搜尋頁）
+    if (!deal.sourceUrl || deal.sourceUrl === '#' || deal.sourceUrl.includes('st_flight_inter_search.html')) continue;
+
+    // 3. 排除標題或說明中明確標記已售完、售罄、已額滿的項目
+    const textToCheck = `${deal.title || ''} ${deal.detail || ''} ${deal.availableDates || ''}`;
+    if (textToCheck.includes('已售完') || textToCheck.includes('已售罄') || textToCheck.includes('已額滿') || textToCheck.includes('此商品已下架') || textToCheck.includes('此商品目前無法購買')) {
+      continue;
+    }
+
+    // 4. 價格有效性檢查
+    if (!deal.price || Number(deal.price) < 1000) continue;
 
     const city = deal.city || deal.destination || '精選航點';
     const normalized = {

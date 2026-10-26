@@ -37,10 +37,16 @@ export async function collectFuntime() {
         const goods = b.goods || [];
         for (const g of goods) {
           const price = Number(g.price || 0);
-          if (g.price_str === '售完' || !price || price < 4000) continue;
-          index++;
-
+          const priceStr = g.price_str || '';
           const title = g.title || '';
+
+          // 嚴格過濾：已售完、售罄、已額滿或非正常價格
+          if (priceStr.includes('售完') || priceStr.includes('售罄') || priceStr.includes('額滿') ||
+              title.includes('售完') || title.includes('額滿') || title.includes('售罄') || title.includes('已滿') ||
+              !price || price < 4000) {
+            continue;
+          }
+          index++;
           let city = b.sub_title || '精選航點';
           let code = 'TYO';
           let country = t === 'Japan' ? 'japan' : (t === 'Korea' ? 'korea' : 'asia');
