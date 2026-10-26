@@ -1,13 +1,13 @@
 // ==UserScript==
-// @name         ✈️ 飛行便宜・Facebook 粉專貼文 ＆ Messenger 清艙即時監聽外掛
+// @name         ✈️ 飛行便宜・Messenger 清艙機票即時監聽外掛（純聊天室/廣播頻道）
 // @namespace    https://james9612.github.io/flight-deals/
-// @version      1.3.0
-// @description  自動即時監聽 Facebook 粉絲專頁貼文與 Messenger 廣播專區（如飛趣旅遊）之清艙機票，並一鍵/自動同步至「飛行便宜」比價網！
+// @version      1.4.0
+// @description  專注即時監聽 Messenger 廣播頻道與聊天室（如飛趣旅遊搶票專區）之清艙機票，已完全停用並排除 Facebook 粉絲頁與動態貼文牆！
 // @author       飛行便宜
 // @match        *://*.messenger.com/*
 // @match        *://messenger.com/*
-// @match        *://*.facebook.com/*
-// @match        *://facebook.com/*
+// @match        *://*.facebook.com/messages/*
+// @match        *://facebook.com/messages/*
 // @grant        GM_xmlhttpRequest
 // @grant        GM_setValue
 // @grant        GM_getValue
@@ -83,9 +83,10 @@
     const payload = {
       text: text,
       url: window.location.href,
-      author: '飛趣旅遊官方粉絲專頁',
+      author: '飛趣旅遊 Messenger 官方頻道',
       timestamp: new Date().toISOString()
     };
+
 
     GM_xmlhttpRequest({
       method: 'POST',
@@ -270,16 +271,13 @@
     }
   }
 
-  // 擷取最新一則訊息或粉專貼文（只鎖定聊天對話主畫面或貼文牆，完全避開側邊欄聯絡人列表）
+  // 擷取最新一則 Messenger 聊天或廣播頻道訊息（只鎖定對話主畫面，完全避開側邊欄聯絡人列表與非對話元素）
   function captureLatestMessage(isManual = false) {
     const selectors = [
       'div[role="main"] div[dir="auto"]',
       'div[aria-label="訊息"] div[dir="auto"]',
       'div[data-pagelet="Messages"] div[dir="auto"]',
-      'div[role="feed"] div[dir="auto"]',
-      'div[data-ad-preview="message"]',
-      'div[data-ad-comet-preview="message"]',
-      'div[role="article"]'
+      'div[role="gridcell"] div[dir="auto"]'
     ];
     const messages = Array.from(document.querySelectorAll(selectors.join(', ')))
       .filter(el => !el.closest('[role="navigation"]') && !el.closest('[aria-label*="Chats"]') && !el.closest('[aria-label*="對話"]'));

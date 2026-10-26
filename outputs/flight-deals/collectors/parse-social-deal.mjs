@@ -127,14 +127,14 @@ export function parseSocialDeals(rawText, sourceUrl = 'https://line.me/R/ti/p/%4
           airline: blockAirline,
           air: blockAirline,
           baggage: blockAirline === '長榮航空' || blockAirline === '中華航空' ? '含機上餐與來回託運行李' : '含來回託運行李（依清艙商品規格）',
-          source: '飛趣旅遊官方粉絲專頁',
+          source: '飛趣旅遊 Messenger 官方頻道',
           sourceUrl,
           checked: new Date().toISOString().slice(0, 10),
           tag: '飛趣旅遊清艙',
           agency: '飛趣旅遊',
           kind: 'plan',
           flightTime,
-          detail: `【飛趣旅遊 清艙機票】${blockAirline}直飛${blockCity}${activeDays}日機票｜資訊來自於官方粉絲專頁，出發日：${depart}，含稅特惠價 NT$ ${activePrice.toLocaleString()}，官方 LINE: @flynow01 私訊搶位！`,
+          detail: `【飛趣旅遊 清艙機票】${blockAirline}直飛${blockCity}${activeDays}日機票｜資訊來自於 Messenger 官方頻道，出發日：${depart}，含稅特惠價 NT$ ${activePrice.toLocaleString()}，官方 LINE: @flynow01 私訊搶位！`,
           rawMessage: line,
           collectedAt: new Date().toISOString()
         });
@@ -204,14 +204,14 @@ export function parseSocialDeals(rawText, sourceUrl = 'https://line.me/R/ti/p/%4
           airline,
           air: airline,
           baggage: airline === '長榮航空' || airline === '中華航空' ? '含機上餐與來回託運行李' : '含來回託運行李（依清艙商品規格）',
-          source: '飛趣旅遊官方粉絲專頁',
+          source: '飛趣旅遊 Messenger 官方頻道',
           sourceUrl,
           checked: new Date().toISOString().slice(0, 10),
           tag: '飛趣旅遊清艙',
           agency: '飛趣旅遊',
           kind: 'plan',
           flightTime,
-          detail: `【飛趣旅遊 清艙機票】${desc}｜資訊來自於官方粉絲專頁，出發日：${depart}，含稅特惠價 NT$ ${price.toLocaleString()}，官方 LINE: @flynow01 私訊搶位！`,
+          detail: `【飛趣旅遊 清艙機票】${desc}｜資訊來自於 Messenger 官方頻道，出發日：${depart}，含稅特惠價 NT$ ${price.toLocaleString()}，官方 LINE: @flynow01 私訊搶位！`,
           rawMessage: line,
           collectedAt: new Date().toISOString()
         });
@@ -357,7 +357,7 @@ function parseSingleSocialDeal(rawText, sourceUrl) {
     agency: '飛趣旅遊',
     kind: 'plan',
     flightTime,
-    detail: `【飛趣旅遊 清艙機票】${cleanDetailText.slice(0, 150)}｜資訊來自於官方粉絲專頁`,
+    detail: `【飛趣旅遊 清艙機票】${cleanDetailText.slice(0, 150)}｜資訊來自於 Messenger 官方頻道`,
     rawMessage: text,
     collectedAt: new Date().toISOString()
   };

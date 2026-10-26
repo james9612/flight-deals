@@ -67,7 +67,9 @@ export async function mergeCollected() {
     d.city === '精選航點' ||
     d.code === 'INT' ||
     /Facebook\s*Facebook/i.test(`${d.detail || ''} ${d.rawMessage || ''}`) ||
-    /萬位追蹤者|正在追蹤|上線狀態指示燈/i.test(`${d.detail || ''} ${d.rawMessage || ''}`);
+    /萬位追蹤者|正在追蹤|上線狀態指示燈/i.test(`${d.detail || ''} ${d.rawMessage || ''}`) ||
+    /聊天室|未讀|陌生訊息|存股日記/i.test(`${d.detail || ''} ${d.rawMessage || ''}`) ||
+    (d.agency === '飛趣旅遊' && Number(d.price) === 8888 && !d.depart);
 
   const existingDeals = (await safeReadJson(dealsFile)).filter(d => !isGarbage(d));
   if (existingDeals.length > 0) {
@@ -232,7 +234,15 @@ export async function mergeCollected() {
       continue;
     }
 
-    // 7. 價格有效性檢查
+    // 7. 排除聊天室側邊欄聯絡人列表與未讀清單雜訊，以及無出發日期的 8888 假卡片
+    if (
+      /聊天室|未讀|陌生訊息|存股日記/i.test(fullText) ||
+      (deal.agency === '飛趣旅遊' && Number(deal.price) === 8888 && !deal.depart)
+    ) {
+      continue;
+    }
+
+    // 8. 價格有效性檢查
     if (!deal.price || Number(deal.price) < 1000) continue;
 
     const city = deal.city || deal.destination || '精選航點';
