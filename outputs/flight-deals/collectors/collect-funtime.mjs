@@ -39,11 +39,18 @@ export async function collectFuntime() {
           const price = Number(g.price || 0);
           const priceStr = g.price_str || '';
           const title = g.title || '';
+          const rawUrl = g.url || '';
 
           // 嚴格過濾：已售完、售罄、已額滿或非正常價格
           if (priceStr.includes('售完') || priceStr.includes('售罄') || priceStr.includes('額滿') ||
               title.includes('售完') || title.includes('額滿') || title.includes('售罄') || title.includes('已滿') ||
               !price || price < 4000) {
+            continue;
+          }
+
+          // 嚴格過濾：已知已售罄／無法購買的黑名單商品（如 KKday 247091 等失效專案）
+          // 以及過期的行銷導購（KKday 計畫機票生命週期短，FunTime 專題常年未更新導致點開皆顯示已售罄）
+          if (rawUrl.includes('247091') || rawUrl.includes('travel.gounitravel.com') || rawUrl.includes('kkday.com/zh-tw/product/')) {
             continue;
           }
           index++;

@@ -60,19 +60,23 @@ export async function mergeCollected() {
   let goflytripDeals = await safeReadJson(goflytripFile);
   const zeroPromos = await safeReadJson(zeroPromosFile);
 
-  // 備援防護：若有任何單一來源因為網路或防爬限制回傳 0 筆，從現有 deals.json 恢復資料，防止資料被清空
-  const existingDeals = await safeReadJson(dealsFile);
+  // 備援防護：若有任何單一來源因為網路或防爬限制回傳 0 筆，從現有 deals.json 恢復資料（自動排除已知售罄與黑名單商品）
+  const BLACKLIST_PATTERNS = ['247091', '135223', '135753', '139265', '175503', '157399', '146962', '137240', 'st_flight_inter_search.html'];
+  const isBlacklisted = (d) => BLACKLIST_PATTERNS.some(p => (d.sourceUrl || '').includes(p) || (d.id || '').includes(p));
+
+  const existingDeals = (await safeReadJson(dealsFile)).filter(d => !isBlacklisted(d));
   if (existingDeals.length > 0) {
     if (!lionDeals.length) lionDeals = existingDeals.filter(d => d.agency === '雄獅旅遊');
     if (!flytourDeals.length) flytourDeals = existingDeals.filter(d => d.agency === '飛遊網');
     if (!colatourDeals.length) colatourDeals = existingDeals.filter(d => d.agency === '可樂旅遊');
     if (!ezflyDeals.length) ezflyDeals = existingDeals.filter(d => d.agency === '易飛網');
-    if (!kkdayDeals.length) kkdayDeals = existingDeals.filter(d => d.agency === 'KKday');
+    // KKday 歷史硬編碼皆已售罄，若無新即時票則不從舊快取復原
     if (!ehsDeals.length) ehsDeals = existingDeals.filter(d => d.agency === '東森旅遊');
     if (!settourDeals.length) settourDeals = existingDeals.filter(d => d.agency === '東南旅遊');
     if (!funtimeDeals.length) funtimeDeals = existingDeals.filter(d => d.agency === 'FunTime');
     if (!goflytripDeals.length) goflytripDeals = existingDeals.filter(d => d.agency === '飛趣旅遊');
   }
+
 
   console.log(`讀取各來源筆數：雄獅 ${lionDeals.length} 筆，飛遊網 ${flytourDeals.length} 筆，可樂 ${colatourDeals.length} 筆，易飛網 ${ezflyDeals.length} 筆，KKday ${kkdayDeals.length} 筆，東森旅遊 ${ehsDeals.length} 筆，東南旅遊 ${settourDeals.length} 筆，FunTime ${funtimeDeals.length} 筆，飛趣旅遊 ${goflytripDeals.length} 筆，航空公司特報 ${zeroPromos.length} 筆`);
 
@@ -201,7 +205,10 @@ export async function mergeCollected() {
     // 2. 排除死連結或無效 URL（如已失效的舊版 404 搜尋頁）
     if (!deal.sourceUrl || deal.sourceUrl === '#' || deal.sourceUrl.includes('st_flight_inter_search.html')) continue;
 
-    // 3. 排除標題或說明中明確標記已售完、售罄、已額滿的項目
+    // 3. 排除已知售罄、無法購買、或死鏈之黑名單商品（如 KKday 247091 等舊行銷活動）
+    if (isBlacklisted(deal)) continue;
+
+    // 4. 排除標題或說明中明確標記已售完、售罄、已額滿的項目
     const textToCheck = `${deal.title || ''} ${deal.detail || ''} ${deal.availableDates || ''}`;
     if (textToCheck.includes('已售完') || textToCheck.includes('已售罄') || textToCheck.includes('已額滿') || textToCheck.includes('此商品已下架') || textToCheck.includes('此商品目前無法購買')) {
       continue;
