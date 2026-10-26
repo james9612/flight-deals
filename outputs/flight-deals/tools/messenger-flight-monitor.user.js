@@ -42,12 +42,17 @@
   function isFlightMessage(text) {
     if (!text || text.length < 10) return false;
 
-    // 排除個人對話、未讀通知、系統提示、粉專自介與重複 Facebook 導航文字
-    const noisePatterns = ['未讀訊息', '端對端加密', '請告訴我們該如何為你提供協助', '傳送了', '查看全部', '撥打電話', '語音通話', '已讀', '萬位追蹤者', '正在追蹤', '上線狀態指示燈', '營業時間', '發送訊息'];
+    // 排除個人對話、未讀通知、系統提示、粉專自介、重複 Facebook 導航文字，以及純折扣券/領取折扣碼廣告
+    const noisePatterns = [
+      '未讀訊息', '端對端加密', '請告訴我們該如何為你提供協助', '傳送了', '查看全部', '撥打電話', '語音通話', '已讀',
+      '萬位追蹤者', '正在追蹤', '上線狀態指示燈', '營業時間', '發送訊息',
+      '折扣券', '折扣碼', '現折$', '現折', '領起來', 'TWTRANS', 'FLYDAY', '接送5折', '接送94折'
+    ];
     for (const np of noisePatterns) {
       if (text.includes(np)) return false;
     }
     if ((text.match(/Facebook/gi) || []).length >= 3) return false;
+
 
 
     // 必須含有價格特徵 或 ✈ 航班標記

@@ -42,14 +42,16 @@ export function parseSocialDeals(rawText, sourceUrl = 'https://line.me/R/ti/p/%4
   if (!rawText || typeof rawText !== 'string') return [];
 
   const text = rawText.trim();
-  // 嚴格過濾：排除粉專自介、社群導航與重複 Facebook 雜訊
+  // 嚴格過濾：排除粉專自介、社群導航、重複 Facebook 雜訊與純折價券/折扣碼推廣廣告
   if (
     /萬位追蹤者|正在追蹤|上線狀態指示燈|營業時間|旅遊服務\s*·\s*\$\$|發送訊息/i.test(text) ||
+    /折扣券|折扣碼|現折|領起來|機場接送.*折|指定迷你團/i.test(text) ||
     /Facebook\s*Facebook\s*Facebook/i.test(text) ||
     (text.match(/Facebook/gi) || []).length >= 3
   ) {
     return [];
   }
+
 
   const currentYear = new Date().getFullYear();
   const results = [];
@@ -323,8 +325,8 @@ function parseSingleSocialDeal(rawText, sourceUrl) {
   const code = cityCodeMap[city] || 'INT';
   const country = countryMap[city] || 'asia';
 
-  // 嚴格檢驗：必須有具體目的地城市且有合理價格，絕不虛構「精選航點 / 8888」假機票
-  if (city === '精選航點' || code === 'INT' || !price || price < 3000) {
+  // 嚴格檢驗：必須有具體目的地城市、具體航空公司、明確出發日且價格合理，絕不收錄折價券或無出發日廣告
+  if (city === '精選航點' || code === 'INT' || airline === '精選航空' || !price || price < 3000 || !depart) {
     return null;
   }
 
