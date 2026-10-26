@@ -1,7 +1,7 @@
 {
   "source": "KKday 計劃機票與清艙專區",
   "sourceUrl": "https://www.kkday.com/zh-tw/promo/flight_hotel",
-  "collectedAt": "2026-10-25T00:31:42.124Z",
+  "collectedAt": "2026-10-26T06:42:06.526Z",
   "count": 8,
   "deals": [
     {
@@ -29,8 +29,8 @@
       "sourceUrl": "https://www.kkday.com/zh-tw/product/135223",
       "availableDates": "11/14(六)、11/21(六)、11/28(六)、12/05(六)",
       "detail": "固定去回航班時間，含兩地機場稅與20KG託運行李，下訂後需客服確認開票。",
-      "checked": "2026-10-25",
-      "collectedAt": "2026-10-25T00:31:42.124Z"
+      "checked": "2026-10-26",
+      "collectedAt": "2026-10-26T06:42:06.526Z"
     },
     {
       "id": "kkday-kix-mm-5d",
@@ -57,8 +57,8 @@
       "sourceUrl": "https://www.kkday.com/zh-tw/product/135753",
       "availableDates": "11/16(一)、11/23(一)、11/30(一)、12/07(一)",
       "detail": "樂桃航空固定班次，不可改期退票，含稅金與行李。",
-      "checked": "2026-10-25",
-      "collectedAt": "2026-10-25T00:31:42.124Z"
+      "checked": "2026-10-26",
+      "collectedAt": "2026-10-26T06:42:06.526Z"
     },
     {
       "id": "kkday-fuk-it-5d",
@@ -85,8 +85,8 @@
       "sourceUrl": "https://www.kkday.com/zh-tw/product/139265",
       "availableDates": "11/20(五)、11/27(五)、12/04(五)",
       "detail": "九州福岡直飛，早去午回，已含20KG行李與機場稅。",
-      "checked": "2026-10-25",
-      "collectedAt": "2026-10-25T00:31:42.124Z"
+      "checked": "2026-10-26",
+      "collectedAt": "2026-10-26T06:42:06.526Z"
     },
     {
       "id": "kkday-oka-it-4d",
@@ -113,8 +113,8 @@
       "sourceUrl": "https://www.kkday.com/zh-tw/product/175503",
       "availableDates": "11/19(四)、11/26(四)",
       "detail": "虎航桃園直飛那霸，固定4天行程，早去早回/午去晚回。",
-      "checked": "2026-10-25",
-      "collectedAt": "2026-10-25T00:31:42.124Z"
+      "checked": "2026-10-26",
+      "collectedAt": "2026-10-26T06:42:06.526Z"
     },
     {
       "id": "kkday-icn-lj-5d",
@@ -141,8 +141,8 @@
       "sourceUrl": "https://www.kkday.com/zh-tw/product/157399",
       "availableDates": "11/13(五)、11/20(五)、11/27(五)",
       "detail": "桃園直飛仁川，固定5天湊票，價格已包含稅金與15KG行李。",
-      "checked": "2026-10-25",
-      "collectedAt": "2026-10-25T00:31:42.124Z"
+      "checked": "2026-10-26",
+      "collectedAt": "2026-10-26T06:42:06.526Z"
     },
     {
       "id": "kkday-pus-bx-5d",
@@ -169,8 +169,8 @@
       "sourceUrl": "https://www.kkday.com/zh-tw/product/146962",
       "availableDates": "11/15(日)、11/22(日)、11/29(日)",
       "detail": "直飛釜山金海機場，固定5天機票，含稅金與行李。",
-      "checked": "2026-10-25",
-      "collectedAt": "2026-10-25T00:31:42.124Z"
+      "checked": "2026-10-26",
+      "collectedAt": "2026-10-26T06:42:06.526Z"
     },
     {
       "id": "kkday-bkk-sl-5d",
@@ -197,8 +197,8 @@
       "sourceUrl": "https://www.kkday.com/zh-tw/product/247091",
       "availableDates": "11/21(六)、11/28(六)、12/05(六)",
       "detail": "曼谷廊曼直飛，5天免簽暢遊泰國，含20KG行李與機場稅。",
-      "checked": "2026-10-25",
-      "collectedAt": "2026-10-25T00:31:42.124Z"
+      "checked": "2026-10-26",
+      "collectedAt": "2026-10-26T06:42:06.526Z"
     },
     {
       "id": "kkday-pqc-vj-5d",
@@ -225,8 +225,8 @@
       "sourceUrl": "https://www.kkday.com/zh-tw/product/137240",
       "availableDates": "11/18(三)、11/25(三)、12/02(三)",
       "detail": "富國島台灣護照享免簽證入境，直飛航班含稅與行李。",
-      "checked": "2026-10-25",
-      "collectedAt": "2026-10-25T00:31:42.124Z"
+      "checked": "2026-10-26",
+      "collectedAt": "2026-10-26T06:42:06.526Z"
     }
   ]
 }
