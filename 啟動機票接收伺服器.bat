@@ -1,17 +1,34 @@
 @echo off
-title ✈️ 飛行便宜 - Messenger / FB 清艙機票接收伺服器
 chcp 65001 >nul
-cd /d "%~dp0outputs\flight-deals"
+title [Flight Deals] Messenger Receiver Server
 
 echo ========================================================
-echo ✈️  正在啟動「飛行便宜」即時機票接收伺服器...
-echo 📡 監聽位址：http://localhost:3500
-echo 🟢 油猴外掛將自動連線並即時同步社群清艙機票！
-echo.
-echo 💡 提示：請保持此視窗開啟。縮小至工作列即可。
-echo    若要停止接收，直接關閉此黑視窗即可。
+echo  Flight Deals - Messenger Live Ingestion Server
+echo  Status: Starting...
 echo ========================================================
+echo.
+
+set "SCRIPT_DIR=%~dp0"
+set "APP_DIR=%SCRIPT_DIR%outputs\flight-deals"
+
+if not exist "%APP_DIR%\collectors\messenger-receiver.mjs" (
+    echo [ERROR] Cannot find messenger-receiver.mjs!
+    echo Checked path: %APP_DIR%\collectors\messenger-receiver.mjs
+    echo Please make sure the folder structure is intact.
+    echo.
+    pause
+    exit /b 1
+)
+
+cd /d "%APP_DIR%"
+
+echo [INFO] Working Directory: %APP_DIR%
+echo [INFO] Port: 3500
+echo [INFO] Testing server...
 echo.
 
 node collectors/messenger-receiver.mjs
+
+echo.
+echo [INFO] Server stopped.
 pause

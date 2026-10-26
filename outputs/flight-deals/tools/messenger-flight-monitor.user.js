@@ -1,13 +1,13 @@
 // ==UserScript==
 // @name         ✈️ 飛行便宜・Messenger 清艙機票即時監聽外掛（純聊天室/廣播頻道）
 // @namespace    https://james9612.github.io/flight-deals/
-// @version      1.4.0
-// @description  專注即時監聽 Messenger 廣播頻道與聊天室（如飛趣旅遊搶票專區）之清艙機票，已完全停用並排除 Facebook 粉絲頁與動態貼文牆！
+// @version      1.4.1
+// @description  專注即時監聽 Messenger 聊天室與廣播頻道（如飛趣搶票專區）之清艙機票，嚴格只在對話視窗內抓取，完全排除粉絲頁動態與粉專自介！
 // @author       飛行便宜
 // @match        *://*.messenger.com/*
 // @match        *://messenger.com/*
-// @match        *://*.facebook.com/messages/*
-// @match        *://facebook.com/messages/*
+// @match        *://*.facebook.com/*
+// @match        *://facebook.com/*
 // @grant        GM_xmlhttpRequest
 // @grant        GM_setValue
 // @grant        GM_getValue
@@ -271,6 +271,15 @@
     }
   }
 
+  // 嚴格判定：只允許對話訊息泡泡，徹底排除粉專貼文牆、動態時報與個人簡介
+  function isChatContext(element) {
+    if (!element || typeof element.closest !== 'function') return false;
+    if (element.closest('[role="feed"], [aria-label*="動態"], [aria-label*="貼文"], [role="navigation"], header')) {
+      return false;
+    }
+    return Boolean(element.closest('[role="main"], [aria-label*="訊息"], [aria-label*="對話"], [data-pagelet*="Chat"], [data-pagelet*="Messages"], [role="gridcell"]'));
+  }
+
   // 擷取最新一則 Messenger 聊天或廣播頻道訊息（只鎖定對話主畫面，完全避開側邊欄聯絡人列表與非對話元素）
   function captureLatestMessage(isManual = false) {
     const selectors = [
@@ -280,7 +289,7 @@
       'div[role="gridcell"] div[dir="auto"]'
     ];
     const messages = Array.from(document.querySelectorAll(selectors.join(', ')))
-      .filter(el => !el.closest('[role="navigation"]') && !el.closest('[aria-label*="Chats"]') && !el.closest('[aria-label*="對話"]'));
+      .filter(el => isChatContext(el) && !el.closest('[aria-label*="Chats"]') && !el.closest('[aria-label*="對話"]'));
     let latestValid = null;
 
     for (let i = messages.length - 1; i >= 0; i--) {
@@ -292,7 +301,7 @@
     }
 
     if (!latestValid) {
-      if (isManual) showToast('🔍 畫面上目前未偵測到包含機票/特價關鍵字的訊息', '#f59e0b');
+      if (isManual) showToast('🔍 對話視窗內目前未偵測到機票訊息', '#f59e0b');
       return;
     }
 
@@ -337,7 +346,7 @@
       for (const m of mutations) {
         if (m.addedNodes.length > 0) {
           for (const node of m.addedNodes) {
-            if (node.nodeType === Node.ELEMENT_NODE) {
+            if (node.nodeType === Node.ELEMENT_NODE && isChatContext(node)) {
               const text = node.innerText || node.textContent || '';
               if (isFlightMessage(text)) {
                 processNewMessage(text.trim());
@@ -347,6 +356,7 @@
         }
       }
     });
+
 
     observer.observe(document.body, {
       childList: true,
