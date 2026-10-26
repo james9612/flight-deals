@@ -343,7 +343,7 @@ function renderDeals() {
         <div>
           <div class="card-foot-pricing">
             <div class="foot-info">
-              <b>固定日期計畫機票</b>
+              <b>${d.depart ? '固定日期計畫機票' : '多梯次特惠機票'}</b>
               含稅金與行李額度
             </div>
             <div class="fare-price-box">

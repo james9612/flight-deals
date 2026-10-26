@@ -104,13 +104,32 @@ export async function collectFuntime() {
             (title.includes('午去晚回') ? '午去晚回直飛' :
             (title.includes('早去早回') ? '早去早回直飛' : '每日正班直飛')));
 
-          // Realistic Departure Batches
-          const departDate = '2026-11-18';
-          const returnD = new Date(departDate);
-          returnD.setDate(returnD.getDate() + (days - 1));
-          const returnDate = returnD.toISOString().slice(0, 10);
-          const dateStr = `${departDate.slice(5).replace('-', '/')} – ${returnDate.slice(5).replace('-', '/')}（${schedule}）`;
-          const availableDates = `11/14(六)、11/18(三)、11/21(六)、11/25(三)、11/28(六) 等固定梯次`;
+          // Check if title has explicit departure date (e.g. 11/20出發, 12/5出發)
+          const titleDateMatch = title.match(/(?:【|\(|\[)?([0-1]?[0-9])[\/\.月]([0-3]?[0-9])(?:日)?(?:\s*出發)?(?:】|\)|\])?/);
+          const hasRangeOrMulti = title.includes('~') || title.includes('～') || title.includes('至') || title.includes('4-6') || title.includes('4~6') || title.includes('5-6');
+
+          let departDate = '';
+          let returnDate = '';
+          let dateStr = '';
+          let availableDates = '';
+
+          if (titleDateMatch && !hasRangeOrMulti) {
+            const m = titleDateMatch[1].padStart(2, '0');
+            const d = titleDateMatch[2].padStart(2, '0');
+            const curY = new Date().getFullYear();
+            departDate = `${curY}-${m}-${d}`;
+            const retD = new Date(departDate);
+            retD.setDate(retD.getDate() + (days - 1));
+            returnDate = retD.toISOString().slice(0, 10);
+            dateStr = `${m}/${d} – ${returnDate.slice(5).replace('-', '/')}（${schedule}）`;
+            availableDates = `指定固定梯次：${m}/${d} 出發，${duration}`;
+          } else {
+            // Multi-batch plan ticket package: transparently guide users to supplier calendar
+            departDate = '';
+            returnDate = '';
+            dateStr = `${duration}・多梯次可選（依預訂頁為準）`;
+            availableDates = '此商品包含多個出發梯次，點擊「前往預訂」即可查看供應商最新日曆與即時餘位';
+          }
 
           // Accurate Baggage
           const baggage = (title.includes('含餐') && title.includes('含行李')) ? '含機上餐＋來回20KG行李' :
@@ -140,7 +159,7 @@ export async function collectFuntime() {
             agency: 'FunTime',
             source: 'FunTime旅遊比價網（localtour）',
             sourceUrl: g.url ? (g.url.startsWith('http') ? g.url : `https://www.funtime.com.tw${g.url}`) : 'https://www.funtime.com.tw/localtour/',
-            detail: `${title}｜${airline}直飛，含稅金與行李。FunTime 旅遊比價彙整，點擊直達原始預訂頁`,
+            detail: `${title}｜${airline}直飛，含稅金與行李。此為 FunTime 彙整之多梯次計畫機票，實際可售出發日與即時剩餘機位以跳轉後的供應商預訂頁為準。`,
             availableDates,
             checked: now.slice(0, 10),
             collectedAt: now
