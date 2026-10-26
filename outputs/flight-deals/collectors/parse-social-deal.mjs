@@ -42,6 +42,15 @@ export function parseSocialDeals(rawText, sourceUrl = 'https://line.me/R/ti/p/%4
   if (!rawText || typeof rawText !== 'string') return [];
 
   const text = rawText.trim();
+  // 嚴格過濾：排除粉專自介、社群導航與重複 Facebook 雜訊
+  if (
+    /萬位追蹤者|正在追蹤|上線狀態指示燈|營業時間|旅遊服務\s*·\s*\$\$|發送訊息/i.test(text) ||
+    /Facebook\s*Facebook\s*Facebook/i.test(text) ||
+    (text.match(/Facebook/gi) || []).length >= 3
+  ) {
+    return [];
+  }
+
   const currentYear = new Date().getFullYear();
   const results = [];
   const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
@@ -313,6 +322,16 @@ function parseSingleSocialDeal(rawText, sourceUrl) {
 
   const code = cityCodeMap[city] || 'INT';
   const country = countryMap[city] || 'asia';
+
+  // 嚴格檢驗：必須有具體目的地城市且有合理價格，絕不虛構「精選航點 / 8888」假機票
+  if (city === '精選航點' || code === 'INT' || !price || price < 3000) {
+    return null;
+  }
+
+  // 清洗 detail 文字雜訊
+  const cleanDetailText = text.replace(/Facebook\s*/gi, '').replace(/\n+/g, ' ').trim();
+  if (cleanDetailText.length < 15) return null;
+
   const dateStr = depart && returnDate ? `${depart.slice(5).replace('-', '/')} – ${returnDate.slice(5).replace('-', '/')}` : `${days} 天清艙票`;
 
   return {
@@ -322,7 +341,7 @@ function parseSingleSocialDeal(rawText, sourceUrl) {
     from,
     fc,
     country,
-    price: price || 8888,
+    price,
     currency: 'TWD',
     depart,
     return: returnDate,
@@ -338,7 +357,7 @@ function parseSingleSocialDeal(rawText, sourceUrl) {
     agency: '飛趣旅遊',
     kind: 'plan',
     flightTime,
-    detail: `【飛趣旅遊 清艙機票】${text.slice(0, 150)}｜資訊來自於官方粉絲專頁`,
+    detail: `【飛趣旅遊 清艙機票】${cleanDetailText.slice(0, 150)}｜資訊來自於官方粉絲專頁`,
     rawMessage: text,
     collectedAt: new Date().toISOString()
   };

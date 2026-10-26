@@ -42,11 +42,13 @@
   function isFlightMessage(text) {
     if (!text || text.length < 10) return false;
 
-    // 排除個人對話、未讀通知與系統提示
-    const noisePatterns = ['未讀訊息', '端對端加密', '請告訴我們該如何為你提供協助', '傳送了', '查看全部', '撥打電話', '語音通話', '已讀'];
+    // 排除個人對話、未讀通知、系統提示、粉專自介與重複 Facebook 導航文字
+    const noisePatterns = ['未讀訊息', '端對端加密', '請告訴我們該如何為你提供協助', '傳送了', '查看全部', '撥打電話', '語音通話', '已讀', '萬位追蹤者', '正在追蹤', '上線狀態指示燈', '營業時間', '發送訊息'];
     for (const np of noisePatterns) {
       if (text.includes(np)) return false;
     }
+    if ((text.match(/Facebook/gi) || []).length >= 3) return false;
+
 
     // 必須含有價格特徵 或 ✈ 航班標記
     const hasPriceOrFlight = text.includes('✈') || /(?:NT\$|TWD|\$|特價|只要|機票|一口價)\s*([0-9]{4,5})/i.test(text) || /\b([3-9][0-9]{3}|[1-2][0-9]{4})\b/.test(text);

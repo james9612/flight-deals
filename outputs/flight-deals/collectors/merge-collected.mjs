@@ -63,8 +63,13 @@ export async function mergeCollected() {
   // 備援防護：若有任何單一來源因為網路或防爬限制回傳 0 筆，從現有 deals.json 恢復資料（自動排除已知售罄與黑名單商品）
   const BLACKLIST_PATTERNS = ['247091', '135223', '135753', '139265', '175503', '157399', '146962', '137240', 'st_flight_inter_search.html'];
   const isBlacklisted = (d) => BLACKLIST_PATTERNS.some(p => (d.sourceUrl || '').includes(p) || (d.id || '').includes(p));
+  const isGarbage = (d) => isBlacklisted(d) ||
+    d.city === '精選航點' ||
+    d.code === 'INT' ||
+    /Facebook\s*Facebook/i.test(`${d.detail || ''} ${d.rawMessage || ''}`) ||
+    /萬位追蹤者|正在追蹤|上線狀態指示燈/i.test(`${d.detail || ''} ${d.rawMessage || ''}`);
 
-  const existingDeals = (await safeReadJson(dealsFile)).filter(d => !isBlacklisted(d));
+  const existingDeals = (await safeReadJson(dealsFile)).filter(d => !isGarbage(d));
   if (existingDeals.length > 0) {
     if (!lionDeals.length) lionDeals = existingDeals.filter(d => d.agency === '雄獅旅遊');
     if (!flytourDeals.length) flytourDeals = existingDeals.filter(d => d.agency === '飛遊網');
@@ -214,7 +219,20 @@ export async function mergeCollected() {
       continue;
     }
 
-    // 4. 價格有效性檢查
+    // 5. 排除無具體航點的虛構假卡片（如「精選航點 / INT」）
+    if (deal.city === '精選航點' || deal.code === 'INT') continue;
+
+    // 6. 排除被社群粉專簡介、導航雜訊或重複 Facebook 標籤污染之無效項目
+    const fullText = `${deal.title || ''} ${deal.detail || ''} ${deal.rawMessage || ''}`;
+    if (
+      /Facebook\s*Facebook/i.test(fullText) ||
+      /萬位追蹤者|正在追蹤|上線狀態指示燈/i.test(fullText) ||
+      (deal.detail && (deal.detail.match(/Facebook/gi) || []).length >= 3)
+    ) {
+      continue;
+    }
+
+    // 7. 價格有效性檢查
     if (!deal.price || Number(deal.price) < 1000) continue;
 
     const city = deal.city || deal.destination || '精選航點';
