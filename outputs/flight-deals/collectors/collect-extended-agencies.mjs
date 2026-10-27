@@ -250,7 +250,7 @@ export async function collectExtendedAgencies() {
       checked: '2026-10-27'
     },
 
-    // 3. 山富旅遊 (Richmond Tours) - 獨家包機計畫機票直達單品頁與訂購頁
+    // 3. 山富旅遊 (Richmond Tours) - 獨家包機計畫機票直達單品頁與即時比價訂購
     {
       id: 'richmond-TAK-1110-8800',
       agency: '山富旅遊',
@@ -271,7 +271,7 @@ export async function collectExtendedAgencies() {
       air: '中華航空',
       baggage: '含來回託運 23 公斤',
       tag: '山富華航直飛',
-      detail: '【高雄高松6天計畫機票】中華航空高雄直飛四國高松6天計畫旅遊票(TKT純機票)，免跟團1人成行，含稅、23KG託運與來回機上餐。',
+      detail: '【高雄高松6天計畫機票單品】中華航空高雄直飛四國高松6天計畫旅遊票(TKT純機票)，免跟團1人成行，含稅、23KG託運與來回機上餐。',
       flightTime: '早去午回',
       checked: '2026-10-27'
     },
@@ -295,7 +295,7 @@ export async function collectExtendedAgencies() {
       air: '台灣虎航',
       baggage: '含來回託運 20 公斤',
       tag: '山富茨城快閃',
-      detail: '【茨城東京4天計畫機票】台灣虎航台北直飛日本茨城4天計劃旅遊票(TKT純機票)，輕鬆暢遊水戶與關東，含稅、手提10KG與託運20KG。',
+      detail: '【茨城東京4天計畫機票單品】台灣虎航台北直飛日本茨城4天計劃旅遊票(TKT純機票)，輕鬆暢遊水戶與關東，含稅、手提10KG與託運20KG。',
       flightTime: '早去午回',
       checked: '2026-10-27'
     },
@@ -303,7 +303,7 @@ export async function collectExtendedAgencies() {
       id: 'richmond-OSA-1105-8500',
       agency: '山富旅遊',
       source: '山富旅遊機票網',
-      sourceUrl: 'https://www.travel4u.com.tw/flight/search/?trip=2&dep_dates=2026-11-26&return_date=2026-11-30&dep_location_types=2&dep_location_codes=TPE&arr_location_types=2&arr_location_codes=OSA&adult=1&child=0&cabin_class=Y&is_direct_flight_only=1',
+      sourceUrl: 'https://www.travel4u.com.tw/flight/search/?origin_location_code=TPE&destination_location_code=KIX&trip=2&dep_location_codes=TPE&arr_location_codes=KIX&dep_location_types=2&arr_location_types=1&dep_dates=2026-11-26&return_date=2026-11-30&adult=1&child=0&cabin_class=2',
       city: '大阪',
       code: 'OSA',
       country: 'japan',
@@ -319,7 +319,7 @@ export async function collectExtendedAgencies() {
       air: '中華航空',
       baggage: '含來回託運 23 公斤',
       tag: '山富華航直飛',
-      detail: '【傳統航空華航直飛】台北直飛大阪關西5日機票直達訂購，搭乘中華航空，享機上餐點與23KG託運。',
+      detail: '【台北大阪直達訂購】台北直飛大阪關西5日機票直達訂購，搭乘中華航空/各家直飛，點入直接帶出可訂航班與票價。',
       flightTime: '午去晚回',
       checked: '2026-10-27'
     },
@@ -327,7 +327,7 @@ export async function collectExtendedAgencies() {
       id: 'richmond-TYO-1108-8900',
       agency: '山富旅遊',
       source: '山富旅遊機票網',
-      sourceUrl: 'https://www.travel4u.com.tw/flight/search/?trip=2&dep_dates=2026-11-26&return_date=2026-11-30&dep_location_types=2&dep_location_codes=TPE&arr_location_types=2&arr_location_codes=TYO&adult=1&child=0&cabin_class=Y&is_direct_flight_only=1',
+      sourceUrl: 'https://www.travel4u.com.tw/flight/search/?origin_location_code=TPE&destination_location_code=NRT&trip=2&dep_location_codes=TPE&arr_location_codes=NRT&dep_location_types=2&arr_location_types=1&dep_dates=2026-11-26&return_date=2026-11-30&adult=1&child=0&cabin_class=2',
       city: '東京',
       code: 'TYO',
       country: 'japan',
@@ -343,7 +343,7 @@ export async function collectExtendedAgencies() {
       air: '長榮航空',
       baggage: '含來回託運 23 公斤',
       tag: '山富長榮直達',
-      detail: '【長榮東京直飛預訂】台北直飛東京成田5日機票直達訂購，長榮航空直飛，包含免費餐點與23KG行李。',
+      detail: '【台北東京直達訂購】台北直飛東京成田5日機票直達訂購，長榮/日航/星宇等直飛班機，點入直接帶出可訂航班與票價。',
       flightTime: '早去午回',
       checked: '2026-10-27'
     },
@@ -351,7 +351,7 @@ export async function collectExtendedAgencies() {
       id: 'richmond-ICN-1112-6999',
       agency: '山富旅遊',
       source: '山富旅遊機票網',
-      sourceUrl: 'https://www.travel4u.com.tw/flight/search/?trip=2&dep_dates=2026-11-26&return_date=2026-11-30&dep_location_types=2&dep_location_codes=TPE&arr_location_types=2&arr_location_codes=ICN&adult=1&child=0&cabin_class=Y&is_direct_flight_only=1',
+      sourceUrl: 'https://www.travel4u.com.tw/flight/search/?origin_location_code=TPE&destination_location_code=ICN&trip=2&dep_location_codes=TPE&arr_location_codes=ICN&dep_location_types=2&arr_location_types=1&dep_dates=2026-11-26&return_date=2026-11-30&adult=1&child=0&cabin_class=2',
       city: '首爾',
       code: 'ICN',
       country: 'korea',
@@ -367,7 +367,7 @@ export async function collectExtendedAgencies() {
       air: '真航空',
       baggage: '含來回託運 15 公斤',
       tag: '山富韓流特惠',
-      detail: '【首爾買到手軟5日】台北直飛首爾仁川5日機票直達訂購，大韓航空旗下真航空直飛，含稅含15KG託運。',
+      detail: '【台北首爾直達訂購】台北直飛首爾仁川5日機票直達訂購，大韓/韓亞/真航空直飛，點入直接帶出可訂航班與票價。',
       flightTime: '早去午回',
       checked: '2026-10-27'
     },
