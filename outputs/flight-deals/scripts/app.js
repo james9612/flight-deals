@@ -169,6 +169,38 @@ function renderPagination(totalItems, totalPages) {
   });
 }
 
+function formatReleaseTime(d) {
+  const tsStr = d.collectedAt || d.updatedAt || (d.checked ? `${d.checked}T00:00:00.000Z` : '');
+  if (!tsStr) return { label: d.checked || '近期釋出', isRecent: false, isToday: false, isVeryFresh: false };
+
+  const date = new Date(tsStr);
+  if (isNaN(date.getTime())) return { label: d.checked || '近期釋出', isRecent: false, isToday: false, isVeryFresh: false };
+
+  const now = new Date();
+  const diffMs = now.getTime() - date.getTime();
+  const diffHours = diffMs / (1000 * 60 * 60);
+
+  const pad = n => String(n).padStart(2, '0');
+  const timeStr = `${pad(date.getHours())}:${pad(date.getMinutes())}`;
+  const monthDayStr = `${pad(date.getMonth() + 1)}/${pad(date.getDate())}`;
+
+  const isToday = date.toDateString() === now.toDateString();
+  const yesterday = new Date(now);
+  yesterday.setDate(now.getDate() - 1);
+  const isYesterday = date.toDateString() === yesterday.toDateString();
+
+  if (diffHours >= 0 && diffHours < 1) {
+    const mins = Math.max(1, Math.floor(diffMs / 60000));
+    return { label: `⚡ ${mins} 分鐘前釋出`, isRecent: true, isToday: true, isVeryFresh: true, timeStr };
+  } else if (isToday) {
+    return { label: `🟢 今日 ${timeStr} 釋出`, isRecent: true, isToday: true, isVeryFresh: false, timeStr };
+  } else if (isYesterday) {
+    return { label: `昨日 ${timeStr}`, isRecent: false, isToday: false, isVeryFresh: false, timeStr };
+  } else {
+    return { label: `${monthDayStr} ${timeStr}`, isRecent: false, isToday: false, isVeryFresh: false, timeStr };
+  }
+}
+
 function renderDeals() {
   const container = document.getElementById('cards');
   if (!container) return;
@@ -178,7 +210,7 @@ function renderDeals() {
   const budgetVal = Number(document.getElementById('budget')?.value) || 999999;
   const departVal = document.getElementById('depart')?.value || '';
   const returnVal = document.getElementById('return')?.value || '';
-  const sortVal = document.getElementById('sort')?.value || 'price';
+  const sortVal = document.getElementById('sort')?.value || 'updated';
 
   let filtered = deals.filter(deal => {
     const src = (deal.source || '').toLowerCase();
@@ -210,11 +242,20 @@ function renderDeals() {
     return true;
   });
 
-  if (sortVal === 'price') {
+  if (sortVal === 'updated') {
+    // 依更新時間排序：最新釋出的機票排在最前面
+    filtered.sort((a, b) => {
+      const timeA = new Date(a.collectedAt || a.updatedAt || a.checked || 0).getTime();
+      const timeB = new Date(b.collectedAt || b.updatedAt || b.checked || 0).getTime();
+      if (timeB !== timeA) return timeB - timeA;
+      return a.price - b.price;
+    });
+  } else if (sortVal === 'price') {
     filtered.sort((a, b) => a.price - b.price);
   } else if (sortVal === 'date') {
     filtered.sort((a, b) => (a.depart || '').localeCompare(b.depart || ''));
   }
+
 
   const totalItems = filtered.length;
   const totalPages = Math.ceil(totalItems / PAGE_SIZE) || 1;
@@ -296,13 +337,19 @@ function renderDeals() {
         <span class="flight-time-badge">🕒 班機時間：<b>${flightTime}</b></span>
       </div>` : '';
 
+    const relTime = formatReleaseTime(d);
+    const freshBadge = relTime.isRecent
+      ? `<span class="badge-fresh-deal ${relTime.isVeryFresh ? 'pulse' : ''}">${relTime.isVeryFresh ? '⚡ 剛剛釋出' : '🟢 今日釋出'}</span>`
+      : '';
+
     return `
       <article class="card">
         <div>
           <div class="cardtop">
-            <div>
+            <div class="cardtop-left">
               <span class="agency-badge ${agencyClass}">${d.agency || d.source}</span>
               <span class="${tagClass}">${tagText}</span>
+              ${freshBadge}
             </div>
             <button class="heart" onclick="event.stopPropagation();this.textContent=this.textContent==='♡'?'♥':'♡'">♡</button>
           </div>
@@ -358,7 +405,7 @@ function renderDeals() {
             <p class="detail-text">${d.detail}</p>
             <div class="source-info-bar">
               <span>來源：<b>${d.source}</b></span>
-              <span>更新：${d.checked}</span>
+              <span class="deal-update-time">🕒 釋出更新：<b class="${relTime.isToday ? 'text-fresh' : ''}">${relTime.label}</b></span>
             </div>
             <a class="card-booking-btn" href="${directUrl}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">
               ${btnText}

@@ -19,7 +19,13 @@ async function safeReadJson(fileUrl, fallback = []) {
     const raw = await readFile(fileUrl, 'utf8');
     const parsed = JSON.parse(raw);
     if (Array.isArray(parsed)) return parsed;
-    if (Array.isArray(parsed.deals)) return parsed.deals;
+    if (Array.isArray(parsed.deals)) {
+      const topCollectedAt = parsed.collectedAt || (parsed.checked ? `${parsed.checked}T00:00:00.000Z` : null);
+      return parsed.deals.map(d => ({
+        ...d,
+        collectedAt: d.collectedAt || topCollectedAt
+      }));
+    }
     if (Array.isArray(parsed.promos)) return parsed.promos;
     return fallback;
   } catch {
@@ -197,7 +203,9 @@ export async function mergeCollected() {
         sourceUrl: 'https://www.plynet.com.tw/',
         flightTime: d.flightTime || '',
         checked: d.checked || (d.collectedAt ? d.collectedAt.slice(0, 10) : new Date().toISOString().slice(0, 10)),
+        collectedAt: d.collectedAt || new Date().toISOString(),
         tag: '飛遊網清艙日曆',
+
         agency: '飛遊網',
         kind: 'plan',
         detail: d.detail || `${d.title || ''}｜飛遊網特價清艙，去回程固定不可改期。點擊直接前往飛遊網官網查看完整機票與出發日曆！`
@@ -269,7 +277,10 @@ export async function mergeCollected() {
       source: deal.source || '旅行社計畫票',
       sourceUrl: deal.sourceUrl || '#',
       checked: deal.checked || new Date().toISOString().slice(0, 10),
+      collectedAt: deal.collectedAt || (deal.checked ? `${deal.checked}T00:00:00.000Z` : new Date().toISOString()),
+      updatedAt: deal.collectedAt || (deal.checked ? `${deal.checked}T00:00:00.000Z` : new Date().toISOString()),
       tag: deal.tag || '旅行社計畫票',
+
       agency: deal.agency || '旅行社',
       kind: 'plan',
       detail: deal.detail || `${deal.title || ''}｜含稅金與行李，固定去回程不可改期`,
