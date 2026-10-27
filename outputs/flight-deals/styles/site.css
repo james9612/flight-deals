@@ -555,6 +555,10 @@ h1 em:after {
   padding-right: 18px;
 }
 .go {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
   background: var(--green);
   color: white;
   border: 0;
@@ -562,12 +566,25 @@ h1 em:after {
   padding: 0 24px;
   font-weight: 800;
   font-size: 16.5px;
-  min-height: 48px;
+  min-height: 50px;
   cursor: pointer;
-  transition: background .2s;
+  transition: background .2s, transform .1s;
 }
 .go:hover {
   background: var(--green-hover);
+}
+.go:active {
+  transform: scale(0.98);
+}
+.go .search-magnifier-icon {
+  width: 22px;
+  height: 22px;
+  stroke-width: 2.8;
+  flex-shrink: 0;
+  transition: transform .2s ease;
+}
+.go:hover .search-magnifier-icon {
+  transform: scale(1.12);
 }
 
 /* 日期搜尋欄內嵌旅行社快捷按鈕 */
@@ -973,26 +990,46 @@ h1 em:after {
   border-radius: 6px;
 }
 
-/* 前往預訂按鈕 (更具質感與可點擊性) */
+/* 前往預訂按鈕 (更具質感與可點擊性，箭頭固定同列不換行) */
 .card-booking-btn {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
   text-align: center;
   background: var(--green);
   color: white;
   border: 1px solid transparent;
   text-decoration: none;
   font-weight: 800;
-  font-size: 15px;
-  padding: 11px 16px;
+  font-size: 14.5px;
+  padding: 11px 12px;
   border-radius: 10px;
   transition: all .2s;
   box-shadow: 0 2px 6px rgba(15, 118, 110, 0.2);
+  white-space: nowrap;
+  letter-spacing: -0.2px;
+}
+.card-booking-btn .btn-text-content {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.card-booking-btn .btn-arrow {
+  display: inline-block;
+  font-size: 16px;
+  line-height: 1;
+  transition: transform .2s ease;
+  flex-shrink: 0;
 }
 .card-booking-btn:hover {
   background: #0d5f58;
   color: white;
   box-shadow: 0 4px 12px rgba(15, 118, 110, 0.35);
   transform: translateY(-1px);
+}
+.card-booking-btn:hover .btn-arrow {
+  transform: translate(2px, -2px);
 }
 
 .disclaimer {
@@ -1192,7 +1229,14 @@ footer {
   }
   .fields .go {
     grid-column: span 2;
-    min-height: 44px;
+    min-height: 52px;
+    font-size: 17.5px;
+    gap: 12px;
+  }
+  .fields .go .search-magnifier-icon {
+    width: 25px;
+    height: 25px;
+    stroke-width: 3;
   }
 }
 
@@ -1274,9 +1318,15 @@ footer {
   }
   .fields .go {
     grid-column: 1;
-    min-height: 50px;
-    font-size: 17px;
+    min-height: 52px;
+    font-size: 18px;
     width: 100%;
+    gap: 12px;
+  }
+  .fields .go .search-magnifier-icon {
+    width: 25px;
+    height: 25px;
+    stroke-width: 3;
   }
   .search-agency-pills {
     margin-top: 14px;
@@ -1316,12 +1366,13 @@ footer {
     font-size: 28px;
   }
   .card-booking-btn {
-    padding: 13px 16px;
-    font-size: 15.5px;
+    padding: 12px 14px;
+    font-size: 14.5px;
     min-height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;
+    white-space: nowrap;
   }
   .pagination-inner {
     padding: 14px 16px;

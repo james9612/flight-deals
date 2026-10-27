@@ -467,7 +467,8 @@ function renderDeals() {
           </div>
 
           <a class="card-booking-btn" href="${directUrl}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">
-            ${btnText}
+            <span class="btn-text-content">${btnText.replace(/↗$/, '').trim()}</span>
+            <span class="btn-arrow" aria-hidden="true">↗</span>
           </a>
         </div>
       </article>
