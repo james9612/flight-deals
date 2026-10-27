@@ -639,26 +639,26 @@ h1 em:after {
 .cards {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
+  gap: 20px;
 }
+
+/* ==================== 機票卡片架構 (Card with Defined Boundaries) ==================== */
 .card {
-/* ==================== 機票卡片架構重構 (Card Modern Redesign) ==================== */
-.card {
-  background: white;
-  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  border: 1.5px solid #cbd5e1;
   border-radius: 16px;
-  padding: 18px 20px;
+  padding: 20px 22px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  box-shadow: 0 4px 14px rgba(15, 30, 23, 0.04);
-  transition: transform .2s, box-shadow .2s, border-color .2s;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08), 0 1px 3px rgba(15, 23, 42, 0.05);
+  transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
   position: relative;
 }
 .card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 14px 28px rgba(15, 30, 23, 0.09);
-  border-color: #cbd5e1;
+  transform: translateY(-4px);
+  box-shadow: 0 16px 32px rgba(15, 23, 42, 0.13), 0 3px 8px rgba(15, 23, 42, 0.07);
+  border-color: #64748b;
 }
 
 /* 頂部標籤列 */
@@ -757,7 +757,7 @@ h1 em:after {
 /* 核心航線英雄條 (Route Hero) */
 .card-route-hero {
   background: #f8fafc;
-  border: 1px solid #e2e8f0;
+  border: 1.5px solid #cbd5e1;
   border-radius: 12px;
   padding: 12px 16px;
   display: flex;
@@ -840,9 +840,9 @@ h1 em:after {
   border-radius: 8px;
   font-size: 12.5px;
   font-weight: 700;
-  background: #f1f5f9;
+  background: #ffffff;
   color: #334155;
-  border: 1px solid #e2e8f0;
+  border: 1px solid #cbd5e1;
 }
 .spec-pill .airline-highlight {
   color: #15803d;
@@ -855,7 +855,7 @@ h1 em:after {
   align-items: flex-start;
   gap: 6px;
   background: #f0fdf4;
-  border: 1px solid #bbf7d0;
+  border: 1.5px solid #86efac;
   border-radius: 8px;
   padding: 6px 10px;
   font-size: 12.5px;
@@ -872,7 +872,7 @@ h1 em:after {
   font-size: 12.5px;
   color: #334155;
   background: #f8fafc;
-  border: 1px dashed #cbd5e1;
+  border: 1px dashed #94a3b8;
   padding: 8px 12px;
   border-radius: 8px;
   margin: 8px 0 12px;
@@ -884,8 +884,8 @@ h1 em:after {
 
 /* 卡片底部定價與操作區塊 */
 .card-footer-box {
-  border-top: 1px solid #e2e8f0;
-  padding-top: 12px;
+  border-top: 1.5px solid #cbd5e1;
+  padding-top: 14px;
   margin-top: auto;
 }
 .card-price-row {
