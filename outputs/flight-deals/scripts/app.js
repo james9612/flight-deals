@@ -22,8 +22,6 @@ const agencyClassMap = {
   '雄獅旅遊（Lion Travel）': 'agency-lion',
   '飛遊網': 'agency-plynet',
   '飛遊網特價清艙': 'agency-plynet',
-  '可樂旅遊': 'agency-cola',
-  '可樂旅遊（Colatour）': 'agency-cola',
   '易飛網': 'agency-ezfly',
   '易飛網（ezfly）': 'agency-ezfly',
   'KKday': 'agency-kkday',
@@ -226,7 +224,6 @@ function renderDeals() {
     // Agency / Type filtering
     if (activeFilter === 'lion' && !deal.source.includes('雄獅') && !deal.agency?.includes('雄獅')) return false;
     if (activeFilter === 'plynet' && !deal.source.includes('飛遊網') && !deal.agency?.includes('飛遊網')) return false;
-    if (activeFilter === 'cola' && !deal.source.includes('可樂') && !deal.agency?.includes('可樂')) return false;
     if (activeFilter === 'ezfly' && !deal.source.includes('易飛網') && !deal.agency?.includes('易飛網')) return false;
     if (activeFilter === 'kkday' && !src.includes('kkday') && !agn.includes('kkday')) return false;
     if (activeFilter === 'ehs' && !deal.source.includes('東森') && !deal.agency?.includes('東森')) return false;
@@ -549,7 +546,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       // 當點選特定旅行社時，清空衝突篩選，讓使用者完整查看該旅行社商品
-      if (['kkday', 'lion', 'cola', 'ezfly', 'ehs', 'plynet', 'funtime', 'goflytrip'].includes(activeFilter)) {
+      if (['kkday', 'lion', 'ezfly', 'ehs', 'plynet', 'funtime', 'goflytrip'].includes(activeFilter)) {
         const destEl = document.getElementById('dest');
         if (destEl) destEl.value = '';
         const departEl = document.getElementById('depart');

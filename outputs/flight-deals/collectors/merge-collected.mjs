@@ -5,7 +5,6 @@ const promosFile = new URL('../data/promos.json', import.meta.url);
 
 const lionFile = new URL('../data/collected/liontravel-plan.json', import.meta.url);
 const flytourFile = new URL('../data/collected/plynet-clearance.json', import.meta.url);
-const colatourFile = new URL('../data/collected/colatour-plan.json', import.meta.url);
 const ezflyFile = new URL('../data/collected/ezfly-plan.json', import.meta.url);
 const kkdayFile = new URL('../data/collected/kkday-plan.json', import.meta.url);
 const ehsFile = new URL('../data/collected/ehs-plan.json', import.meta.url);
@@ -56,7 +55,6 @@ const daysBetween = (depart, returnDate) => {
 export async function mergeCollected() {
   let lionDeals = await safeReadJson(lionFile);
   let flytourDeals = await safeReadJson(flytourFile);
-  let colatourDeals = await safeReadJson(colatourFile);
   let ezflyDeals = await safeReadJson(ezflyFile);
   let kkdayDeals = await safeReadJson(kkdayFile);
   let ehsDeals = await safeReadJson(ehsFile);
@@ -75,6 +73,7 @@ export async function mergeCollected() {
     /聊天室|未讀|陌生訊息|存股日記/i.test(`${d.detail || ''} ${d.rawMessage || ''}`) ||
     /折扣券|折扣碼|現折|領起來|機場接送.*折|指定迷你團/i.test(`${d.detail || ''} ${d.rawMessage || ''}`) ||
     d.agency === '東南旅遊' ||
+    d.agency === '可樂旅遊' ||
     (d.agency === '飛趣旅遊' && (!d.depart || Number(d.price) < 2500 || d.airline === '精選航空'));
 
 
@@ -82,7 +81,6 @@ export async function mergeCollected() {
   if (existingDeals.length > 0) {
     if (!lionDeals.length) lionDeals = existingDeals.filter(d => d.agency === '雄獅旅遊');
     if (!flytourDeals.length) flytourDeals = existingDeals.filter(d => d.agency === '飛遊網');
-    if (!colatourDeals.length) colatourDeals = existingDeals.filter(d => d.agency === '可樂旅遊');
     if (!ezflyDeals.length) ezflyDeals = existingDeals.filter(d => d.agency === '易飛網');
     // KKday 歷史硬編碼皆已售罄，若無新即時票則不從舊快取復原
     if (!ehsDeals.length) ehsDeals = existingDeals.filter(d => d.agency === '東森旅遊');
@@ -91,7 +89,7 @@ export async function mergeCollected() {
   }
 
 
-  console.log(`讀取各來源筆數：雄獅 ${lionDeals.length} 筆，飛遊網 ${flytourDeals.length} 筆，可樂 ${colatourDeals.length} 筆，易飛網 ${ezflyDeals.length} 筆，KKday ${kkdayDeals.length} 筆，東森旅遊 ${ehsDeals.length} 筆，FunTime ${funtimeDeals.length} 筆，飛趣旅遊 ${goflytripDeals.length} 筆，航空公司特報 ${zeroPromos.length} 筆`);
+  console.log(`讀取各來源筆數：雄獅 ${lionDeals.length} 筆，飛遊網 ${flytourDeals.length} 筆，易飛網 ${ezflyDeals.length} 筆，KKday ${kkdayDeals.length} 筆，東森旅遊 ${ehsDeals.length} 筆，FunTime ${funtimeDeals.length} 筆，飛趣旅遊 ${goflytripDeals.length} 筆，航空公司特報 ${zeroPromos.length} 筆`);
 
   // 智能比價與去重邏輯：FunTime 會先比對其他旅行社已有的商品
   // 1. 若 FunTime 價格更便宜：保留 FunTime，標註現省金額，並剔除原旅行社較貴的重複卡片
@@ -108,7 +106,6 @@ export async function mergeCollected() {
 
   const directDeals = [
     ...lionDeals.map(d => ({ ...d, agency: '雄獅旅遊', tag: '雄獅旅遊計畫票' })),
-    ...colatourDeals.map(d => ({ ...d, agency: '可樂旅遊', tag: '可樂旅遊計畫票' })),
     ...ezflyDeals.map(d => ({ ...d, agency: '易飛網', tag: d.tag || '易飛網神秘機票' })),
     ...kkdayDeals.map(d => ({ ...d, agency: 'KKday', tag: 'KKday清艙特惠' })),
     ...ehsDeals.map(d => ({ ...d, agency: '東森旅遊', tag: '東森清艙特惠' })),

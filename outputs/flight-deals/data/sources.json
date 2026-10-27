@@ -19,16 +19,7 @@
     "status": "自動蒐集已上線",
     "notes": "日曆化展示日本、韓國與東南亞固定日期特價清艙票，內含託運行李與票規，過期項目自動下架。"
   },
-  {
-    "id": "colatour-plan-ticket",
-    "name": "可樂旅遊（Colatour）計畫旅遊票專區",
-    "type": "plan-clearance",
-    "url": "https://www.colatour.com.tw/webDM/airticket/promotion/holidays/sale.html",
-    "access": "公開機票與自由行湊票專區；定期彙整各航線固定日期計畫票",
-    "frequency": "每週排程更新；促銷檔期每日查核",
-    "status": "自動蒐集已上線",
-    "notes": "彙整釜山、沖繩、東京等固定日期團體機位湊票，標明含稅總價與託運行李。"
-  },
+
   {
     "id": "ezfly-plan-clearance",
     "name": "易飛網（ezfly）神秘機票與清艙專區",
