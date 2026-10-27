@@ -12,6 +12,7 @@ const funtimeFile = new URL('../data/collected/funtime-plan.json', import.meta.u
 const goflytripFile = new URL('../data/collected/goflytrip-deals.json', import.meta.url);
 const extendedFile = new URL('../data/collected/extended-deals.json', import.meta.url);
 const momoFile = new URL('../data/collected/momo-deals.json', import.meta.url);
+const ugoFile = new URL('../data/collected/ugotravel-deals.json', import.meta.url);
 const zeroPromosFile = new URL('../data/collected/zero-promos.json', import.meta.url);
 
 async function safeReadJson(fileUrl, fallback = []) {
@@ -66,6 +67,7 @@ export async function mergeCollected() {
   let goflytripDeals = await safeReadJson(goflytripFile);
   let extendedDeals = await safeReadJson(extendedFile);
   let momoDeals = await safeReadJson(momoFile);
+  let ugoDeals = await safeReadJson(ugoFile);
   const zeroPromos = await safeReadJson(zeroPromosFile);
 
   // 備援防護：若有任何單一來源因為網路或防爬限制回傳 0 筆，從現有 deals.json 恢復資料（自動排除已知售罄與黑名單商品）
@@ -94,10 +96,11 @@ export async function mergeCollected() {
     if (!goflytripDeals.length) goflytripDeals = existingDeals.filter(d => d.agency === '飛趣旅遊');
     if (!extendedDeals.length) extendedDeals = existingDeals.filter(d => ['燦星旅遊', '旅天下', '山富旅遊', '喜鴻假期'].includes(d.agency));
     if (!momoDeals.length) momoDeals = existingDeals.filter(d => (d.agency || '').includes('momo'));
+    if (!ugoDeals.length) ugoDeals = existingDeals.filter(d => (d.agency || '').includes('旅天下'));
   }
 
 
-  console.log(`讀取各來源筆數：雄獅 ${lionDeals.length} 筆，飛遊網 ${flytourDeals.length} 筆，易飛網 ${ezflyDeals.length} 筆，KKday ${kkdayDeals.length} 筆，東森旅遊 ${ehsDeals.length} 筆，FunTime ${funtimeDeals.length} 筆，飛趣旅遊 ${goflytripDeals.length} 筆，燦星/旅天下/山富/喜鴻 ${extendedDeals.length} 筆，momo直購單品 ${momoDeals.length} 筆，航空公司特報 ${zeroPromos.length} 筆`);
+  console.log(`讀取各來源筆數：雄獅 ${lionDeals.length} 筆，飛遊網 ${flytourDeals.length} 筆，易飛網 ${ezflyDeals.length} 筆，KKday ${kkdayDeals.length} 筆，東森旅遊 ${ehsDeals.length} 筆，FunTime ${funtimeDeals.length} 筆，飛趣旅遊 ${goflytripDeals.length} 筆，燦星/旅天下/山富/喜鴻 ${extendedDeals.length} 筆，旅天下動態單品 ${ugoDeals.length} 筆，momo直購單品 ${momoDeals.length} 筆，航空公司特報 ${zeroPromos.length} 筆`);
 
   // 格式化 momo 直購商品
   const formattedMomoDeals = momoDeals.map(d => {
@@ -156,6 +159,7 @@ export async function mergeCollected() {
     ...ehsDeals.map(d => ({ ...d, agency: '東森旅遊', tag: '東森清艙特惠' })),
     ...goflytripDeals.map(d => ({ ...d, agency: '飛趣旅遊', tag: '飛趣旅遊清艙' })),
     ...extendedDeals,
+    ...ugoDeals.map(d => ({ ...d, agency: '旅天下', tag: d.tag || '旅天下獨家直購' })),
     ...formattedMomoDeals
   ];
 

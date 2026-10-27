@@ -128,12 +128,12 @@ export async function collectExtendedAgencies() {
       checked: '2026-10-27'
     },
 
-    // 2. 旅天下 (U-Go Travel) - 雄獅集團高CP值包機
+    // 2. 旅天下 (U-Go Travel) - 雄獅集團高CP值包機直達單品頁
     {
       id: 'ugotravel-HKD-1106-10888',
       agency: '旅天下',
       source: '旅天下官方網站',
-      sourceUrl: 'https://www.gounitravel.com/',
+      sourceUrl: 'https://travel.gounitravel.com/detail?NormGroupID=6462683e-64f5-48ff-9a47-004326f4d096&Origin=UNI',
       city: '函館',
       code: 'HKD',
       country: 'japan',
@@ -157,7 +157,7 @@ export async function collectExtendedAgencies() {
       id: 'ugotravel-HNA-1110-8999',
       agency: '旅天下',
       source: '旅天下官方網站',
-      sourceUrl: 'https://www.gounitravel.com/',
+      sourceUrl: 'https://travel.gounitravel.com/detail?NormGroupID=4998ced3-5f6c-4e0a-a642-9a9b6bce4000&Origin=UNI',
       city: '花卷',
       code: 'HNA',
       country: 'japan',
@@ -181,7 +181,7 @@ export async function collectExtendedAgencies() {
       id: 'ugotravel-SDJ-1114-9800',
       agency: '旅天下',
       source: '旅天下官方網站',
-      sourceUrl: 'https://www.gounitravel.com/',
+      sourceUrl: 'https://travel.gounitravel.com/detail?NormGroupID=a39e3b55-0f5a-4292-aabb-c3f399288236&Origin=UNI',
       city: '仙台',
       code: 'SDJ',
       country: 'japan',
@@ -205,7 +205,7 @@ export async function collectExtendedAgencies() {
       id: 'ugotravel-TYO-1116-8888',
       agency: '旅天下',
       source: '旅天下官方網站',
-      sourceUrl: 'https://www.gounitravel.com/',
+      sourceUrl: 'https://travel.gounitravel.com/detail?NormGroupID=5257279c-9ff1-4958-b6ba-25cf896aa3a3&Origin=UNI',
       city: '東京',
       code: 'TYO',
       country: 'japan',
@@ -229,7 +229,7 @@ export async function collectExtendedAgencies() {
       id: 'ugotravel-OKA-1118-6888',
       agency: '旅天下',
       source: '旅天下官方網站',
-      sourceUrl: 'https://www.gounitravel.com/',
+      sourceUrl: 'https://travel.gounitravel.com/detail?NormGroupID=1c195461-4d81-4822-ba59-7cf0457ac8b4&Origin=UNI',
       city: '沖繩',
       code: 'OKA',
       country: 'japan',
