@@ -30,8 +30,6 @@ const agencyClassMap = {
   'KKday 機票自由行專區': 'agency-kkday',
   '東森旅遊': 'agency-ehs',
   '東森購物網・東森旅遊館': 'agency-ehs',
-  '東南旅遊': 'agency-settour',
-  '東南旅遊（SETtour）機票館': 'agency-settour',
   'FunTime': 'agency-funtime',
   'FunTime旅遊比價網（localtour）': 'agency-funtime',
   '飛趣旅遊': 'agency-goflytrip',
@@ -232,7 +230,6 @@ function renderDeals() {
     if (activeFilter === 'ezfly' && !deal.source.includes('易飛網') && !deal.agency?.includes('易飛網')) return false;
     if (activeFilter === 'kkday' && !src.includes('kkday') && !agn.includes('kkday')) return false;
     if (activeFilter === 'ehs' && !deal.source.includes('東森') && !deal.agency?.includes('東森')) return false;
-    if (activeFilter === 'settour' && !deal.source.includes('東南') && !deal.agency?.includes('東南')) return false;
     if (activeFilter === 'funtime' && !src.includes('funtime') && !agn.includes('funtime')) return false;
     if (activeFilter === 'goflytrip' && !deal.source.includes('飛趣') && !deal.agency?.includes('飛趣')) return false;
     if (['japan', 'korea', 'asia'].includes(activeFilter) && deal.country !== activeFilter) return false;
@@ -321,29 +318,6 @@ function renderDeals() {
       }
     } else if ((d.agency || '').includes('KKday')) {
       btnText = `前往 KKday 官方機票預訂 ↗`;
-    } else if ((d.agency || '').includes('東南')) {
-      btnText = `前往 東南旅遊官方機位預訂 ↗`;
-      if (!directUrl || directUrl === '#' || directUrl === 'https://www.settour.com.tw/' || directUrl === 'https://www.settour.com.tw') {
-        const fromCode = d.fc || 'TPE';
-        const cityMap = {
-          '東京': 'NRT',
-          '大阪': 'KIX',
-          '沖繩': 'OKA',
-          '福岡': 'FUK',
-          '首爾': 'ICN',
-          '曼谷': 'BKK',
-          '北海道': 'CTS',
-          '名古屋': 'NGO'
-        };
-        const toCode = (d.code && d.code !== 'INT') ? d.code : (cityMap[d.city] || 'NRT');
-        if (d.depart && d.return) {
-          const depDateStr = d.depart.replace(/-/g, '');
-          const retDateStr = d.return.replace(/-/g, '');
-          directUrl = `https://flight.settour.com.tw/availableSearchV2?adtCount=1&chdCount=0&pfpClass=&directFlightOnly=true&depDate=${depDateStr},${retDateStr}&depAirportCode=${fromCode},${toCode}&arrAirportCode=${toCode},${fromCode}&tripType=RT`;
-        } else {
-          directUrl = `https://flight.settour.com.tw/search?adtCount=1&arrAirportCode=${toCode}%2C${fromCode}&chdCount=0&depAirportCode=${fromCode}%2C${toCode}&directFlightOnly=true&tripType=RT`;
-        }
-      }
     } else if ((d.agency || '').includes('東森')) {
       btnText = `前往 東森旅遊官方商品頁 ↗`;
     } else if ((d.agency || '').includes('易飛網')) {
@@ -567,8 +541,15 @@ document.addEventListener('DOMContentLoaded', () => {
       activeFilter = pill.dataset.filter || 'all';
       currentPage = 1; // Always reset to page 1
 
-      // When clicking a specific agency filter, clear conflicting inputs so user immediately sees that agency's complete inventory
-      if (['kkday', 'lion', 'cola', 'ezfly', 'ehs', 'plynet', 'settour', 'funtime'].includes(activeFilter)) {
+      // 當點選區域分類快捷按鈕（日本航線、韓國航線、東南亞／澳門）時：
+      // 自動清空「目的地航點」下拉選單（跳脫先前指定的單一城市，呈現該地區所有航點）
+      if (['japan', 'korea', 'asia'].includes(activeFilter)) {
+        const destEl = document.getElementById('dest');
+        if (destEl) destEl.value = '';
+      }
+
+      // 當點選特定旅行社時，清空衝突篩選，讓使用者完整查看該旅行社商品
+      if (['kkday', 'lion', 'cola', 'ezfly', 'ehs', 'plynet', 'funtime', 'goflytrip'].includes(activeFilter)) {
         const destEl = document.getElementById('dest');
         if (destEl) destEl.value = '';
         const departEl = document.getElementById('depart');
@@ -619,7 +600,6 @@ document.addEventListener('DOMContentLoaded', () => {
     seoul: { origin: '台北', dest: '首爾', depart: '', return: '', filter: 'all' },
     kkday: { origin: '', dest: '', depart: '', return: '', filter: 'kkday' },
     ehs: { origin: '', dest: '', depart: '', return: '', filter: 'ehs' },
-    settour: { origin: '', dest: '', depart: '', return: '', filter: 'settour' },
     funtime: { origin: '', dest: '', depart: '', return: '', filter: 'funtime' }
   };
   document.querySelectorAll('[data-example]').forEach(button => {
