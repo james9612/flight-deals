@@ -1,7 +1,7 @@
 {
   "source": "易飛網神秘機票與計畫票專區",
   "sourceUrl": "https://www.ezfly.com/mkt/flightticket/",
-  "collectedAt": "2026-10-26T08:32:41.001Z",
+  "collectedAt": "2026-10-27T10:52:34.075Z",
   "count": 6,
   "deals": [
     {
@@ -28,8 +28,8 @@
       "sourceUrl": "https://ea.ezfly.com/prodwp/prod/WPLN000000825",
       "availableDates": "11/08(日)、11/15(日)",
       "detail": "易飛網精選神秘清艙票，去程09:45-12:25、回程16:50-17:35，含稅金與20kg行李，點擊直達該票預訂頁面。",
-      "checked": "2026-10-26",
-      "collectedAt": "2026-10-26T08:32:41.001Z"
+      "checked": "2026-10-27",
+      "collectedAt": "2026-10-27T10:52:34.075Z"
     },
     {
       "id": "ezfly-tyo-tr-5d",
@@ -55,8 +55,8 @@
       "sourceUrl": "https://ea.ezfly.com/prodwp/prod/WPLN000000143",
       "availableDates": "11/04(三)、11/11(三)",
       "detail": "易飛網東京神秘計畫票，去程10:50-15:20、回程16:50-19:40，含稅金與20kg行李，點擊直達該票預訂頁面。",
-      "checked": "2026-10-26",
-      "collectedAt": "2026-10-26T08:32:41.001Z"
+      "checked": "2026-10-27",
+      "collectedAt": "2026-10-27T10:52:34.075Z"
     },
     {
       "id": "ezfly-kix-it-5d",
@@ -82,8 +82,8 @@
       "sourceUrl": "https://ea.ezfly.com/prodwp/prod/WPLN000001052",
       "availableDates": "11/04(三)、11/18(三)",
       "detail": "易飛網大阪神秘計畫票，去程09:40-14:35、回程15:25-17:55，含稅金與20kg行李，點擊直達該票預訂頁面。",
-      "checked": "2026-10-26",
-      "collectedAt": "2026-10-26T08:32:41.001Z"
+      "checked": "2026-10-27",
+      "collectedAt": "2026-10-27T10:52:34.075Z"
     },
     {
       "id": "ezfly-oka-it-5d",
@@ -109,8 +109,8 @@
       "sourceUrl": "https://ea.ezfly.com/prodwp/prod/WPLN000000943",
       "availableDates": "11/07(六)、11/14(六)、11/28(六)",
       "detail": "易飛網沖繩5日神秘機票，去程15:20-17:50、回程13:35-14:20，含稅金與20kg行李，點擊直達該票預訂頁面。",
-      "checked": "2026-10-26",
-      "collectedAt": "2026-10-26T08:32:41.001Z"
+      "checked": "2026-10-27",
+      "collectedAt": "2026-10-27T10:52:34.075Z"
     },
     {
       "id": "ezfly-icn-ze-5d",
@@ -136,8 +136,8 @@
       "sourceUrl": "https://world.ezfly.com/wp/find/%E9%A6%96%E7%88%BE%E6%A9%9F%E7%A5%A8",
       "availableDates": "11/07(六)、11/14(六)、11/21(六)",
       "detail": "桃園直飛仁川，紅眼早去晚回玩滿5天，含稅金與15kg行李，點擊直達該票預訂頁面。",
-      "checked": "2026-10-26",
-      "collectedAt": "2026-10-26T08:32:41.001Z"
+      "checked": "2026-10-27",
+      "collectedAt": "2026-10-27T10:52:34.075Z"
     },
     {
       "id": "ezfly-fuk-it-5d",
@@ -163,8 +163,8 @@
       "sourceUrl": "https://world.ezfly.com/wp/find/%E7%A6%8F%E5%B2%A1%E6%A9%9F%E7%A5%A8",
       "availableDates": "11/20(五)、11/27(五)",
       "detail": "直飛福岡機場，早去午回班機，進市區僅15分鐘，固定航班不可改期，點擊直達該票預訂頁面。",
-      "checked": "2026-10-26",
-      "collectedAt": "2026-10-26T08:32:41.001Z"
+      "checked": "2026-10-27",
+      "collectedAt": "2026-10-27T10:52:34.075Z"
     }
   ]
 }

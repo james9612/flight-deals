@@ -71,6 +71,56 @@
     "notes": "專營日韓機位出清、特惠清艙與包機機加酒，透過官方 LINE（ID: @flynow01）即時釋出特惠，點擊可直接加好友私訊搶票。"
   },
   {
+    "id": "startravel-charter",
+    "name": "燦星旅遊（台鋼燦星 Star Travel）獨家包機與清艙專區",
+    "type": "plan-clearance",
+    "url": "https://www.startravel.com.tw/",
+    "access": "官方包機與計畫票專區；定期萃取四國高知、秋田、岡山、富國島、普吉島等獨家包機機位",
+    "frequency": "每日排程自動更新；檔期清倉機票優先確認",
+    "status": "自動蒐集已上線",
+    "notes": "承包多條台灣虎航獨家直飛包機，提供固定天數、含來回20KG行李與稅金之一口價機票。"
+  },
+  {
+    "id": "ugotravel-plan-ticket",
+    "name": "旅天下（U-Go Travel・雄獅集團品牌）計畫旅遊票專區",
+    "type": "plan-clearance",
+    "url": "https://www.gounitravel.com/",
+    "access": "官方機票與自由行專區；即時抓取函館、花卷、仙台、高知等獨家包機計畫票",
+    "frequency": "每日排程自動萃取更新",
+    "status": "自動蒐集已上線",
+    "notes": "雄獅旗下高CP值品牌，主打北海道函館、日本東北花卷包機與東京沖繩清艙，大多含20KG行李與稅金。"
+  },
+  {
+    "id": "richmond-plan-clearance",
+    "name": "山富旅遊（Richmond Tours）機票網團體湊票專區",
+    "type": "plan-clearance",
+    "url": "https://www.travel4u.com.tw/flight",
+    "access": "山富機票網 API；自動萃取大阪、東京、首爾、福岡等團體湊票機位",
+    "frequency": "每週排程更新；熱門出發日前加頻查核",
+    "status": "自動蒐集已上線",
+    "notes": "老牌票務大戶，釋出華航、長榮、真航空等日韓團體機位出清，通常含機上餐點與20~23KG行李。"
+  },
+  {
+    "id": "besttour-plan-ticket",
+    "name": "喜鴻假期（Besttour）自由行計畫機票專區",
+    "type": "plan-clearance",
+    "url": "https://www.besttour.com.tw/",
+    "access": "官方自由行與計畫票專區；定期彙整沖繩、東京、釜山、曼谷等自由行機票",
+    "frequency": "每日排程自動更新",
+    "status": "自動蒐集已上線",
+    "notes": "日韓熱門航點自由行專家，標榜 1 人即可成行、全包稅金與20KG託運行李。"
+  },
+  {
+    "id": "momoshop-travel-tickets",
+    "name": "momo 購物網（旅遊票券館日韓計畫機票專區）",
+    "type": "plan-clearance",
+    "url": "https://www.momoshop.com.tw/",
+    "access": "momo 旅遊館搜尋；收錄旅行社上架之東京、函館、高知、沖繩等電子機票憑證",
+    "frequency": "每日排程自動更新",
+    "status": "自動蒐集已上線",
+    "notes": "大型綜合電商旅遊專區，結合旅行社供貨提供一口價電子機票憑證，支援 momo 幣折抵與信用卡回饋。"
+  },
+  {
     "id": "vietjet-zero-promo",
     "name": "越捷航空（Vietjet Air）官方 0 元機票大促",
     "type": "airline-promo",

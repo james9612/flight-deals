@@ -10,6 +10,7 @@ const kkdayFile = new URL('../data/collected/kkday-plan.json', import.meta.url);
 const ehsFile = new URL('../data/collected/ehs-plan.json', import.meta.url);
 const funtimeFile = new URL('../data/collected/funtime-plan.json', import.meta.url);
 const goflytripFile = new URL('../data/collected/goflytrip-deals.json', import.meta.url);
+const extendedFile = new URL('../data/collected/extended-deals.json', import.meta.url);
 const zeroPromosFile = new URL('../data/collected/zero-promos.json', import.meta.url);
 
 async function safeReadJson(fileUrl, fallback = []) {
@@ -35,16 +36,18 @@ const countryByDestination = {
   東京: 'japan', 成田: 'japan', 羽田: 'japan', 大阪: 'japan', 關西: 'japan',
   沖繩: 'japan', 名古屋: 'japan', 福岡: 'japan', 石垣島: 'japan', 函館: 'japan', 札幌: 'japan', 北海道: 'japan',
   高松: 'japan', 小松: 'japan', 高知: 'japan', 福島: 'japan', 廣島: 'japan', 岡山: 'japan', 大分: 'japan', 佐賀: 'japan',
+  秋田: 'japan', 花卷: 'japan', 仙台: 'japan',
   首爾: 'korea', 釜山: 'korea', 仁川: 'korea', 濟州: 'korea', 大邱: 'korea', 清州: 'korea',
-  曼谷: 'asia', 香港: 'asia', 新加坡: 'asia', 澳門: 'asia', 清邁: 'asia', 富國島: 'asia', 峴港: 'asia'
+  曼谷: 'asia', 香港: 'asia', 新加坡: 'asia', 澳門: 'asia', 清邁: 'asia', 富國島: 'asia', 峴港: 'asia', 普吉島: 'asia'
 };
 
 const codeByDestination = {
   東京: 'TYO', 成田: 'NRT', 羽田: 'HND', 大阪: 'OSA', 關西: 'KIX',
   沖繩: 'OKA', 名古屋: 'NGO', 福岡: 'FUK', 石垣島: 'ISG', 函館: 'HKD', 札幌: 'CTS', 北海道: 'CTS',
   高松: 'TAK', 小松: 'KMQ', 高知: 'KCZ', 福島: 'FKS', 廣島: 'HIJ', 岡山: 'OKJ', 大分: 'OIT', 佐賀: 'HSG',
+  秋田: 'AXT', 花卷: 'HNA', 仙台: 'SDJ',
   首爾: 'ICN', 釜山: 'PUS', 仁川: 'ICN', 濟州: 'CJU', 大邱: 'TAE', 清州: 'CJJ',
-  曼谷: 'BKK', 香港: 'HKG', 新加坡: 'SIN', 澳門: 'MFM', 清邁: 'CNX', 富國島: 'PQC', 峴港: 'DAD'
+  曼谷: 'BKK', 香港: 'HKG', 新加坡: 'SIN', 澳門: 'MFM', 清邁: 'CNX', 富國島: 'PQC', 峴港: 'DAD', 普吉島: 'HKT'
 };
 
 const daysBetween = (depart, returnDate) => {
@@ -60,6 +63,7 @@ export async function mergeCollected() {
   let ehsDeals = await safeReadJson(ehsFile);
   let funtimeDeals = await safeReadJson(funtimeFile);
   let goflytripDeals = await safeReadJson(goflytripFile);
+  let extendedDeals = await safeReadJson(extendedFile);
   const zeroPromos = await safeReadJson(zeroPromosFile);
 
   // 備援防護：若有任何單一來源因為網路或防爬限制回傳 0 筆，從現有 deals.json 恢復資料（自動排除已知售罄與黑名單商品）
@@ -86,15 +90,13 @@ export async function mergeCollected() {
     if (!ehsDeals.length) ehsDeals = existingDeals.filter(d => d.agency === '東森旅遊');
     if (!funtimeDeals.length) funtimeDeals = existingDeals.filter(d => d.agency === 'FunTime');
     if (!goflytripDeals.length) goflytripDeals = existingDeals.filter(d => d.agency === '飛趣旅遊');
+    if (!extendedDeals.length) extendedDeals = existingDeals.filter(d => ['燦星旅遊', '旅天下', '山富旅遊', '喜鴻假期', 'momo購物網'].includes(d.agency));
   }
 
 
-  console.log(`讀取各來源筆數：雄獅 ${lionDeals.length} 筆，飛遊網 ${flytourDeals.length} 筆，易飛網 ${ezflyDeals.length} 筆，KKday ${kkdayDeals.length} 筆，東森旅遊 ${ehsDeals.length} 筆，FunTime ${funtimeDeals.length} 筆，飛趣旅遊 ${goflytripDeals.length} 筆，航空公司特報 ${zeroPromos.length} 筆`);
+  console.log(`讀取各來源筆數：雄獅 ${lionDeals.length} 筆，飛遊網 ${flytourDeals.length} 筆，易飛網 ${ezflyDeals.length} 筆，KKday ${kkdayDeals.length} 筆，東森旅遊 ${ehsDeals.length} 筆，FunTime ${funtimeDeals.length} 筆，飛趣旅遊 ${goflytripDeals.length} 筆，燦星/旅天下/山富/喜鴻/momo ${extendedDeals.length} 筆，航空公司特報 ${zeroPromos.length} 筆`);
 
   // 智能比價與去重邏輯：FunTime 會先比對其他旅行社已有的商品
-  // 1. 若 FunTime 價格更便宜：保留 FunTime，標註現省金額，並剔除原旅行社較貴的重複卡片
-  // 2. 若 FunTime 價格相同或較貴：視為無價格優勢的重複項目，直接過濾掉 FunTime
-  // 3. 若為其他旅行社沒爬到的獨家票源：保留展示
   function extractProductKey(url) {
     if (!url) return '';
     const normMatch = url.match(/NormGroupID=([a-zA-Z0-9-]+)/i);
@@ -109,7 +111,8 @@ export async function mergeCollected() {
     ...ezflyDeals.map(d => ({ ...d, agency: '易飛網', tag: d.tag || '易飛網神秘機票' })),
     ...kkdayDeals.map(d => ({ ...d, agency: 'KKday', tag: 'KKday清艙特惠' })),
     ...ehsDeals.map(d => ({ ...d, agency: '東森旅遊', tag: '東森清艙特惠' })),
-    ...goflytripDeals.map(d => ({ ...d, agency: '飛趣旅遊', tag: '飛趣旅遊清艙' }))
+    ...goflytripDeals.map(d => ({ ...d, agency: '飛趣旅遊', tag: '飛趣旅遊清艙' })),
+    ...extendedDeals
   ];
 
   const excludedDirectIds = new Set();

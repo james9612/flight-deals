@@ -705,9 +705,13 @@ h1 em:after {
 .agency-ezfly { background: #ede9fe; color: #6d28d9; border: 1px solid #ddd6fe; }
 .agency-kkday { background: #e0f7fa; color: #00838f; border: 1px solid #80deea; }
 .agency-ehs { background: #ffedd5; color: #c2410c; border: 1px solid #fed7aa; }
-.agency-settour { background: #fdf2f8; color: #be185d; border: 1px solid #fbcfe8; }
 .agency-funtime { background: #fff1f2; color: #be123c; border: 1px solid #fecdd3; }
 .agency-goflytrip { background: #f5f3ff; color: #7c3aed; border: 1px solid #ddd6fe; }
+.agency-startravel { background: #fff7ed; color: #c2410c; border: 1px solid #fdba74; }
+.agency-ugotravel { background: #f0fdfa; color: #0f766e; border: 1px solid #99f6e4; }
+.agency-richmond { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+.agency-besttour { background: #fefce8; color: #a16207; border: 1px solid #fef08a; }
+.agency-momo { background: #fdf2f8; color: #db2777; border: 1px solid #fbcfe8; }
 
 .tag {
   background: #f1f5f9;

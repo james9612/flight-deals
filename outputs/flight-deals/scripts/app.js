@@ -29,10 +29,19 @@ const agencyClassMap = {
   '東森旅遊': 'agency-ehs',
   '東森購物網・東森旅遊館': 'agency-ehs',
   'FunTime': 'agency-funtime',
-  'FunTime旅遊比價網（localtour）': 'agency-funtime',
   '飛趣旅遊': 'agency-goflytrip',
   '飛趣旅遊官方粉絲專頁': 'agency-goflytrip',
-  '飛趣旅遊 Messenger 清艙': 'agency-goflytrip'
+  '飛趣旅遊 Messenger 清艙': 'agency-goflytrip',
+  '燦星旅遊': 'agency-startravel',
+  '燦星旅遊官方網站': 'agency-startravel',
+  '旅天下': 'agency-ugotravel',
+  '旅天下官方網站': 'agency-ugotravel',
+  '山富旅遊': 'agency-richmond',
+  '山富旅遊機票網': 'agency-richmond',
+  '喜鴻假期': 'agency-besttour',
+  '喜鴻假期官網': 'agency-besttour',
+  'momo購物網': 'agency-momo',
+  'momo購物網・旅遊館': 'agency-momo'
 };
 
 // ==========================================
@@ -307,6 +316,11 @@ function renderDeals() {
     if (activeFilter === 'ehs' && !deal.source.includes('東森') && !deal.agency?.includes('東森')) return false;
     if (activeFilter === 'funtime' && !src.includes('funtime') && !agn.includes('funtime')) return false;
     if (activeFilter === 'goflytrip' && !src.includes('飛趣') && !agn.includes('飛趣')) return false;
+    if (activeFilter === 'startravel' && !src.includes('燦星') && !agn.includes('燦星')) return false;
+    if (activeFilter === 'ugotravel' && !src.includes('旅天下') && !agn.includes('旅天下')) return false;
+    if (activeFilter === 'richmond' && !src.includes('山富') && !agn.includes('山富')) return false;
+    if (activeFilter === 'besttour' && !src.includes('喜鴻') && !agn.includes('喜鴻')) return false;
+    if (activeFilter === 'momo' && !src.includes('momo') && !agn.includes('momo')) return false;
     if (['japan', 'korea', 'asia'].includes(activeFilter) && deal.country !== activeFilter) return false;
 
     // 過期機票自動過濾：出發日期已過（小於今天）自動排除
@@ -423,6 +437,16 @@ function renderDeals() {
     } else if ((d.agency || '').includes('飛趣') || (d.source || '').includes('飛趣')) {
       btnText = `前往 飛趣旅遊清艙（LINE: @flynow01）↗`;
       directUrl = 'https://line.me/R/ti/p/%40flynow01';
+    } else if ((d.agency || '').includes('燦星')) {
+      btnText = `前往 燦星旅遊官方包機商品頁 ↗`;
+    } else if ((d.agency || '').includes('旅天下')) {
+      btnText = `前往 旅天下官方商品頁 ↗`;
+    } else if ((d.agency || '').includes('山富')) {
+      btnText = `前往 山富機票網查看湊票 ↗`;
+    } else if ((d.agency || '').includes('喜鴻')) {
+      btnText = `前往 喜鴻假期官方商品頁 ↗`;
+    } else if ((d.agency || '').includes('momo')) {
+      btnText = `前往 momo 購物網搶票 ↗`;
     }
 
     // Safety fallback: ensure 飛遊網 never links to LINE
@@ -651,7 +675,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       // 當點選特定旅行社或追蹤清單時，清空衝突篩選，讓使用者完整查看商品
-      if (activeFilter === 'favorites' || ['kkday', 'lion', 'ezfly', 'ehs', 'plynet', 'funtime', 'goflytrip'].includes(activeFilter)) {
+      if (activeFilter === 'favorites' || ['kkday', 'lion', 'ezfly', 'ehs', 'plynet', 'funtime', 'goflytrip', 'startravel', 'ugotravel', 'richmond', 'besttour', 'momo'].includes(activeFilter)) {
         const destEl = document.getElementById('dest');
         if (destEl) destEl.value = '';
         const departEl = document.getElementById('depart');
