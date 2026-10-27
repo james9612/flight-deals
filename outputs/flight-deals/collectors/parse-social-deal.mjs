@@ -257,9 +257,11 @@ function parseSingleSocialDeal(rawText, sourceUrl) {
   }
 
   let price = 0;
-  const priceMatches = text.match(/(?:NT\$|TWD|\$|特價|只要|機票|費用|一口價|只要)\s*([0-9]{1,2}[,\.][0-9]{3}|[0-9]{4,5})\s*(?:元|起|含稅|\/人|\b)/i)
-    || text.match(/([0-9]{1,2},[0-9]{3}|[0-9]{4,5})\s*(?:元|含稅)/)
-    || text.match(/\$\s*([0-9]{4,5})/);
+  const priceMatches = text.match(/(?:NT\$|TWD|\$|特價|只要|機票|費用|一口價|只要|💵|票價|：|:)\s*([0-9]{1,2}[,\.][0-9]{3}|[0-9]{4,5})\s*(?:元|起|含稅|\/人|\/席|\b)/i)
+    || text.match(/([0-9]{1,2}[,\.][0-9]{3}|[0-9]{4,5})\s*(?:元|含稅|\/人|\/席)/)
+    || text.match(/\$\s*([0-9]{4,5})/)
+    || text.match(/\b([0-9]{1,2},[0-9]{3})\b/)
+    || text.match(/\b([3-9][0-9]{3}|[1-3][0-9]{4})\b/);
 
   if (priceMatches) {
     price = parseInt(priceMatches[1].replace(/[,\.]/g, ''), 10);
@@ -290,6 +292,15 @@ function parseSingleSocialDeal(rawText, sourceUrl) {
       const m2 = (dateRangeMatch[3] || dateRangeMatch[1]).padStart(2, '0');
       const d2 = dateRangeMatch[4].padStart(2, '0');
       returnDate = `${currentYear}-${m2}-${d2}`;
+    }
+  } else {
+    // 支援單一出發日（如 "：11/03"、"🗓️：10/31" 或 "出發日：11/05"）
+    const singleDateMatch = text.match(/(?:🗓️|🗓|出發|出發日|日期|：|:|\s|^)([0-1]?[0-9])[\/\.月]([0-3]?[0-9])日?/);
+    if (singleDateMatch) {
+      const m1 = singleDateMatch[1].padStart(2, '0');
+      const d1 = singleDateMatch[2].padStart(2, '0');
+      const year = parseInt(m1, 10) < 5 ? currentYear + 1 : currentYear;
+      depart = `${year}-${m1}-${d1}`;
     }
   }
 
