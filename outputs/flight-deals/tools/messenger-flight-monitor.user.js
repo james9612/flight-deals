@@ -120,18 +120,22 @@
   function isChatContext(element) {
     if (!element || typeof element.closest !== 'function') return false;
 
-    // 嚴格排除側邊欄、導航列、頂部 Header、資訊欄與貼文牆
-    if (element.closest('[role="navigation"], [aria-label="聊天室"], [aria-label="Chats"], [aria-label="對話列表"], [aria-label="對話清單"], [data-pagelet="LeftRail"], [role="complementary"], [role="feed"], header, [role="banner"]')) {
-      return false;
-    }
-
-    // 接受對話主畫面中的元素
-    if (element.closest('[role="main"], [aria-label*="訊息"], [data-pagelet*="Chat"], [data-pagelet*="Messages"], [role="gridcell"], [data-scope="messages_table"]')) {
+    // 1. 若處於對話主區域 [role="main"]，確認為聊天視窗（排除內部次級導航）
+    const mainEl = element.closest('[role="main"], [data-pagelet*="Chat"], [data-pagelet*="Messages"], [data-scope="messages_table"]');
+    if (mainEl) {
+      if (element.closest('[role="navigation"], [role="complementary"], header, [role="banner"]')) {
+        return false;
+      }
       return true;
     }
 
-    // 若在 /messages/ 路由下，且不在側邊欄，亦視為聊天主畫面
-    if (window.location.pathname.includes('/messages/')) {
+    // 2. 嚴格排除左側對話清單側邊欄、頂部導航列、右側資訊欄
+    if (element.closest('[role="navigation"], [aria-label="Chats"], [aria-label="對話列表"], [aria-label="對話清單"], [data-pagelet="LeftRail"], [role="complementary"], [role="feed"], header, [role="banner"]')) {
+      return false;
+    }
+
+    // 3. 在 /messages/ 或 messenger.com 路由下，視為對話畫面
+    if (window.location.pathname.includes('/messages/') || window.location.hostname.includes('messenger.com')) {
       return true;
     }
 

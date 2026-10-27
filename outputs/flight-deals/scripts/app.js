@@ -306,7 +306,7 @@ function renderDeals() {
     if (activeFilter === 'kkday' && !src.includes('kkday') && !agn.includes('kkday')) return false;
     if (activeFilter === 'ehs' && !deal.source.includes('東森') && !deal.agency?.includes('東森')) return false;
     if (activeFilter === 'funtime' && !src.includes('funtime') && !agn.includes('funtime')) return false;
-    if (activeFilter === 'goflytrip' && !deal.source.includes('飛趣') && !deal.agency?.includes('飛趣')) return false;
+    if (activeFilter === 'goflytrip' && !src.includes('飛趣') && !agn.includes('飛趣')) return false;
     if (['japan', 'korea', 'asia'].includes(activeFilter) && deal.country !== activeFilter) return false;
 
     // 過期機票自動過濾：出發日期已過（小於今天）自動排除
@@ -361,6 +361,11 @@ function renderDeals() {
   const totalPages = Math.ceil(totalItems / PAGE_SIZE) || 1;
   if (currentPage > totalPages) currentPage = totalPages;
   if (currentPage < 1) currentPage = 1;
+
+  const searchCountEl = document.querySelector('.search-count');
+  if (searchCountEl) {
+    searchCountEl.textContent = `共 ${totalItems} 筆計畫票`;
+  }
 
   const emptyEl = document.getElementById('empty');
   if (emptyEl) {
@@ -655,6 +660,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (returnEl) returnEl.value = '';
         const originEl = document.getElementById('origin');
         if (originEl) originEl.value = ''; // Show all departure cities
+        const budgetEl = document.getElementById('budget');
+        if (budgetEl) budgetEl.value = '999999';
       }
 
       renderDeals();
