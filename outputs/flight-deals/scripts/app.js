@@ -319,7 +319,7 @@ function renderDeals() {
     if (activeFilter === 'startravel' && !src.includes('燦星') && !agn.includes('燦星')) return false;
     if (activeFilter === 'ugotravel' && !src.includes('旅天下') && !agn.includes('旅天下')) return false;
     if (activeFilter === 'richmond' && !src.includes('山富') && !agn.includes('山富')) return false;
-    if (activeFilter === 'besttour' && !src.includes('喜鴻') && !agn.includes('喜鴻')) return false;
+    if (activeFilter === 'besttour' && !src.includes('喜鴻') && !agn.includes('喜鴻') && !(deal.detail || '').includes('喜鴻') && !(deal.tag || '').includes('喜鴻')) return false;
     if (activeFilter === 'momo' && !src.includes('momo') && !agn.includes('momo')) return false;
     if (['japan', 'korea', 'asia'].includes(activeFilter) && deal.country !== activeFilter) return false;
 

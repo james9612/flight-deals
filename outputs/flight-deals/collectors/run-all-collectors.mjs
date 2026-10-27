@@ -5,6 +5,7 @@ import { collectKkday } from './collect-kkday.mjs';
 import { collectEhs } from './collect-ehs.mjs';
 import { collectFuntime } from './collect-funtime.mjs';
 import { collectExtendedAgencies } from './collect-extended-agencies.mjs';
+import { collectMomoDeals } from './collect-momo.mjs';
 import { collectZeroPromos } from './collect-zero-promos.mjs';
 import { mergeCollected } from './merge-collected.mjs';
 
@@ -29,13 +30,16 @@ try {
   console.log('\n6. 正在爬取【FunTime旅遊比價網】localtour 計畫機票專區...');
   await collectFuntime();
 
-  console.log('\n7. 正在整理【燦星旅遊、旅天下、山富旅遊、喜鴻假期、momo購物網】精選計畫票...');
+  console.log('\n7. 正在整理【燦星旅遊、旅天下、山富旅遊、喜鴻假期】精選包機與計畫票...');
   await collectExtendedAgencies();
 
-  console.log('\n8. 正在抓取【各大航空公司】0 元機票與官方促銷特報...');
+  console.log('\n8. 正在動態爬取【momo購物網】真實直購計畫機票（含喜鴻假期等直購單品）...');
+  await collectMomoDeals();
+
+  console.log('\n9. 正在抓取【各大航空公司】0 元機票與官方促銷特報...');
   await collectZeroPromos();
 
-  console.log('\n9. 正在執行多來源正規化、比價與去重整合管線...');
+  console.log('\n10. 正在執行多來源正規化、比價與去重整合管線...');
   await mergeCollected();
 
   console.log('\n=== [全部採集與聚合完成！] ===');

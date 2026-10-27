@@ -11,6 +11,7 @@ const ehsFile = new URL('../data/collected/ehs-plan.json', import.meta.url);
 const funtimeFile = new URL('../data/collected/funtime-plan.json', import.meta.url);
 const goflytripFile = new URL('../data/collected/goflytrip-deals.json', import.meta.url);
 const extendedFile = new URL('../data/collected/extended-deals.json', import.meta.url);
+const momoFile = new URL('../data/collected/momo-deals.json', import.meta.url);
 const zeroPromosFile = new URL('../data/collected/zero-promos.json', import.meta.url);
 
 async function safeReadJson(fileUrl, fallback = []) {
@@ -64,6 +65,7 @@ export async function mergeCollected() {
   let funtimeDeals = await safeReadJson(funtimeFile);
   let goflytripDeals = await safeReadJson(goflytripFile);
   let extendedDeals = await safeReadJson(extendedFile);
+  let momoDeals = await safeReadJson(momoFile);
   const zeroPromos = await safeReadJson(zeroPromosFile);
 
   // 備援防護：若有任何單一來源因為網路或防爬限制回傳 0 筆，從現有 deals.json 恢復資料（自動排除已知售罄與黑名單商品）
@@ -90,11 +92,52 @@ export async function mergeCollected() {
     if (!ehsDeals.length) ehsDeals = existingDeals.filter(d => d.agency === '東森旅遊');
     if (!funtimeDeals.length) funtimeDeals = existingDeals.filter(d => d.agency === 'FunTime');
     if (!goflytripDeals.length) goflytripDeals = existingDeals.filter(d => d.agency === '飛趣旅遊');
-    if (!extendedDeals.length) extendedDeals = existingDeals.filter(d => ['燦星旅遊', '旅天下', '山富旅遊', '喜鴻假期', 'momo購物網'].includes(d.agency));
+    if (!extendedDeals.length) extendedDeals = existingDeals.filter(d => ['燦星旅遊', '旅天下', '山富旅遊', '喜鴻假期'].includes(d.agency));
+    if (!momoDeals.length) momoDeals = existingDeals.filter(d => (d.agency || '').includes('momo'));
   }
 
 
-  console.log(`讀取各來源筆數：雄獅 ${lionDeals.length} 筆，飛遊網 ${flytourDeals.length} 筆，易飛網 ${ezflyDeals.length} 筆，KKday ${kkdayDeals.length} 筆，東森旅遊 ${ehsDeals.length} 筆，FunTime ${funtimeDeals.length} 筆，飛趣旅遊 ${goflytripDeals.length} 筆，燦星/旅天下/山富/喜鴻/momo ${extendedDeals.length} 筆，航空公司特報 ${zeroPromos.length} 筆`);
+  console.log(`讀取各來源筆數：雄獅 ${lionDeals.length} 筆，飛遊網 ${flytourDeals.length} 筆，易飛網 ${ezflyDeals.length} 筆，KKday ${kkdayDeals.length} 筆，東森旅遊 ${ehsDeals.length} 筆，FunTime ${funtimeDeals.length} 筆，飛趣旅遊 ${goflytripDeals.length} 筆，燦星/旅天下/山富/喜鴻 ${extendedDeals.length} 筆，momo直購單品 ${momoDeals.length} 筆，航空公司特報 ${zeroPromos.length} 筆`);
+
+  // 格式化 momo 直購商品
+  const formattedMomoDeals = momoDeals.map(d => {
+    const city = d.to || d.city || '精選航點';
+    const from = d.from || '台北';
+    const code = d.toCode || d.code || codeByDestination[city] || 'INT';
+    const fc = d.fromCode || d.fc || (from === '高雄' ? 'KHH' : 'TPE');
+    const country = d.country === '日本' ? 'japan' : (d.country === '韓國' ? 'korea' : (countryByDestination[city] || 'asia'));
+    const depart = d.departDate || d.depart || '';
+    const returnDate = d.returnDate || d.return || '';
+    const duration = d.durationDays ? `${d.durationDays} 天` : (d.duration || '5 天');
+    const date = (depart && returnDate) ? `${depart.slice(5).replace('-', '/')} – ${returnDate.slice(5).replace('-', '/')}` : (d.date || '精選計畫票');
+
+    return {
+      id: d.id,
+      city,
+      code,
+      from,
+      fc,
+      country,
+      price: d.priceTwd || d.price,
+      currency: 'TWD',
+      depart,
+      return: returnDate,
+      duration,
+      date,
+      airline: d.airline || '精選航空',
+      air: d.airline || '精選航空',
+      baggage: d.baggageNote || d.baggage || '含來回託運 20 公斤',
+      source: 'momo購物網',
+      sourceUrl: d.sourceUrl, // 100% direct single-product URL!
+      tag: (d.rawTitle || '').includes('喜鴻') ? 'momo・喜鴻特惠' : 'momo直達特惠',
+      agency: 'momo購物網',
+      kind: 'plan',
+      detail: d.rawTitle || d.detail || `${city}計畫機票・momo購物網線上直購免排隊`,
+      flightTime: (d.rawTitle || '').match(/早去晚回|早去午回|午去晚回|早去早回|午去午回|晚去晚回/) ? (d.rawTitle || '').match(/早去晚回|早去午回|午去晚回|早去早回|午去午回|晚去晚回/)[0] : '',
+      checked: d.checked || (d.lastSeen ? d.lastSeen.slice(0, 10) : new Date().toISOString().slice(0, 10)),
+      collectedAt: d.lastSeen || d.collectedAt || new Date().toISOString()
+    };
+  });
 
   // 智能比價與去重邏輯：FunTime 會先比對其他旅行社已有的商品
   function extractProductKey(url) {
@@ -112,7 +155,8 @@ export async function mergeCollected() {
     ...kkdayDeals.map(d => ({ ...d, agency: 'KKday', tag: 'KKday清艙特惠' })),
     ...ehsDeals.map(d => ({ ...d, agency: '東森旅遊', tag: '東森清艙特惠' })),
     ...goflytripDeals.map(d => ({ ...d, agency: '飛趣旅遊', tag: '飛趣旅遊清艙' })),
-    ...extendedDeals
+    ...extendedDeals,
+    ...formattedMomoDeals
   ];
 
   const excludedDirectIds = new Set();
