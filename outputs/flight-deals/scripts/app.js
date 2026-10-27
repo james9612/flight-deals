@@ -201,6 +201,15 @@ function formatReleaseTime(d) {
   }
 }
 
+function cleanBaggageText(baggage) {
+  if (!baggage) return '含來回託運';
+  let s = baggage.replace(/^🧳\s*/, '').trim();
+  if (s.includes('20公斤') || s.includes('20kg') || s.includes('20KG')) return '含來回託運 20kg';
+  if (s.includes('23公斤') || s.includes('23kg') || s.includes('23KG')) return '含來回託運 23kg';
+  if (s.length > 18) return s.slice(0, 16) + '...';
+  return s;
+}
+
 function renderDeals() {
   const container = document.getElementById('cards');
   if (!container) return;
@@ -276,7 +285,6 @@ function renderDeals() {
     filtered.sort((a, b) => (b.depart || '0000-00-00').localeCompare(a.depart || '0000-00-00'));
   }
 
-
   const totalItems = filtered.length;
   const totalPages = Math.ceil(totalItems / PAGE_SIZE) || 1;
   if (currentPage > totalPages) currentPage = totalPages;
@@ -301,7 +309,7 @@ function renderDeals() {
       directUrl = 'https://www.plynet.com.tw/';
     } else if ((d.agency || '').includes('FunTime')) {
       if (d.priceSaved > 0) {
-        btnText = `前往 ${d.comparedAgency || '原廠'} 預訂（比價現省 $${d.priceSaved.toLocaleString()}）↗`;
+        btnText = `前往 ${d.comparedAgency || '原廠'} 預訂（現省 $${d.priceSaved.toLocaleString()}）↗`;
       } else if (d.sourceUrl && d.sourceUrl.includes('liontravel.com')) {
         btnText = `前往 雄獅旅遊 預訂（FunTime特惠）↗`;
       } else if (d.sourceUrl && d.sourceUrl.includes('gounitravel.com')) {
@@ -329,15 +337,18 @@ function renderDeals() {
       directUrl = 'https://www.plynet.com.tw/';
     }
 
-    let tagText = d.tag;
-    let tagClass = 'tag';
+    // 精簡標籤：避免左上角旅行社與標籤文字重複
+    let tagHtml = '';
     if (d.priceSaved > 0) {
-      tagText = `🔥 比價現省 $${d.priceSaved.toLocaleString()}`;
-      tagClass = 'tag tag-savings';
+      tagHtml = `<span class="tag tag-savings">🔥 比價現省 $${d.priceSaved.toLocaleString()}</span>`;
     } else if ((d.agency || '').includes('FunTime') && d.sourceUrl) {
-      if (d.sourceUrl.includes('liontravel.com')) tagText = 'FunTime彙整・雄獅開票';
-      else if (d.sourceUrl.includes('gounitravel.com')) tagText = 'FunTime彙整・旅天下開票';
-      else if (d.sourceUrl.includes('kkday.com')) tagText = 'FunTime彙整・KKday開票';
+      let subAgency = '';
+      if (d.sourceUrl.includes('liontravel.com')) subAgency = '雄獅開票';
+      else if (d.sourceUrl.includes('gounitravel.com')) subAgency = '旅天下開票';
+      else if (d.sourceUrl.includes('kkday.com')) subAgency = 'KKday開票';
+      if (subAgency) tagHtml = `<span class="tag tag-sub">${subAgency}</span>`;
+    } else if (d.tag && !d.tag.includes(d.agency) && d.tag !== '旅行社計畫票') {
+      tagHtml = `<span class="tag">${d.tag}</span>`;
     }
 
     // Extract flight schedule/times if available
@@ -352,10 +363,6 @@ function renderDeals() {
         }
       }
     }
-    const flightTimeHtml = flightTime ? `
-      <div class="flight-time-row">
-        <span class="flight-time-badge">🕒 班機時間：<b>${flightTime}</b></span>
-      </div>` : '';
 
     const relTime = formatReleaseTime(d);
     const freshBadge = relTime.isRecent
@@ -364,54 +371,63 @@ function renderDeals() {
 
     return `
       <article class="card">
-        <div>
+        <div class="card-body">
           <div class="cardtop">
             <div class="cardtop-left">
               <span class="agency-badge ${agencyClass}">${d.agency || d.source}</span>
-              <span class="${tagClass}">${tagText}</span>
+              ${tagHtml}
               ${freshBadge}
             </div>
             <button class="heart" onclick="event.stopPropagation();this.textContent=this.textContent==='♡'?'♥':'♡'">♡</button>
           </div>
 
-          <div class="card-header-dest">
-            <span class="dest-city-large">${d.city}</span>
-            <span class="dest-duration-badge">${d.duration}</span>
-          </div>
-
-          <div class="flight-meta-row">
-            <span>📅 ${d.date}</span>
-            <span>·</span>
-            <span class="airline-highlight">✈ ${d.airline || d.air}</span>
-          </div>
-
-          ${flightTimeHtml}
-
-          <div><span class="baggage-pill">🧳 ${d.baggage || '含來回託運行李'}</span></div>
-
-          <div class="route-box">
-            <div class="route-endpoint">
-              <div class="route-iata">${d.fc}</div>
-              <div class="route-city-label">${d.from}</div>
+          <div class="card-route-hero">
+            <div class="route-city-group origin">
+              <div class="route-city-name">${d.from || '台北'}</div>
+              <div class="route-iata-code">${d.fc || 'TPE'}</div>
             </div>
-            <div class="route-center">
-              <div class="route-line"></div>
+            <div class="route-flight-divider">
+              <span class="route-duration-pill">${d.duration || '5 天'}</span>
+              <div class="route-flight-line">
+                <span class="route-flight-icon">✈</span>
+              </div>
               <span class="route-flight-type">來回直飛</span>
             </div>
-            <div class="route-endpoint">
-              <div class="route-iata">${d.code}</div>
-              <div class="route-city-label">${d.city}</div>
+            <div class="route-city-group destination">
+              <div class="route-city-name dest-highlight">${d.city}</div>
+              <div class="route-iata-code">${d.code || 'INT'}</div>
             </div>
           </div>
+
+          <div class="card-specs-row">
+            <div class="spec-pill">
+              <span>📅</span>
+              <span>${d.date}</span>
+            </div>
+            <div class="spec-pill">
+              <span>✈</span>
+              <span class="airline-highlight">${d.airline || d.air}</span>
+            </div>
+            <div class="spec-pill">
+              <span>🧳</span>
+              <span>${cleanBaggageText(d.baggage)}</span>
+            </div>
+          </div>
+
+          ${flightTime ? `
+          <div class="card-flight-time-box">
+            <span>🕒</span>
+            <span>班機時間：<b>${flightTime}</b></span>
+          </div>` : ''}
 
           ${datesPreview}
         </div>
 
-        <div>
-          <div class="card-foot-pricing">
-            <div class="foot-info">
-              <b>${d.depart ? '固定日期計畫機票' : '多梯次特惠機票'}</b>
-              含稅金與行李額度
+        <div class="card-footer-box">
+          <div class="card-price-row">
+            <div class="price-type-col">
+              <span class="price-type-title">${d.depart ? '固定日期計畫機票' : '特惠湊票／清艙'}</span>
+              <span class="price-type-sub">全額含稅與託運行李</span>
             </div>
             <div class="fare-price-box">
               ${d.priceSaved ? `<div class="original-price-del">${d.comparedAgency || '原廠'} NT$ ${(d.originalPrice || 0).toLocaleString()}</div>` : ''}
@@ -421,16 +437,17 @@ function renderDeals() {
             </div>
           </div>
 
-          <div class="detail-section">
-            <p class="detail-text">${d.detail}</p>
-            <div class="source-info-bar">
-              <span>來源：<b>${d.source}</b></span>
-              <span class="deal-update-time">🕒 釋出更新：<b class="${relTime.isToday ? 'text-fresh' : ''}">${relTime.label}</b></span>
-            </div>
-            <a class="card-booking-btn" href="${directUrl}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">
-              ${btnText}
-            </a>
+          <div class="card-meta-status">
+            <span class="card-update-time">
+              <span class="update-dot ${relTime.isToday ? 'dot-active' : ''}"></span>
+              <span>釋出更新：<b class="${relTime.isToday ? 'text-fresh' : ''}">${relTime.label}</b></span>
+            </span>
+            ${d.priceSaved ? `<span class="deal-savings-badge">已省 $${d.priceSaved.toLocaleString()}</span>` : ''}
           </div>
+
+          <a class="card-booking-btn" href="${directUrl}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">
+            ${btnText}
+          </a>
         </div>
       </article>
     `;
