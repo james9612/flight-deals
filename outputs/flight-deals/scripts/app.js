@@ -323,6 +323,27 @@ function renderDeals() {
       btnText = `前往 KKday 官方機票預訂 ↗`;
     } else if ((d.agency || '').includes('東南')) {
       btnText = `前往 東南旅遊官方機位預訂 ↗`;
+      if (!directUrl || directUrl === '#' || directUrl === 'https://www.settour.com.tw/' || directUrl === 'https://www.settour.com.tw') {
+        const fromCode = d.fc || 'TPE';
+        const cityMap = {
+          '東京': 'NRT',
+          '大阪': 'KIX',
+          '沖繩': 'OKA',
+          '福岡': 'FUK',
+          '首爾': 'ICN',
+          '曼谷': 'BKK',
+          '北海道': 'CTS',
+          '名古屋': 'NGO'
+        };
+        const toCode = (d.code && d.code !== 'INT') ? d.code : (cityMap[d.city] || 'NRT');
+        if (d.depart && d.return) {
+          const depDateStr = d.depart.replace(/-/g, '');
+          const retDateStr = d.return.replace(/-/g, '');
+          directUrl = `https://flight.settour.com.tw/availableSearchV2?adtCount=1&chdCount=0&pfpClass=&directFlightOnly=true&depDate=${depDateStr},${retDateStr}&depAirportCode=${fromCode},${toCode}&arrAirportCode=${toCode},${fromCode}&tripType=RT`;
+        } else {
+          directUrl = `https://flight.settour.com.tw/search?adtCount=1&arrAirportCode=${toCode}%2C${fromCode}&chdCount=0&depAirportCode=${fromCode}%2C${toCode}&directFlightOnly=true&tripType=RT`;
+        }
+      }
     } else if ((d.agency || '').includes('東森')) {
       btnText = `前往 東森旅遊官方商品頁 ↗`;
     } else if ((d.agency || '').includes('易飛網')) {
