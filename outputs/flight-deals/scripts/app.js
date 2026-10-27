@@ -243,17 +243,37 @@ function renderDeals() {
   });
 
   if (sortVal === 'updated') {
-    // 依更新時間排序：最新釋出的機票排在最前面
+    // 依即時釋出時間排序：最新釋出的機票排在最前面
     filtered.sort((a, b) => {
       const timeA = new Date(a.collectedAt || a.updatedAt || a.checked || 0).getTime();
       const timeB = new Date(b.collectedAt || b.updatedAt || b.checked || 0).getTime();
       if (timeB !== timeA) return timeB - timeA;
       return a.price - b.price;
     });
+  } else if (sortVal === 'update-date') {
+    // 依資料更新日期排序（由新到舊）：同一天內價格由低到高
+    filtered.sort((a, b) => {
+      const dateA = a.checked || (a.collectedAt ? a.collectedAt.slice(0, 10) : '0000-00-00');
+      const dateB = b.checked || (b.collectedAt ? b.collectedAt.slice(0, 10) : '0000-00-00');
+      if (dateB !== dateA) return dateB.localeCompare(dateA);
+      return a.price - b.price;
+    });
+  } else if (sortVal === 'update-date-asc') {
+    // 依資料更新日期排序（由舊到新）：同一天內價格由低到高
+    filtered.sort((a, b) => {
+      const dateA = a.checked || (a.collectedAt ? a.collectedAt.slice(0, 10) : '9999-99-99');
+      const dateB = b.checked || (b.collectedAt ? b.collectedAt.slice(0, 10) : '9999-99-99');
+      if (dateA !== dateB) return dateA.localeCompare(dateB);
+      return a.price - b.price;
+    });
   } else if (sortVal === 'price') {
     filtered.sort((a, b) => a.price - b.price);
+  } else if (sortVal === 'price-desc') {
+    filtered.sort((a, b) => b.price - a.price);
   } else if (sortVal === 'date') {
-    filtered.sort((a, b) => (a.depart || '').localeCompare(b.depart || ''));
+    filtered.sort((a, b) => (a.depart || '9999-99-99').localeCompare(b.depart || '9999-99-99'));
+  } else if (sortVal === 'date-desc') {
+    filtered.sort((a, b) => (b.depart || '0000-00-00').localeCompare(a.depart || '0000-00-00'));
   }
 
 
