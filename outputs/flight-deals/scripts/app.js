@@ -35,6 +35,81 @@ const agencyClassMap = {
   '飛趣旅遊 Messenger 清艙': 'agency-goflytrip'
 };
 
+// ==========================================
+// 機票追蹤／我的最愛（Favorites & Wishlist）模組
+// ==========================================
+const FAVORITES_STORAGE_KEY = 'flight_favorites_v1';
+
+function getFavorites() {
+  try {
+    const raw = localStorage.getItem(FAVORITES_STORAGE_KEY);
+    if (!raw) return new Set();
+    const arr = JSON.parse(raw);
+    return new Set(Array.isArray(arr) ? arr : []);
+  } catch (e) {
+    console.warn('讀取追蹤清單失敗:', e);
+    return new Set();
+  }
+}
+
+function saveFavorites(favSet) {
+  try {
+    const arr = Array.from(favSet);
+    localStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify(arr));
+  } catch (e) {
+    console.warn('儲存追蹤清單失敗:', e);
+  }
+}
+
+function getDealId(d) {
+  if (d.id) return String(d.id);
+  const src = d.agency || d.source || '';
+  const city = d.city || '';
+  const date = d.date || d.depart || '';
+  const price = d.price || '';
+  return `${src}-${city}-${date}-${price}`.replace(/[^a-zA-Z0-9_\-\u4e00-\u9fa5]/g, '_');
+}
+
+function updateFavoriteCount() {
+  const count = getFavorites().size;
+  const countEl = document.getElementById('fav-count');
+  if (countEl) countEl.textContent = count;
+  const navCountEl = document.getElementById('nav-fav-count');
+  if (navCountEl) navCountEl.textContent = count;
+}
+
+window.toggleDealFavorite = function(dealId, event) {
+  if (event) {
+    event.stopPropagation();
+    event.preventDefault();
+  }
+  const favs = getFavorites();
+  const isNowFav = !favs.has(dealId);
+  if (isNowFav) {
+    favs.add(dealId);
+  } else {
+    favs.delete(dealId);
+  }
+  saveFavorites(favs);
+  updateFavoriteCount();
+
+  if (activeFilter === 'favorites') {
+    renderDeals();
+  } else {
+    // 即時更新畫面上所有具備相同 dealId 的愛心按鈕
+    document.querySelectorAll('button.heart').forEach(btn => {
+      if (btn.dataset.dealId === dealId) {
+        btn.classList.toggle('active', isNowFav);
+        btn.textContent = isNowFav ? '♥' : '♡';
+        btn.title = isNowFav ? '已在追蹤清單（點擊取消）' : '加入追蹤清單';
+        btn.setAttribute('aria-label', isNowFav ? '已在追蹤清單（點擊取消）' : '加入追蹤清單');
+        btn.classList.add('heart-pop');
+        setTimeout(() => btn.classList.remove('heart-pop'), 350);
+      }
+    });
+  }
+};
+
 function renderPromos() {
   const container = document.getElementById('promos-grid');
   if (!container || !promos.length) return;
@@ -217,11 +292,14 @@ function renderDeals() {
   const returnVal = document.getElementById('return')?.value || '';
   const sortVal = document.getElementById('sort')?.value || 'updated';
 
+  const currentFavs = getFavorites();
+
   let filtered = deals.filter(deal => {
     const src = (deal.source || '').toLowerCase();
     const agn = (deal.agency || '').toLowerCase();
 
     // Agency / Type filtering
+    if (activeFilter === 'favorites' && !currentFavs.has(getDealId(deal))) return false;
     if (activeFilter === 'lion' && !deal.source.includes('雄獅') && !deal.agency?.includes('雄獅')) return false;
     if (activeFilter === 'plynet' && !deal.source.includes('飛遊網') && !deal.agency?.includes('飛遊網')) return false;
     if (activeFilter === 'ezfly' && !deal.source.includes('易飛網') && !deal.agency?.includes('易飛網')) return false;
@@ -285,7 +363,25 @@ function renderDeals() {
   if (currentPage < 1) currentPage = 1;
 
   const emptyEl = document.getElementById('empty');
-  if (emptyEl) emptyEl.style.display = totalItems ? 'none' : 'block';
+  if (emptyEl) {
+    if (totalItems > 0) {
+      emptyEl.style.display = 'none';
+    } else {
+      emptyEl.style.display = 'block';
+      if (activeFilter === 'favorites') {
+        emptyEl.innerHTML = `
+          <div style="font-size:36px;margin-bottom:8px;">❤️</div>
+          <div style="font-size:18px;font-weight:700;color:#1e293b;margin-bottom:6px;">目前尚未有追蹤的機票</div>
+          <div style="color:#64748b;font-size:14px;max-width:440px;margin:0 auto 16px;line-height:1.6;">
+            瀏覽機票卡片時，點擊右上角 ♡ 愛心符號，即可將心儀機票加入追蹤清單，方便隨時比價與掌握釋出動態！
+          </div>
+          <button type="button" onclick="document.querySelector('[data-filter=\\'all\\']').click()" style="background:#e11d48;color:#fff;border:none;padding:9px 20px;border-radius:20px;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 4px 12px rgba(225,29,72,0.25);">瀏覽全部機票 ✈️</button>
+        `;
+      } else {
+        emptyEl.textContent = '目前沒有符合該條件的計畫票，建議放寬預算或目的地。';
+      }
+    }
+  }
 
   // 30 items per page pagination
   const paginated = filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
@@ -361,6 +457,9 @@ function renderDeals() {
       ? `<span class="badge-fresh-deal ${relTime.isVeryFresh ? 'pulse' : ''}">${relTime.isVeryFresh ? '⚡ 剛剛釋出' : '🟢 今日釋出'}</span>`
       : '';
 
+    const dealId = getDealId(d);
+    const isFav = currentFavs.has(dealId);
+
     return `
       <article class="card">
         <div class="card-body">
@@ -370,7 +469,7 @@ function renderDeals() {
               ${tagHtml}
               ${freshBadge}
             </div>
-            <button class="heart" onclick="event.stopPropagation();this.textContent=this.textContent==='♡'?'♥':'♡'">♡</button>
+            <button type="button" class="heart ${isFav ? 'active' : ''}" data-deal-id="${dealId}" onclick="window.toggleDealFavorite('${dealId}', event)" title="${isFav ? '已在追蹤清單（點擊取消）' : '加入追蹤清單'}" aria-label="${isFav ? '已在追蹤清單（點擊取消）' : '加入追蹤清單'}">${isFav ? '♥' : '♡'}</button>
           </div>
 
           <div class="card-route-hero">
@@ -528,6 +627,7 @@ async function loadData() {
 
 // Event Listeners
 document.addEventListener('DOMContentLoaded', () => {
+  updateFavoriteCount();
   loadData();
 
   // Filter pills
@@ -545,8 +645,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (destEl) destEl.value = '';
       }
 
-      // 當點選特定旅行社時，清空衝突篩選，讓使用者完整查看該旅行社商品
-      if (['kkday', 'lion', 'ezfly', 'ehs', 'plynet', 'funtime', 'goflytrip'].includes(activeFilter)) {
+      // 當點選特定旅行社或追蹤清單時，清空衝突篩選，讓使用者完整查看商品
+      if (activeFilter === 'favorites' || ['kkday', 'lion', 'ezfly', 'ehs', 'plynet', 'funtime', 'goflytrip'].includes(activeFilter)) {
         const destEl = document.getElementById('dest');
         if (destEl) destEl.value = '';
         const departEl = document.getElementById('depart');
@@ -554,7 +654,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const returnEl = document.getElementById('return');
         if (returnEl) returnEl.value = '';
         const originEl = document.getElementById('origin');
-        if (originEl) originEl.value = ''; // Show all departure cities for this agency
+        if (originEl) originEl.value = ''; // Show all departure cities
       }
 
       renderDeals();

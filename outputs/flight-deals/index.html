@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>飛行便宜｜旅行社計畫票比價 ＆ 廉航 0 元機票特報聚合站</title>
   <meta name="description" content="自動蒐集雄獅旅遊、飛遊網、易飛網等旅行社計畫票與團體湊票，並同步追蹤各大廉價航空 0 元機票與大促特報。">
-  <link rel="stylesheet" href="styles/site.css?v=20261027-09">
+  <link rel="stylesheet" href="styles/site.css?v=20261027-10">
 </head>
 <body>
   <div class="wrap">
@@ -20,7 +20,7 @@
         <a href="sources.html">票源網站清單</a>
         <a href="#zero-fare">降價快報</a>
       </nav>
-      <button class="login" onclick="alert('登入通知功能將於正式版提供')">登入 / 追蹤</button>
+      <button class="login" id="nav-fav-btn" onclick="document.getElementById('pill-favorites')?.click();document.getElementById('deals')?.scrollIntoView({behavior:'smooth'});" title="點擊查看已追蹤機票">❤️ 我的追蹤 (<span id="nav-fav-count">0</span>)</button>
     </header>
 
     <section class="hero">
@@ -155,6 +155,7 @@
         <div class="search-pills-label"><b>🏷️ 旅行社與航線分類快捷按鈕：</b></div>
         <div class="pills">
           <button type="button" class="pill on" data-filter="all">全部旅行社</button>
+          <button type="button" class="pill pill-favorites" data-filter="favorites" id="pill-favorites">❤️ 我的追蹤清單 (<span id="fav-count">0</span>)</button>
           <button type="button" class="pill" data-filter="kkday">⚡ KKday清艙特惠</button>
           <button type="button" class="pill" data-filter="ehs">🏷️ 東森旅遊清艙</button>
           <button type="button" class="pill" data-filter="funtime">🎈 FunTime計畫機票</button>
@@ -284,6 +285,6 @@
     </footer>
   </div>
 
-  <script src="scripts/app.js?v=20261027-09" defer></script>
+  <script src="scripts/app.js?v=20261027-10" defer></script>
 </body>
 </html>
