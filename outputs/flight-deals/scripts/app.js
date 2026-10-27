@@ -442,7 +442,7 @@ function renderDeals() {
     } else if ((d.agency || '').includes('旅天下')) {
       btnText = `前往 旅天下官方商品頁 ↗`;
     } else if ((d.agency || '').includes('山富')) {
-      btnText = `前往 山富機票網查看湊票 ↗`;
+      btnText = `前往 山富旅遊官方商品頁 ↗`;
     } else if ((d.agency || '').includes('喜鴻')) {
       btnText = `前往 喜鴻假期官方商品頁 ↗`;
     } else if ((d.agency || '').includes('momo')) {
@@ -633,9 +633,10 @@ function populateOriginDropdown() {
 
 async function loadData() {
   try {
+    const ts = Date.now();
     const [dealsRes, promosRes] = await Promise.all([
-      fetch('data/deals.json', { cache: 'no-store' }),
-      fetch('data/promos.json', { cache: 'no-store' })
+      fetch(`data/deals.json?v=${ts}`, { cache: 'no-store' }),
+      fetch(`data/promos.json?v=${ts}`, { cache: 'no-store' })
     ]);
 
     if (dealsRes.ok) {
