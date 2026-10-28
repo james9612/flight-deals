@@ -1267,6 +1267,337 @@ footer {
    全裝置響應式設計系統 (Responsive Design System)
    ======================================================== */
 
+/* 桌機大螢幕視覺放大優化 (Desktop: >= 1025px) */
+@media (min-width: 1025px) {
+  body {
+    font-size: 17.5px;
+  }
+  .wrap {
+    max-width: 1440px;
+    padding: 0 36px;
+  }
+
+  /* 頂部導覽列放大 */
+  header {
+    height: 92px;
+  }
+  .logo {
+    font-size: 28px;
+    gap: 12px;
+  }
+  .mark {
+    padding: 9px 14px;
+    font-size: 23px;
+    border-radius: 12px;
+  }
+  .nav {
+    gap: 36px;
+    font-size: 18px;
+  }
+  .login {
+    padding: 12px 24px;
+    font-size: 16px;
+  }
+
+  /* 主視覺 Hero 區塊放大 */
+  .hero {
+    padding: 52px 0 40px;
+    gap: 44px;
+  }
+  .eyebrow {
+    font-size: 15.5px;
+    margin-bottom: 10px;
+  }
+  h1 {
+    font-size: clamp(48px, 4.8vw, 66px);
+  }
+  .lead {
+    font-size: 19px;
+    max-width: 780px;
+    line-height: 1.85;
+  }
+  .art {
+    height: 250px;
+  }
+  .sun {
+    width: 175px;
+    height: 175px;
+  }
+  .ticket {
+    width: 340px;
+    padding: 26px 28px;
+    border-radius: 20px;
+  }
+  .ticket .small {
+    font-size: 14px;
+  }
+  .ticket .codes b {
+    font-size: 30px;
+  }
+  .ticket .codes small {
+    font-size: 14px;
+  }
+  .ticket .price {
+    font-size: 26px;
+  }
+
+  /* 0 元機票收折橫幅與卡片放大 */
+  .zero-promos-collapsible .planner-toggle {
+    padding: 16px 24px;
+  }
+  .planner-promo-badge {
+    font-size: 13.5px;
+    padding: 5px 12px;
+  }
+  .planner-toggle b {
+    font-size: 19px;
+  }
+  .planner-toggle span:not(.toggle-icon):not(.planner-promo-badge) {
+    font-size: 16px;
+  }
+  .promos-grid {
+    grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+    gap: 24px;
+  }
+  .promo-card {
+    padding: 28px;
+  }
+  .promo-head h3 {
+    font-size: 23px;
+  }
+  .price-row {
+    font-size: 16px;
+  }
+  .price-row b {
+    font-size: 17px;
+  }
+  .price-row.total {
+    font-size: 17px;
+  }
+  .price-row.total .sum {
+    font-size: 29px;
+  }
+  .promo-btn {
+    font-size: 17.5px;
+    padding: 15px 24px;
+  }
+
+  /* 搜尋框與篩選快捷區放大 */
+  .search {
+    padding: 28px 32px;
+    border-radius: 22px;
+    margin: 14px 0 24px;
+  }
+  .search-title h2 {
+    font-size: 27px;
+    margin-bottom: 6px;
+  }
+  .search-title p {
+    font-size: 17px;
+  }
+  .search-count {
+    font-size: 16px;
+    padding: 10px 20px;
+  }
+  .search-guide {
+    font-size: 16px;
+    padding: 15px 22px;
+    margin: 18px 0 16px;
+  }
+  .fields {
+    gap: 12px;
+  }
+  .field {
+    padding: 12px 16px;
+    border-radius: 12px;
+  }
+  .field label {
+    font-size: 14.5px;
+    margin-bottom: 5px;
+  }
+  .field label small {
+    font-size: 13px;
+  }
+  .field select,
+  .field input {
+    font-size: 17px;
+  }
+  .go {
+    font-size: 18px;
+    padding: 0 28px;
+    min-height: 58px;
+    border-radius: 12px;
+  }
+  .search-agency-pills {
+    margin-top: 22px;
+    padding-top: 20px;
+  }
+  .search-pills-label {
+    font-size: 16px;
+    margin-bottom: 12px;
+  }
+  .search-agency-pills .pills {
+    gap: 10px;
+  }
+  .pill {
+    padding: 11px 22px;
+    font-size: 16px;
+  }
+
+  /* 機票卡片區與內部字體全面放大 */
+  .section {
+    padding: 20px 0 56px;
+  }
+  .section .head {
+    margin-bottom: 24px;
+  }
+  .section .head h2 {
+    font-size: 32px;
+    margin-bottom: 8px;
+  }
+  .section .head p {
+    font-size: 17.5px;
+  }
+  .cards {
+    gap: 26px;
+  }
+  .card {
+    padding: 26px 28px;
+    border-radius: 20px;
+  }
+  .cardtop {
+    margin-bottom: 14px;
+  }
+  .cardtop-left {
+    gap: 8px;
+  }
+  .agency-badge {
+    font-size: 14.5px;
+    padding: 6px 13px;
+    border-radius: 8px;
+  }
+  .tag {
+    font-size: 13.5px;
+    padding: 5px 12px;
+  }
+  .badge-fresh-deal {
+    font-size: 13px;
+    padding: 4px 11px;
+  }
+  .heart {
+    width: 42px;
+    height: 42px;
+    font-size: 21px;
+  }
+  .card-route-hero {
+    padding: 16px 22px;
+    border-radius: 14px;
+    margin: 8px 0 16px;
+  }
+  .route-city-group {
+    min-width: 72px;
+  }
+  .route-city-name {
+    font-size: 24px;
+  }
+  .route-iata-code {
+    font-size: 14.5px;
+    margin-top: 4px;
+  }
+  .route-duration-pill {
+    font-size: 13px;
+    padding: 3px 11px;
+  }
+  .route-flight-icon {
+    font-size: 14px;
+  }
+  .route-flight-type {
+    font-size: 12.5px;
+  }
+  .card-specs-row {
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  .spec-pill {
+    font-size: 14.5px;
+    padding: 6px 12px;
+    border-radius: 10px;
+  }
+  .card-flight-time-box {
+    font-size: 14px;
+    padding: 8px 14px;
+    border-radius: 10px;
+    margin-bottom: 14px;
+  }
+  .dates-preview {
+    font-size: 14px;
+    padding: 10px 14px;
+  }
+  .card-footer-box {
+    padding-top: 18px;
+  }
+  .card-price-row {
+    margin-bottom: 10px;
+  }
+  .price-type-title {
+    font-size: 15.5px;
+  }
+  .price-type-sub {
+    font-size: 13px;
+    margin-top: 2px;
+  }
+  .original-price-del {
+    font-size: 14px;
+  }
+  .fare-currency {
+    font-size: 17px;
+  }
+  .fare-amount {
+    font-size: 34px;
+  }
+  .fare-suffix {
+    font-size: 14px;
+  }
+  .card-meta-status {
+    font-size: 14px;
+    margin-bottom: 14px;
+  }
+  .deal-savings-badge {
+    font-size: 13px;
+    padding: 3px 9px;
+  }
+  .card-booking-btn {
+    font-size: 16.5px;
+    padding: 14px 18px;
+    border-radius: 12px;
+  }
+  .card-booking-btn .btn-arrow {
+    font-size: 18px;
+  }
+
+  /* 分頁器與頁尾放大 */
+  .pagination-inner {
+    max-width: 920px;
+    padding: 22px 32px;
+  }
+  .page-info {
+    font-size: 16px;
+  }
+  .page-btn {
+    font-size: 16px;
+    padding: 10px 18px;
+    min-width: 46px;
+    min-height: 46px;
+  }
+  .disclaimer {
+    font-size: 15px;
+  }
+  footer {
+    font-size: 16px;
+    padding: 32px 0 48px;
+  }
+}
+
 /* 平板中螢幕 (Tablet: <= 1024px) */
 @media (max-width: 1024px) {
   .wrap {
