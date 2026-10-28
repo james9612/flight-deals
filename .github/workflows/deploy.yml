@@ -2,7 +2,7 @@ name: Collect deals and deploy site
 
 concurrency:
   group: flight-deals-deploy
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 on:
   push:
@@ -18,7 +18,7 @@ permissions:
 
 jobs:
   collect-and-deploy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     environment:
       name: github-pages
@@ -30,12 +30,6 @@ jobs:
         uses: actions/setup-node@v7
         with:
           node-version: 22
-      - name: Install collector dependencies
-        run: npm install
-        working-directory: outputs/flight-deals
-      - name: Install Chromium
-        run: npx playwright install --with-deps chromium
-        working-directory: outputs/flight-deals
       - name: Collect all plan deals and airline promos
         run: npm run collect
         working-directory: outputs/flight-deals

@@ -6,7 +6,6 @@
     "collect": "node collectors/run-all-collectors.mjs",
     "collect:lion": "node collectors/collect-liontravel.mjs",
     "collect:plynet": "node collectors/collect-plynet.mjs",
-    "collect:cola": "node collectors/collect-colatour.mjs",
     "collect:ezfly": "node collectors/collect-ezfly.mjs",
     "collect:zero": "node collectors/collect-zero-promos.mjs",
     "merge": "node collectors/merge-collected.mjs",

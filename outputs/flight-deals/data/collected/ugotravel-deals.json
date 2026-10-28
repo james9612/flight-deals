@@ -1,7 +1,7 @@
 [
   {
-    "id": "ugotravel-26JTN12MMZ-ZP",
-    "productId": "26JTN12MMZ-ZP",
+    "id": "ugotravel-26JTN06MMZ-ZP",
+    "productId": "26JTN06MMZ-ZP",
     "agency": "旅天下",
     "title": "旅天下東京●樂桃旅遊計畫票五日（稅金／含來回２０ＫＧ行李）",
     "city": "東京",
@@ -11,10 +11,10 @@
     "fc": "TPE",
     "price": 12699,
     "currency": "TWD",
-    "depart": "2026-11-12",
-    "return": "2026-11-16",
+    "depart": "2026-11-06",
+    "return": "2026-11-10",
     "duration": "5 天",
-    "date": "11/12 – 11/16",
+    "date": "11/06 – 11/10",
     "airline": "樂桃航空",
     "air": "樂桃航空",
     "baggage": "含來回託運 20 公斤",
@@ -24,8 +24,8 @@
     "kind": "plan",
     "detail": "旅天下東京●樂桃旅遊計畫票五日（稅金／含來回２０ＫＧ行李）｜含稅金及託運行李，去回程固定不可改期",
     "flightTime": "早去午回",
-    "checked": "2026-10-27",
-    "collectedAt": "2026-10-27T13:03:02.606Z"
+    "checked": "2026-10-28",
+    "collectedAt": "2026-10-28T09:21:30.883Z"
   },
   {
     "id": "ugotravel-26JON20MM99-ZP",
@@ -52,12 +52,12 @@
     "kind": "plan",
     "detail": "《機票特惠》日本沖繩旅遊計劃機票5日(樂桃/去回各20公斤托運行李)｜含稅金及託運行李，去回程固定不可改期",
     "flightTime": "早去午回",
-    "checked": "2026-10-27",
-    "collectedAt": "2026-10-27T13:03:03.994Z"
+    "checked": "2026-10-28",
+    "collectedAt": "2026-10-28T09:21:32.321Z"
   },
   {
-    "id": "ugotravel-26JXN14MMZ-ZP",
-    "productId": "26JXN14MMZ-ZP",
+    "id": "ugotravel-26JXN06MMZ-ZP",
+    "productId": "26JXN06MMZ-ZP",
     "agency": "旅天下",
     "title": "《機票特惠》大阪樂桃旅遊計畫票五日（含稅金／含來回２０ＫＧ行李）",
     "city": "大阪",
@@ -67,10 +67,10 @@
     "fc": "TPE",
     "price": 11499,
     "currency": "TWD",
-    "depart": "2026-11-14",
-    "return": "2026-11-18",
+    "depart": "2026-11-06",
+    "return": "2026-11-10",
     "duration": "5 天",
-    "date": "11/14 – 11/18",
+    "date": "11/06 – 11/10",
     "airline": "樂桃航空",
     "air": "樂桃航空",
     "baggage": "含來回託運 20 公斤",
@@ -80,7 +80,7 @@
     "kind": "plan",
     "detail": "《機票特惠》大阪樂桃旅遊計畫票五日（含稅金／含來回２０ＫＧ行李）｜含稅金及託運行李，去回程固定不可改期",
     "flightTime": "早去午回",
-    "checked": "2026-10-27",
-    "collectedAt": "2026-10-27T13:03:05.358Z"
+    "checked": "2026-10-28",
+    "collectedAt": "2026-10-28T09:21:33.418Z"
   }
 ]

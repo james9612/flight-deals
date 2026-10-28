@@ -1,12 +1,40 @@
 {
   "source": "FunTime旅遊比價網 localtour 計畫機票",
   "sourceUrl": "https://www.funtime.com.tw/localtour/topic/index.php?theme=GroupAffinity-Ticket",
-  "collectedAt": "2026-10-27T13:02:53.822Z",
-  "count": 13,
+  "collectedAt": "2026-10-28T09:21:22.418Z",
+  "count": 14,
   "deals": [
     {
       "id": "funtime-1",
       "productId": "FT-1",
+      "title": "超值特惠機票｜樂桃東京計畫旅遊票5日｜1人成行/含行李/含稅",
+      "city": "東京",
+      "code": "TYO",
+      "from": "台北",
+      "fc": "TPE",
+      "country": "japan",
+      "price": 7999,
+      "currency": "TWD",
+      "depart": "",
+      "return": "",
+      "duration": "5 天",
+      "date": "5 天・多梯次可選（依預訂頁為準）",
+      "airline": "樂桃航空",
+      "air": "樂桃航空",
+      "baggage": "含來回託運行李",
+      "kind": "plan",
+      "tag": "FunTime計畫機票",
+      "agency": "FunTime",
+      "source": "FunTime旅遊比價網（localtour）",
+      "sourceUrl": "https://travel.liontravel.com/detail?NormGroupID=377cef72-5bd3-4a7b-a6a8-b6e32b6e36e8&GroupID=26JTN06MMTY-T&utm_source=funtime&utm_medium=referral&utm_campaign=tour&Mtl=funtime",
+      "detail": "超值特惠機票｜樂桃東京計畫旅遊票5日｜1人成行/含行李/含稅｜樂桃航空直飛，含稅金與行李。此為 FunTime 彙整之多梯次計畫機票，實際可售出發日與即時剩餘機位以跳轉後的供應商預訂頁為準。",
+      "availableDates": "此商品包含多個出發梯次，點擊「前往預訂」即可查看供應商最新日曆與即時餘位",
+      "checked": "2026-10-28",
+      "collectedAt": "2026-10-28T09:21:22.418Z"
+    },
+    {
+      "id": "funtime-2",
+      "productId": "FT-2",
       "title": "超值特惠機票｜大阪計畫旅遊票6日｜1人成行/含行李/含稅",
       "city": "大阪",
       "code": "OSA",
@@ -29,12 +57,12 @@
       "sourceUrl": "https://travel.liontravel.com/detail?NormGroupID=e9c23013-feaa-4f75-a760-0c8543bc4996&GroupID=26JXN03MMUY-T&utm_source=funtime&utm_medium=referral&utm_campaign=tour&Mtl=funtime",
       "detail": "超值特惠機票｜大阪計畫旅遊票6日｜1人成行/含行李/含稅｜精選航空直飛，含稅金與行李。此為 FunTime 彙整之多梯次計畫機票，實際可售出發日與即時剩餘機位以跳轉後的供應商預訂頁為準。",
       "availableDates": "此商品包含多個出發梯次，點擊「前往預訂」即可查看供應商最新日曆與即時餘位",
-      "checked": "2026-10-27",
-      "collectedAt": "2026-10-27T13:02:53.822Z"
+      "checked": "2026-10-28",
+      "collectedAt": "2026-10-28T09:21:22.418Z"
     },
     {
-      "id": "funtime-2",
-      "productId": "FT-2",
+      "id": "funtime-3",
+      "productId": "FT-3",
       "title": "超值特惠機票｜大阪計畫旅遊票5日｜1人成行/含行李/含稅",
       "city": "大阪",
       "code": "OSA",
@@ -57,12 +85,12 @@
       "sourceUrl": "https://travel.liontravel.com/detail?NormGroupID=9c949aa6-3ded-41d9-91f8-e33c12bdef3a&GroupID=26JXN05MMTZ-T&utm_source=funtime&utm_medium=referral&utm_campaign=tour&Mtl=funtime",
       "detail": "超值特惠機票｜大阪計畫旅遊票5日｜1人成行/含行李/含稅｜精選航空直飛，含稅金與行李。此為 FunTime 彙整之多梯次計畫機票，實際可售出發日與即時剩餘機位以跳轉後的供應商預訂頁為準。",
       "availableDates": "此商品包含多個出發梯次，點擊「前往預訂」即可查看供應商最新日曆與即時餘位",
-      "checked": "2026-10-27",
-      "collectedAt": "2026-10-27T13:02:53.822Z"
+      "checked": "2026-10-28",
+      "collectedAt": "2026-10-28T09:21:22.418Z"
     },
     {
-      "id": "funtime-3",
-      "productId": "FT-3",
+      "id": "funtime-4",
+      "productId": "FT-4",
       "title": "超值特惠機票｜沖繩計畫旅遊票5日｜1人成行/含稅/含行李",
       "city": "沖繩",
       "code": "OKA",
@@ -85,12 +113,12 @@
       "sourceUrl": "https://travel.liontravel.com/detail?NormGroupID=a1d423ae-d736-4576-b73e-2efe2fc8fb25&GroupID=26JON05MMTY-T&utm_source=funtime&utm_medium=referral&utm_campaign=tour&Mtl=funtime",
       "detail": "超值特惠機票｜沖繩計畫旅遊票5日｜1人成行/含稅/含行李｜精選航空直飛，含稅金與行李。此為 FunTime 彙整之多梯次計畫機票，實際可售出發日與即時剩餘機位以跳轉後的供應商預訂頁為準。",
       "availableDates": "此商品包含多個出發梯次，點擊「前往預訂」即可查看供應商最新日曆與即時餘位",
-      "checked": "2026-10-27",
-      "collectedAt": "2026-10-27T13:02:53.822Z"
+      "checked": "2026-10-28",
+      "collectedAt": "2026-10-28T09:21:22.418Z"
     },
     {
-      "id": "funtime-4",
-      "productId": "FT-4",
+      "id": "funtime-5",
+      "productId": "FT-5",
       "title": "《促銷特賣》沖繩計劃旅遊票4日",
       "city": "沖繩",
       "code": "OKA",
@@ -113,12 +141,12 @@
       "sourceUrl": "https://travel.liontravel.com/detail?NormGroupID=f00fa22f-9d6f-4d2e-bc2f-a7dbf5c747e0&GroupID=26JON01JXA-T&utm_source=funtime&utm_medium=referral&utm_campaign=tour&Mtl=funtime",
       "detail": "《促銷特賣》沖繩計劃旅遊票4日｜精選航空直飛，含稅金與行李。此為 FunTime 彙整之多梯次計畫機票，實際可售出發日與即時剩餘機位以跳轉後的供應商預訂頁為準。",
       "availableDates": "此商品包含多個出發梯次，點擊「前往預訂」即可查看供應商最新日曆與即時餘位",
-      "checked": "2026-10-27",
-      "collectedAt": "2026-10-27T13:02:53.822Z"
+      "checked": "2026-10-28",
+      "collectedAt": "2026-10-28T09:21:22.418Z"
     },
     {
-      "id": "funtime-5",
-      "productId": "FT-5",
+      "id": "funtime-6",
+      "productId": "FT-6",
       "title": "超值特惠機票｜沖繩計畫旅遊票4日｜1人成行/含稅/含行李",
       "city": "沖繩",
       "code": "OKA",
@@ -141,12 +169,12 @@
       "sourceUrl": "https://travel.liontravel.com/detail?NormGroupID=0dd2c809-4db2-4084-9850-35dd9cba43ac&GroupID=26JON03MMUZ-T&utm_source=funtime&utm_medium=referral&utm_campaign=tour&Mtl=funtime",
       "detail": "超值特惠機票｜沖繩計畫旅遊票4日｜1人成行/含稅/含行李｜精選航空直飛，含稅金與行李。此為 FunTime 彙整之多梯次計畫機票，實際可售出發日與即時剩餘機位以跳轉後的供應商預訂頁為準。",
       "availableDates": "此商品包含多個出發梯次，點擊「前往預訂」即可查看供應商最新日曆與即時餘位",
-      "checked": "2026-10-27",
-      "collectedAt": "2026-10-27T13:02:53.822Z"
+      "checked": "2026-10-28",
+      "collectedAt": "2026-10-28T09:21:22.418Z"
     },
     {
-      "id": "funtime-6",
-      "productId": "FT-6",
+      "id": "funtime-7",
+      "productId": "FT-7",
       "title": "超值特惠機票｜名古屋計畫旅遊票5日｜1人成行/含稅/含行李",
       "city": "名古屋",
       "code": "NGO",
@@ -169,12 +197,12 @@
       "sourceUrl": "https://travel.liontravel.com/detail?NormGroupID=1cad5392-098a-41fc-a49f-a07a524524dd&GroupID=26JPN19MMTZ-T&utm_source=funtime&utm_medium=referral&utm_campaign=tour&Mtl=funtime",
       "detail": "超值特惠機票｜名古屋計畫旅遊票5日｜1人成行/含稅/含行李｜精選航空直飛，含稅金與行李。此為 FunTime 彙整之多梯次計畫機票，實際可售出發日與即時剩餘機位以跳轉後的供應商預訂頁為準。",
       "availableDates": "此商品包含多個出發梯次，點擊「前往預訂」即可查看供應商最新日曆與即時餘位",
-      "checked": "2026-10-27",
-      "collectedAt": "2026-10-27T13:02:53.822Z"
+      "checked": "2026-10-28",
+      "collectedAt": "2026-10-28T09:21:22.418Z"
     },
     {
-      "id": "funtime-7",
-      "productId": "FT-7",
+      "id": "funtime-8",
+      "productId": "FT-8",
       "title": "超值特惠機票｜酷航首爾計畫旅遊票5日｜1人成行/含行李/含稅",
       "city": "首爾",
       "code": "ICN",
@@ -197,12 +225,12 @@
       "sourceUrl": "https://travel.liontravel.com/detail?NormGroupID=dc10785f-16bc-416c-a32a-735c5411769b&GroupID=27JK307TRTZ-T&utm_source=funtime&utm_medium=referral&utm_campaign=tour&Mtl=funtime",
       "detail": "超值特惠機票｜酷航首爾計畫旅遊票5日｜1人成行/含行李/含稅｜酷航直飛，含稅金與行李。此為 FunTime 彙整之多梯次計畫機票，實際可售出發日與即時剩餘機位以跳轉後的供應商預訂頁為準。",
       "availableDates": "此商品包含多個出發梯次，點擊「前往預訂」即可查看供應商最新日曆與即時餘位",
-      "checked": "2026-10-27",
-      "collectedAt": "2026-10-27T13:02:53.822Z"
+      "checked": "2026-10-28",
+      "collectedAt": "2026-10-28T09:21:22.418Z"
     },
     {
-      "id": "funtime-8",
-      "productId": "FT-8",
+      "id": "funtime-9",
+      "productId": "FT-9",
       "title": "《促銷特惠》首爾計劃旅遊票5日(含稅、含行李)【高雄仁川來回】",
       "city": "首爾",
       "code": "ICN",
@@ -225,12 +253,12 @@
       "sourceUrl": "https://travel.liontravel.com/detail?NormGroupID=0a6f2325-cb77-4fa0-af5e-48855ee7890e&GroupID=26JKN08BR9-K&utm_source=funtime&utm_medium=referral&utm_campaign=tour&Mtl=funtime",
       "detail": "《促銷特惠》首爾計劃旅遊票5日(含稅、含行李)【高雄仁川來回】｜精選航空直飛，含稅金與行李。此為 FunTime 彙整之多梯次計畫機票，實際可售出發日與即時剩餘機位以跳轉後的供應商預訂頁為準。",
       "availableDates": "此商品包含多個出發梯次，點擊「前往預訂」即可查看供應商最新日曆與即時餘位",
-      "checked": "2026-10-27",
-      "collectedAt": "2026-10-27T13:02:53.822Z"
+      "checked": "2026-10-28",
+      "collectedAt": "2026-10-28T09:21:22.418Z"
     },
     {
-      "id": "funtime-9",
-      "productId": "FT-9",
+      "id": "funtime-10",
+      "productId": "FT-10",
       "title": "超值特惠機票｜酷航首爾計畫旅遊票6日｜1人成行/含行李/含稅",
       "city": "首爾",
       "code": "ICN",
@@ -253,12 +281,12 @@
       "sourceUrl": "https://travel.liontravel.com/detail?NormGroupID=ba442490-9821-4c74-8f48-57dcf3d6fc10&GroupID=26JKN13TRUY-T&utm_source=funtime&utm_medium=referral&utm_campaign=tour&Mtl=funtime",
       "detail": "超值特惠機票｜酷航首爾計畫旅遊票6日｜1人成行/含行李/含稅｜酷航直飛，含稅金與行李。此為 FunTime 彙整之多梯次計畫機票，實際可售出發日與即時剩餘機位以跳轉後的供應商預訂頁為準。",
       "availableDates": "此商品包含多個出發梯次，點擊「前往預訂」即可查看供應商最新日曆與即時餘位",
-      "checked": "2026-10-27",
-      "collectedAt": "2026-10-27T13:02:53.822Z"
+      "checked": "2026-10-28",
+      "collectedAt": "2026-10-28T09:21:22.418Z"
     },
     {
-      "id": "funtime-10",
-      "productId": "FT-10",
+      "id": "funtime-11",
+      "productId": "FT-11",
       "title": "泰瑞航空TW｜《一人成行》首爾計劃旅遊票5日(含稅、行李20公斤)【高雄仁川來回】",
       "city": "首爾",
       "code": "ICN",
@@ -281,12 +309,12 @@
       "sourceUrl": "https://travel.liontravel.com/detail?NormGroupID=7a071ed3-2e74-424f-b2f1-5e08c1bdc663&GroupID=26JKN11TW2-K&utm_source=funtime&utm_medium=referral&utm_campaign=tour&Mtl=funtime",
       "detail": "泰瑞航空TW｜《一人成行》首爾計劃旅遊票5日(含稅、行李20公斤)【高雄仁川來回】｜德威航空直飛，含稅金與行李。此為 FunTime 彙整之多梯次計畫機票，實際可售出發日與即時剩餘機位以跳轉後的供應商預訂頁為準。",
       "availableDates": "此商品包含多個出發梯次，點擊「前往預訂」即可查看供應商最新日曆與即時餘位",
-      "checked": "2026-10-27",
-      "collectedAt": "2026-10-27T13:02:53.822Z"
+      "checked": "2026-10-28",
+      "collectedAt": "2026-10-28T09:21:22.418Z"
     },
     {
-      "id": "funtime-11",
-      "productId": "FT-11",
+      "id": "funtime-12",
+      "productId": "FT-12",
       "title": "泰瑞航空TW｜《一人成行》首爾計劃旅遊票6日(含稅、行李20公斤)【高雄金浦來回】",
       "city": "首爾",
       "code": "ICN",
@@ -309,12 +337,12 @@
       "sourceUrl": "https://travel.liontravel.com/detail?NormGroupID=f0867499-a65b-4907-b4da-2ae3f545b7cf&GroupID=26JKD02TW1-K&utm_source=funtime&utm_medium=referral&utm_campaign=tour&Mtl=funtime",
       "detail": "泰瑞航空TW｜《一人成行》首爾計劃旅遊票6日(含稅、行李20公斤)【高雄金浦來回】｜德威航空直飛，含稅金與行李。此為 FunTime 彙整之多梯次計畫機票，實際可售出發日與即時剩餘機位以跳轉後的供應商預訂頁為準。",
       "availableDates": "此商品包含多個出發梯次，點擊「前往預訂」即可查看供應商最新日曆與即時餘位",
-      "checked": "2026-10-27",
-      "collectedAt": "2026-10-27T13:02:53.822Z"
+      "checked": "2026-10-28",
+      "collectedAt": "2026-10-28T09:21:22.418Z"
     },
     {
-      "id": "funtime-12",
-      "productId": "FT-12",
+      "id": "funtime-13",
+      "productId": "FT-13",
       "title": "濟州航空7C｜金浦來回｜《一人成行》首爾計劃旅遊票6日(含稅、行李20公斤)",
       "city": "首爾",
       "code": "ICN",
@@ -337,12 +365,12 @@
       "sourceUrl": "https://travel.liontravel.com/detail?NormGroupID=7bdd213e-2d80-4fe3-90ea-ba1de99727bf&GroupID=26JKN197C2-K&utm_source=funtime&utm_medium=referral&utm_campaign=tour&Mtl=funtime",
       "detail": "濟州航空7C｜金浦來回｜《一人成行》首爾計劃旅遊票6日(含稅、行李20公斤)｜濟州航空直飛，含稅金與行李。此為 FunTime 彙整之多梯次計畫機票，實際可售出發日與即時剩餘機位以跳轉後的供應商預訂頁為準。",
       "availableDates": "此商品包含多個出發梯次，點擊「前往預訂」即可查看供應商最新日曆與即時餘位",
-      "checked": "2026-10-27",
-      "collectedAt": "2026-10-27T13:02:53.822Z"
+      "checked": "2026-10-28",
+      "collectedAt": "2026-10-28T09:21:22.418Z"
     },
     {
-      "id": "funtime-13",
-      "productId": "FT-13",
+      "id": "funtime-14",
+      "productId": "FT-14",
       "title": "超值特惠機票｜濟州航空釜山計畫旅遊票5日｜1人成行/含稅含行李",
       "city": "釜山",
       "code": "PUS",
@@ -365,8 +393,8 @@
       "sourceUrl": "https://travel.liontravel.com/detail?NormGroupID=a4bb93bb-7e3a-4e15-aea6-4e176b8c1626&GroupID=26JKN087CTZ-T&utm_source=funtime&utm_medium=referral&utm_campaign=tour&Mtl=funtime",
       "detail": "超值特惠機票｜濟州航空釜山計畫旅遊票5日｜1人成行/含稅含行李｜濟州航空直飛，含稅金與行李。此為 FunTime 彙整之多梯次計畫機票，實際可售出發日與即時剩餘機位以跳轉後的供應商預訂頁為準。",
       "availableDates": "此商品包含多個出發梯次，點擊「前往預訂」即可查看供應商最新日曆與即時餘位",
-      "checked": "2026-10-27",
-      "collectedAt": "2026-10-27T13:02:53.822Z"
+      "checked": "2026-10-28",
+      "collectedAt": "2026-10-28T09:21:22.418Z"
     }
   ]
 }
