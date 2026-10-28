@@ -10,6 +10,7 @@
     "collect:ezfly": "node collectors/collect-ezfly.mjs",
     "collect:zero": "node collectors/collect-zero-promos.mjs",
     "merge": "node collectors/merge-collected.mjs",
+    "validate": "node collectors/validate-deals.mjs",
     "receiver": "node collectors/messenger-receiver.mjs"
   },
   "devDependencies": {

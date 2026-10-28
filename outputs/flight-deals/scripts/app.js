@@ -446,10 +446,18 @@ function renderDeals() {
       btnText = `前往 旅天下官方商品頁 ↗`;
     } else if ((d.agency || '').includes('山富')) {
       btnText = `前往 山富旅遊官方商品頁 ↗`;
-    } else if ((d.agency || '').includes('喜鴻')) {
+    } else if ((d.agency || '').includes('喜鴻') || (d.source || '').includes('喜鴻')) {
       btnText = `前往 喜鴻假期官方商品頁 ↗`;
     } else if ((d.agency || '').includes('momo')) {
       btnText = `前往 momo 購物網搶票 ↗`;
+    }
+
+    // Besttour URL 格式自動修正：將喜鴻舊版有 crash bug 的 e_web/travel 網址轉成直接開啟的新版 /itinerary/ 網址
+    if (directUrl && directUrl.includes('besttour.com.tw/e_web/travel')) {
+      const vMatch = directUrl.match(/[?&]v=([A-Za-z0-9_-]+)/);
+      if (vMatch) {
+        directUrl = `https://www.besttour.com.tw/itinerary/${vMatch[1]}`;
+      }
     }
 
     // Safety fallback: ensure 飛遊網 never links to LINE

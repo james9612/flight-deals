@@ -1,4 +1,5 @@
 import { readFile, writeFile } from 'node:fs/promises';
+import { validateAndCleanDeals } from './validate-deals.mjs';
 
 const dealsFile = new URL('../data/deals.json', import.meta.url);
 const promosFile = new URL('../data/promos.json', import.meta.url);
@@ -340,8 +341,11 @@ export async function mergeCollected() {
 
   const finalDeals = [...byId.values()].sort((a, b) => a.price - b.price);
 
-  await writeFile(dealsFile, JSON.stringify(finalDeals, null, 2));
-  console.log(`[整合完成] 成功寫入 ${finalDeals.length} 筆多平台計畫票至 deals.json`);
+  // 執行全網商品頁即時存活與售罄檢查，自動下架失效商品
+  const validatedDeals = await validateAndCleanDeals(finalDeals);
+
+  await writeFile(dealsFile, JSON.stringify(validatedDeals, null, 2));
+  console.log(`[整合完成] 成功寫入 ${validatedDeals.length} 筆在售可購計畫票至 deals.json`);
 
   if (zeroPromos.length > 0) {
     await writeFile(promosFile, JSON.stringify(zeroPromos, null, 2));
