@@ -642,6 +642,42 @@ function populateOriginDropdown() {
   }
 }
 
+async function syncLiveLocalDeals() {
+  try {
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 1500);
+    const localRes = await fetch(`http://localhost:3500/api/deals?v=${Date.now()}`, {
+      cache: 'no-store',
+      signal: ctrl.signal
+    });
+    clearTimeout(timer);
+    if (!localRes.ok) return false;
+    const localDeals = await localRes.json();
+    if (!Array.isArray(localDeals) || !localDeals.length) return false;
+
+    const mergedMap = new Map();
+    for (const d of deals) mergedMap.set(d.id, d);
+    let hasChanges = false;
+    for (const ld of localDeals) {
+      const existing = mergedMap.get(ld.id);
+      if (!existing || (ld.collectedAt && ld.collectedAt > (existing.collectedAt || '')) || (!existing.flightTime && ld.flightTime)) {
+        mergedMap.set(ld.id, ld);
+        hasChanges = true;
+      }
+    }
+    if (hasChanges || localDeals.length !== deals.length) {
+      deals = [...mergedMap.values()];
+      populateDestinationDropdown();
+      populateOriginDropdown();
+      renderDeals();
+      return true;
+    }
+  } catch {
+    // 本機接收伺服器未開啟時靜默略過，使用線上 GitHub Pages 資料
+  }
+  return false;
+}
+
 async function loadData() {
   try {
     const ts = Date.now();
@@ -661,6 +697,10 @@ async function loadData() {
     populateOriginDropdown();
     renderPromos();
     renderDeals();
+
+    // 若本機油猴接收伺服器 (localhost:3500) 有開啟，立即載入 0 秒差最新機票並每 15 秒自動同步
+    await syncLiveLocalDeals();
+    setInterval(syncLiveLocalDeals, 15000);
   } catch (err) {
     console.warn('載入資料發生問題，保留預設展示:', err);
   }

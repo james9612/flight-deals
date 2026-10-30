@@ -17,11 +17,19 @@ const countryMap = {
 };
 
 /**
- * 擷取班機時間：嚴格原則，只有在原文確實有提供時才顯示；若貼文未提及，一律為空字串（不無中生有）
+ * 擷取班機時間：支援「去程 IT0236 桃園 06:45 ➜ 函館 11:10 / 回程 IT0237 函館 12:20 ➜ 桃園 16:00」以及「早去晚回」等關鍵字
  * @param {string} rawText 原始文字
  * @returns {string} 班機時間或空字串
  */
 function extractFlightTimeFromText(rawText = '') {
+  const outMatch = rawText.match(/去程\s*([A-Z0-9]{2,7})?[^\d\n]*?(\d{1,2}:\d{2})\s*(?:➜|➔|->|→|~|-|～|至)\s*[^\d\n]*?(\d{1,2}:\d{2})/i);
+  const inMatch = rawText.match(/回程\s*([A-Z0-9]{2,7})?[^\d\n]*?(\d{1,2}:\d{2})\s*(?:➜|➔|->|→|~|-|～|至)\s*[^\d\n]*?(\d{1,2}:\d{2})/i);
+  if (outMatch && inMatch) {
+    const outCode = outMatch[1] ? `${outMatch[1]} ` : '';
+    const inCode = inMatch[1] ? `${inMatch[1]} ` : '';
+    return `去程 ${outCode}${outMatch[2]}–${outMatch[3]} ／ 回程 ${inCode}${inMatch[2]}–${inMatch[3]}`;
+  }
+
   const timeKeywords = ['早去晚回', '早去午回', '午去晚回', '早去早回', '晚去晚回', '午去午回', '紅眼早去晚回', '晚去早回'];
   for (const kw of timeKeywords) {
     if (rawText.includes(kw)) return kw;
@@ -30,6 +38,14 @@ function extractFlightTimeFromText(rawText = '') {
   if (flightMatch) return flightMatch[0].trim();
 
   return '';
+}
+
+function cleanMessengerNoise(rawText = '') {
+  return rawText
+    .replace(/^輸入，訊息已在.*?傳送[：:]\s*/gm, '')
+    .replace(/^飛趣旅遊\s*Go\s*Fly\s*Trip\s*/gim, '')
+    .replace(/\d+\s*人已看過/g, '')
+    .trim();
 }
 
 /**
@@ -41,7 +57,7 @@ function extractFlightTimeFromText(rawText = '') {
 export function parseSocialDeals(rawText, sourceUrl = 'https://line.me/R/ti/p/%40flynow01') {
   if (!rawText || typeof rawText !== 'string') return [];
 
-  const text = rawText.trim();
+  const text = cleanMessengerNoise(rawText);
   // 嚴格過濾：排除粉專自介、社群導航、重複 Facebook 雜訊與純折價券/折扣碼推廣廣告
   if (
     /萬位追蹤者|正在追蹤|上線狀態指示燈|營業時間|旅遊服務\s*·\s*\$\$|發送訊息/i.test(text) ||
@@ -52,10 +68,10 @@ export function parseSocialDeals(rawText, sourceUrl = 'https://line.me/R/ti/p/%4
     return [];
   }
 
-
   const currentYear = new Date().getFullYear();
   const results = [];
   const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
+  const globalFlightTime = extractFlightTimeFromText(text);
 
   let blockAirline = null;
   let blockCity = null;
@@ -77,11 +93,14 @@ export function parseSocialDeals(rawText, sourceUrl = 'https://line.me/R/ti/p/%4
     // 格式 A：區塊標題行（以 ✈ 開頭，例如 "✈長榮 福岡4日機票 10700🍁" 或 "✈華航高雄高松5/6日機票"）
     if (line.startsWith('✈')) {
       blockFrom = line.includes('高雄') ? '高雄' : (line.includes('台中') ? '台中' : '台北');
-      blockAirline = line.includes('長榮') ? '長榮航空' : (line.includes('華航') ? '中華航空' : (line.includes('虎航') ? '台灣虎航' : (line.includes('酷航') ? '酷航' : (line.includes('樂桃') ? '樂桃航空' : (line.includes('星宇') ? '星宇航空' : '精選航空')))));
+      blockAirline = line.includes('長榮') ? '長榮航空' : (line.includes('華航') ? '中華航空' : (line.includes('虎航') ? '台灣虎航' : (line.includes('酷航') ? '酷航' : (line.includes('樂桃') ? '樂桃航空' : (line.includes('星宇') ? '星宇航空' : (line.includes('泰亞航') || line.includes('亞航') ? '亞洲航空' : '精選航空'))))));
 
       blockCity = '精選航點';
       for (const c of Object.keys(cityCodeMap)) {
-        if (line.includes(c)) { blockCity = (c === '新千歲') ? '北海道' : c; break; }
+        if (line.includes(c)) {
+          blockCity = (c === '成田' || c === '羽田') ? '東京' : (c === '關西' ? '大阪' : (c === '那霸' ? '沖繩' : (c === '新千歲' ? '北海道' : c)));
+          break;
+        }
       }
 
       const pMatch = line.match(/([0-9]{4,5})/);
@@ -94,9 +113,9 @@ export function parseSocialDeals(rawText, sourceUrl = 'https://line.me/R/ti/p/%4
 
     // 格式 B：區塊伴隨日期行（如 "🗓️11/03、11/10、12/08、12/15(3)" 或 "7999 🌟5天 🗓️：10/29"）
     // 嚴格條件：必須有 blockAirline，且行內包含 🗓 或 🌟（避免誤判一般單行機票）
-    if (blockAirline && (line.includes('🗓') || line.includes('🌟'))) {
-      const linePriceMatch = line.match(/^([0-9]{4,5})\s*.*?[🌟日天]/);
-      const activePrice = linePriceMatch ? parseInt(linePriceMatch[1], 10) : (blockPrice || 8888);
+    if (blockAirline && (line.includes('🗓') || line.includes('🌟')) && !line.includes('機酒')) {
+      const linePriceMatch = line.match(/^([0-9]{4,5})\s*.*?[🌟日天]/) || line.match(/([0-9]{1,2},[0-9]{3}|[0-9]{4,5})\s*(?:\/人|\/席|元)/);
+      const activePrice = linePriceMatch ? parseInt(linePriceMatch[1].replace(/,/g, ''), 10) : (blockPrice || 8888);
 
       const lineDaysMatch = line.match(/([3-8])\s*[日天]/);
       const activeDays = lineDaysMatch ? parseInt(lineDaysMatch[1], 10) : blockDays;
@@ -111,14 +130,16 @@ export function parseSocialDeals(rawText, sourceUrl = 'https://line.me/R/ti/p/%4
         retObj.setDate(retObj.getDate() + (activeDays - 1));
         const returnDate = retObj.toISOString().slice(0, 10);
 
-        const flightTime = extractFlightTimeFromText(line);
+        const flightTime = extractFlightTimeFromText(line) || globalFlightTime;
+        const code = cityCodeMap[blockCity] || 'INT';
+        const fc = blockFrom === '高雄' ? 'KHH' : (blockFrom === '台中' ? 'RMQ' : 'TPE');
 
         results.push({
-          id: `goflytrip-${cityCodeMap[blockCity] || 'INT'}-${m}${d}-${activePrice}-${Math.random().toString(36).slice(2, 5)}`,
+          id: `goflytrip-${code}-${fc}-${year}${m}${d}-${activePrice}`,
           city: blockCity,
-          code: cityCodeMap[blockCity] || 'INT',
+          code,
           from: blockFrom,
-          fc: blockFrom === '高雄' ? 'KHH' : (blockFrom === '台中' ? 'RMQ' : 'TPE'),
+          fc,
           country: countryMap[blockCity] || 'japan',
           price: activePrice,
           currency: 'TWD',
@@ -128,7 +149,7 @@ export function parseSocialDeals(rawText, sourceUrl = 'https://line.me/R/ti/p/%4
           date: `${m}/${d} – ${returnDate.slice(5).replace('-', '/')}`,
           airline: blockAirline,
           air: blockAirline,
-          baggage: blockAirline === '長榮航空' || blockAirline === '中華航空' ? '含機上餐與來回託運行李' : '含來回託運行李（依清艙商品規格）',
+          baggage: blockAirline === '長榮航空' || blockAirline === '中華航空' ? '含機上餐與來回託運行李' : '含來回託運 20 公斤',
           source: '飛趣旅遊 Messenger 官方頻道',
           sourceUrl,
           checked: new Date().toISOString().slice(0, 10),
@@ -145,7 +166,6 @@ export function parseSocialDeals(rawText, sourceUrl = 'https://line.me/R/ti/p/%4
     }
 
     // 格式 C：獨立單行清單（如 "10/29 酷航東京5日 7800→6" 或 "10/31、11/14 虎航大分5日 7888→4"）
-    // 獨立處理，絕不沿用 blockAirline，避免狀態污染
     const singleMatch = line.match(/^([0-1]?[0-9]\/[0-3]?[0-9](?:[、,][0-1]?[0-9]\/[0-3]?[0-9])*)\s+(.+?)\s+([0-9]{4,5})(?:up|→\d+)?/i);
     if (singleMatch) {
       const datesStr = singleMatch[1];
@@ -159,7 +179,7 @@ export function parseSocialDeals(rawText, sourceUrl = 'https://line.me/R/ti/p/%4
       let city = '精選航點';
       for (const c of Object.keys(cityCodeMap)) {
         if (desc.includes(c)) {
-          city = (c === '新千歲') ? '北海道' : c;
+          city = (c === '成田' || c === '羽田') ? '東京' : (c === '關西' ? '大阪' : (c === '那霸' ? '沖繩' : (c === '新千歲' ? '北海道' : c)));
           break;
         }
       }
@@ -178,7 +198,9 @@ export function parseSocialDeals(rawText, sourceUrl = 'https://line.me/R/ti/p/%4
       else if (desc.includes('泰亞航') || desc.includes('亞航')) airline = '亞洲航空';
       else if (desc.includes('星宇')) airline = '星宇航空';
 
-      const flightTime = extractFlightTimeFromText(desc);
+      const flightTime = extractFlightTimeFromText(desc) || globalFlightTime;
+      const code = cityCodeMap[city] || 'INT';
+      const fc = from === '高雄' ? 'KHH' : (from === '台中' ? 'RMQ' : 'TPE');
 
       const dateParts = datesStr.split(/[、,]/);
       for (const dPart of dateParts) {
@@ -191,11 +213,11 @@ export function parseSocialDeals(rawText, sourceUrl = 'https://line.me/R/ti/p/%4
         const returnDate = retDateObj.toISOString().slice(0, 10);
 
         results.push({
-          id: `goflytrip-${cityCodeMap[city] || 'INT'}-${m}${d}-${price}-${Math.random().toString(36).slice(2, 5)}`,
+          id: `goflytrip-${code}-${fc}-${depart.replace(/-/g, '')}-${price}`,
           city,
-          code: cityCodeMap[city] || 'INT',
+          code,
           from,
-          fc: from === '高雄' ? 'KHH' : (from === '台中' ? 'RMQ' : 'TPE'),
+          fc,
           country: countryMap[city] || 'japan',
           price,
           currency: 'TWD',
@@ -205,7 +227,7 @@ export function parseSocialDeals(rawText, sourceUrl = 'https://line.me/R/ti/p/%4
           date: `${m.padStart(2, '0')}/${d.padStart(2, '0')} – ${returnDate.slice(5).replace('-', '/')}`,
           airline,
           air: airline,
-          baggage: airline === '長榮航空' || airline === '中華航空' ? '含機上餐與來回託運行李' : '含來回託運行李（依清艙商品規格）',
+          baggage: airline === '長榮航空' || airline === '中華航空' ? '含機上餐與來回託運行李' : '含來回託運 20 公斤',
           source: '飛趣旅遊 Messenger 官方頻道',
           sourceUrl,
           checked: new Date().toISOString().slice(0, 10),
@@ -221,10 +243,10 @@ export function parseSocialDeals(rawText, sourceUrl = 'https://line.me/R/ti/p/%4
     }
   }
 
-  // 若上述多行均無解析結果，嘗試單篇口語文宣解析
+  // 若上述區塊與單行均無結果，嘗試解析單篇口語文宣（支援單篇內含多組純機票日期與價格）
   if (results.length === 0) {
-    const single = parseSingleSocialDeal(text, sourceUrl);
-    if (single) results.push(single);
+    const multiSingles = parseSingleSocialDeals(text, sourceUrl);
+    results.push(...multiSingles);
   }
 
   return results;
@@ -235,7 +257,7 @@ export function parseSocialDeal(rawText, sourceUrl) {
   return deals[0] || null;
 }
 
-function parseSingleSocialDeal(rawText, sourceUrl) {
+function parseSingleSocialDeals(rawText, sourceUrl) {
   const text = rawText.trim();
 
   let city = '精選航點';
@@ -256,60 +278,6 @@ function parseSingleSocialDeal(rawText, sourceUrl) {
     fc = 'RMQ';
   }
 
-  let price = 0;
-  const priceMatches = text.match(/(?:NT\$|TWD|\$|特價|只要|機票|費用|一口價|只要|💵|票價|：|:)\s*([0-9]{1,2}[,\.][0-9]{3}|[0-9]{4,5})\s*(?:元|起|含稅|\/人|\/席|\b)/i)
-    || text.match(/([0-9]{1,2}[,\.][0-9]{3}|[0-9]{4,5})\s*(?:元|含稅|\/人|\/席)/)
-    || text.match(/\$\s*([0-9]{4,5})/)
-    || text.match(/\b([0-9]{1,2},[0-9]{3})\b/)
-    || text.match(/\b([3-9][0-9]{3}|[1-3][0-9]{4})\b/);
-
-  if (priceMatches) {
-    price = parseInt(priceMatches[1].replace(/[,\.]/g, ''), 10);
-  }
-
-  if (price < 2000 || price > 60000) {
-    const genericNum = text.match(/\b([3-9][0-9]{3}|[1-3][0-9]{4})\b/);
-    if (genericNum) price = parseInt(genericNum[1], 10);
-  }
-
-  let days = 5;
-  const dayMatch = text.match(/([3-8])\s*天|([3-8])D|([3-8])d|([3-8])\s*日/);
-  if (dayMatch) {
-    days = parseInt(dayMatch[1] || dayMatch[2] || dayMatch[3] || dayMatch[4], 10);
-  }
-
-  const currentYear = new Date().getFullYear();
-  let depart = '';
-  let returnDate = '';
-
-  const dateRangeMatch = text.match(/([0-1]?[0-9])[\/\.月]([0-3]?[0-9])日?\s*[-~～至到]\s*([0-1]?[0-9])?[\/\.月]?([0-3]?[0-9])日?/);
-  if (dateRangeMatch) {
-    const m1 = dateRangeMatch[1].padStart(2, '0');
-    const d1 = dateRangeMatch[2].padStart(2, '0');
-    depart = `${currentYear}-${m1}-${d1}`;
-
-    if (dateRangeMatch[4]) {
-      const m2 = (dateRangeMatch[3] || dateRangeMatch[1]).padStart(2, '0');
-      const d2 = dateRangeMatch[4].padStart(2, '0');
-      returnDate = `${currentYear}-${m2}-${d2}`;
-    }
-  } else {
-    // 支援單一出發日（如 "：11/03"、"🗓️：10/31" 或 "出發日：11/05"）
-    const singleDateMatch = text.match(/(?:🗓️|🗓|出發|出發日|日期|：|:|\s|^)([0-1]?[0-9])[\/\.月]([0-3]?[0-9])日?/);
-    if (singleDateMatch) {
-      const m1 = singleDateMatch[1].padStart(2, '0');
-      const d1 = singleDateMatch[2].padStart(2, '0');
-      const year = parseInt(m1, 10) < 5 ? currentYear + 1 : currentYear;
-      depart = `${year}-${m1}-${d1}`;
-    }
-  }
-
-  if (depart && !returnDate) {
-    const d = new Date(depart);
-    d.setDate(d.getDate() + (days - 1));
-    returnDate = d.toISOString().slice(0, 10);
-  }
-
   let airline = '精選航空';
   if (text.includes('虎航') || text.includes('台灣虎航')) airline = '台灣虎航';
   else if (text.includes('樂桃') || text.includes('樂桃航空')) airline = '樂桃航空';
@@ -318,16 +286,20 @@ function parseSingleSocialDeal(rawText, sourceUrl) {
   else if (text.includes('長榮') || text.includes('長榮航空')) airline = '長榮航空';
   else if (text.includes('星宇') || text.includes('星宇航空')) airline = '星宇航空';
   else if (text.includes('泰亞航') || text.includes('亞航')) airline = '亞洲航空';
+  else if (text.includes('泰獅') || text.includes('獅航')) airline = '泰國獅航';
+  else if (text.includes('濟州')) airline = '濟州航空';
+  else if (text.includes('德威')) airline = '德威航空';
+  else if (text.includes('真航空')) airline = '真航空';
+  else if (text.includes('越捷')) airline = '越捷航空';
 
-  let flightTime = '';
-  for (const kw of ['早去晚回', '早去午回', '午去晚回', '早去早回', '午去午回', '晚去晚回', '紅眼早去晚回']) {
-    if (text.includes(kw)) {
-      flightTime = kw;
-      break;
-    }
+  let defaultDays = 5;
+  const dayMatch = text.match(/([3-8])\s*天|([3-8])D|([3-8])d|([3-8])\s*日/);
+  if (dayMatch) {
+    defaultDays = parseInt(dayMatch[1] || dayMatch[2] || dayMatch[3] || dayMatch[4], 10);
   }
 
-  let baggage = airline === '長榮航空' || airline === '中華航空' ? '含機上餐與來回託運行李' : '含來回託運行李（依清艙商品規格）';
+  const flightTime = extractFlightTimeFromText(text);
+  let baggage = airline === '長榮航空' || airline === '中華航空' ? '含機上餐與來回託運行李' : '含來回託運 20 公斤';
   const bagMatch = text.match(/([1-3][0-9])\s*kg|([1-3][0-9])\s*公斤/i);
   if (bagMatch) {
     baggage = `含來回託運 ${bagMatch[1] || bagMatch[2]} 公斤`;
@@ -335,43 +307,109 @@ function parseSingleSocialDeal(rawText, sourceUrl) {
 
   const code = cityCodeMap[city] || 'INT';
   const country = countryMap[city] || 'asia';
-
-  // 嚴格檢驗：必須有具體目的地城市、具體航空公司、明確出發日且價格合理，絕不收錄折價券或無出發日廣告
-  if (city === '精選航點' || code === 'INT' || airline === '精選航空' || !price || price < 3000 || !depart) {
-    return null;
+  if (city === '精選航點' || code === 'INT' || airline === '精選航空') {
+    return [];
   }
 
-  // 清洗 detail 文字雜訊
   const cleanDetailText = text.replace(/Facebook\s*/gi, '').replace(/\n+/g, ' ').trim();
-  if (cleanDetailText.length < 15) return null;
+  if (cleanDetailText.length < 15) return [];
 
-  const dateStr = depart && returnDate ? `${depart.slice(5).replace('-', '/')} – ${returnDate.slice(5).replace('-', '/')}` : `${days} 天清艙票`;
+  const currentYear = new Date().getFullYear();
+  const pairs = [];
 
-  return {
-    id: `goflytrip-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`,
-    city,
-    code,
-    from,
-    fc,
-    country,
-    price,
-    currency: 'TWD',
-    depart,
-    return: returnDate,
-    duration: `${days} 天`,
-    date: dateStr,
-    airline,
-    air: airline,
-    baggage,
-    source: '飛趣旅遊官方粉絲專頁',
-    sourceUrl: sourceUrl || 'https://line.me/R/ti/p/%40flynow01',
-    checked: new Date().toISOString().slice(0, 10),
-    tag: '飛趣旅遊清艙',
-    agency: '飛趣旅遊',
-    kind: 'plan',
-    flightTime,
-    detail: `【飛趣旅遊 清艙機票】${cleanDetailText.slice(0, 150)}｜資訊來自於 Messenger 官方頻道`,
-    rawMessage: text,
-    collectedAt: new Date().toISOString()
-  };
+  // 排除「機酒：14,900/人」這類機加酒價格，只抓純機票的 (價格 + 日期) 或 (日期 + 價格)
+  const strippedHotelText = text.replace(/[^\n]*?機酒\s*[：:]\s*[0-9,]+[^\n]*/g, '');
+
+  // 模式 1：價格在前、日期在後（如 "💵：4,499/席 🌟5天 🗓️：10/31" 或 "🌟6天💵：8,800/人 🗓️ : 11/05" 或 "純機票：4,499/席 🗓️：11/04"）
+  // 確保價格前面沒有緊鄰未配對的 🗓️，避免跨行誤配「日期在前、價格在後」的貼文
+  const patternPriceFirst = /(?:🌟\s*([3-8])\s*[天日]\s*)?(?:純?機票|💵)\s*[：:]\s*([0-9]{1,2},[0-9]{3}|[3-9][0-9]{3}|[1-2][0-9]{4})\s*(?:\/人|\/席|元|人)?(?:\s*🌟\s*([3-8])\s*[天日])?[^💵🗓\d\/]{0,18}?(?:🗓️|🗓)\s*[：:]?\s*([0-1]?[0-9])\/([0-3]?[0-9])/g;
+  for (const m of strippedHotelText.matchAll(patternPriceFirst)) {
+    const days = parseInt(m[1] || m[3] || defaultDays, 10);
+    const price = parseInt(m[2].replace(/,/g, ''), 10);
+    const month = m[4].padStart(2, '0');
+    const day = m[5].padStart(2, '0');
+    if (price >= 3000 && price <= 35000) {
+      pairs.push({ price, month, day, days });
+    }
+  }
+
+  // 模式 2：日期在前、價格在後（如 "🗓️ : 11/03 💵：5,500"）
+  if (pairs.length === 0) {
+    const patternDateFirst = /(?:🗓️|🗓|\b)\s*[：:]\s*([0-1]?[0-9])\/([0-3]?[0-9])[^🗓\d\/]{0,18}?(?:💵|[：:])\s*([0-9]{1,2},[0-9]{3}|[3-9][0-9]{3}|[1-2][0-9]{4})/g;
+    for (const m of strippedHotelText.matchAll(patternDateFirst)) {
+      const month = m[1].padStart(2, '0');
+      const day = m[2].padStart(2, '0');
+      const price = parseInt(m[3].replace(/,/g, ''), 10);
+      if (price >= 3000 && price <= 35000) {
+        pairs.push({ price, month, day, days: defaultDays });
+      }
+    }
+  }
+
+  // 若未匹配到多組，退回單一價格與單一出發日擷取
+  if (pairs.length === 0) {
+    let price = 0;
+    const priceMatches = strippedHotelText.match(/(?:NT\$|TWD|\$|特價|只要|機票|費用|一口價|💵|票價|：|:)\s*([0-9]{1,2}[,\.][0-9]{3}|[0-9]{4,5})\s*(?:元|起|含稅|\/人|\/席|人|\b)/i)
+      || strippedHotelText.match(/([0-9]{1,2}[,\.][0-9]{3}|[0-9]{4,5})\s*(?:元|含稅|\/人|\/席)/)
+      || strippedHotelText.match(/\b([0-9]{1,2},[0-9]{3})\b/);
+
+    if (priceMatches) {
+      price = parseInt(priceMatches[1].replace(/[,\.]/g, ''), 10);
+    }
+    if (price < 3000 || price > 35000) return [];
+
+    const singleDateMatch = strippedHotelText.match(/(?:🗓️|🗓|出發|出發日|日期|：|:|\s|^)([0-1]?[0-9])[\/\.月]([0-3]?[0-9])日?/);
+    if (!singleDateMatch) return [];
+
+    pairs.push({
+      price,
+      month: singleDateMatch[1].padStart(2, '0'),
+      day: singleDateMatch[2].padStart(2, '0'),
+      days: defaultDays
+    });
+  }
+
+  const out = [];
+  const seenKeys = new Set();
+  for (const p of pairs) {
+    const year = parseInt(p.month, 10) < 5 ? currentYear + 1 : currentYear;
+    const depart = `${year}-${p.month}-${p.day}`;
+    const dObj = new Date(depart);
+    dObj.setDate(dObj.getDate() + (p.days - 1));
+    const returnDate = dObj.toISOString().slice(0, 10);
+    const id = `goflytrip-${code}-${fc}-${year}${p.month}${p.day}-${p.price}`;
+    if (seenKeys.has(id)) continue;
+    seenKeys.add(id);
+
+    const dateStr = `${p.month}/${p.day} – ${returnDate.slice(5).replace('-', '/')}`;
+    out.push({
+      id,
+      city,
+      code,
+      from,
+      fc,
+      country,
+      price: p.price,
+      currency: 'TWD',
+      depart,
+      return: returnDate,
+      duration: `${p.days} 天`,
+      date: dateStr,
+      airline,
+      air: airline,
+      baggage,
+      source: '飛趣旅遊官方粉絲專頁',
+      sourceUrl: sourceUrl || 'https://line.me/R/ti/p/%40flynow01',
+      checked: new Date().toISOString().slice(0, 10),
+      tag: '飛趣旅遊清艙',
+      agency: '飛趣旅遊',
+      kind: 'plan',
+      flightTime,
+      detail: `【飛趣旅遊 清艙機票】${cleanDetailText.slice(0, 150)}｜資訊來自於 Messenger 官方頻道`,
+      rawMessage: text,
+      collectedAt: new Date().toISOString()
+    });
+  }
+
+  return out;
 }
