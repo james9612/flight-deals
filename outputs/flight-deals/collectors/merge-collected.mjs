@@ -78,7 +78,9 @@ export async function mergeCollected() {
   const isBlacklisted = (d) => BLACKLIST_PATTERNS.some(p => (d.sourceUrl || '').includes(p) || (d.id || '').includes(p));
   const isGarbage = (d) => isBlacklisted(d) ||
     d.city === '精選航點' ||
+    d.city === '熱門航點' ||
     d.code === 'INT' ||
+    (d.code && d.fc && d.code === d.fc) ||
     /Facebook\s*Facebook/i.test(`${d.detail || ''} ${d.rawMessage || ''}`) ||
     /萬位追蹤者|正在追蹤|上線狀態指示燈/i.test(`${d.detail || ''} ${d.rawMessage || ''}`) ||
     /聊天室|未讀|陌生訊息|存股日記/i.test(`${d.detail || ''} ${d.rawMessage || ''}`) ||
@@ -279,8 +281,8 @@ export async function mergeCollected() {
       continue;
     }
 
-    // 5. 排除無具體航點的虛構假卡片（如「精選航點 / INT」）
-    if (deal.city === '精選航點' || deal.code === 'INT') continue;
+    // 5. 排除無具體航點的虛構假卡片（如「精選航點 / INT」或「熱門航點」或起迄相同）
+    if (deal.city === '精選航點' || deal.city === '熱門航點' || deal.code === 'INT' || (deal.code && deal.fc && deal.code === deal.fc)) continue;
 
     // 6. 排除被社群粉專簡介、導航雜訊或重複 Facebook 標籤污染之無效項目
     const fullText = `${deal.title || ''} ${deal.detail || ''} ${deal.rawMessage || ''}`;

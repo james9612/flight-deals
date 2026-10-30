@@ -7,7 +7,7 @@ const __dirname = path.dirname(__filename);
 
 const OUTPUT_FILE = path.resolve(__dirname, '../data/collected/momo-deals.json');
 
-const KEYWORDS = ['計畫機票', '計畫票', '機票', '清艙機票'];
+const KEYWORDS = ['計畫機票', '計畫票', '清艙機票'];
 
 const CITY_MAPPING = [
   { match: /東京|成田|羽田/i, name: '東京', code: 'TYO', country: '日本' },
@@ -89,23 +89,30 @@ export async function collectMomoDeals() {
         const directUrl = `https://www.momoshop.com.tw/goods/GoodsDetail.jsp?i_code=${iCode}`;
 
         // Exclude accessories, guidebooks, baggage tags
-        if (!name.includes('機票') && !name.includes('計畫票') && !name.includes('自由行') && !name.includes('航空')) {
+        if (name.includes('護照') || name.includes('吊牌') || name.includes('防盜') || name.includes('行李秤') || name.includes('旅遊包') || name.includes('網卡') || name.includes('SIM')) {
           continue;
         }
-        if (name.includes('護照') || name.includes('吊牌') || name.includes('防盜') || name.includes('行李秤') || name.includes('旅遊包') || name.includes('網卡') || name.includes('SIM')) {
+
+        // Must be plan ticket or clearance ticket (計畫機票 / 計劃旅遊票 / 清艙)
+        const isPlanTicket = (name.includes('計畫') || name.includes('計劃') || name.includes('清艙')) &&
+                             (name.includes('機票') || name.includes('旅遊票') || name.includes('票'));
+        if (!isPlanTicket) {
           continue;
         }
 
         // Must have reasonable price for a flight (> 3000)
         if (price < 3500) continue;
 
-        // Destination match
-        let dest = { name: '熱門航點', code: 'TPE', country: '海外' };
+        // Destination match - 必須匹配到確切目的地航點，嚴禁預設為「熱門航點」
+        let dest = null;
         for (const c of CITY_MAPPING) {
           if (c.match.test(name)) {
             dest = c;
             break;
           }
+        }
+        if (!dest) {
+          continue;
         }
 
         // Airline match
@@ -126,6 +133,11 @@ export async function collectMomoDeals() {
         } else if (/台中|RMQ/i.test(name)) {
           fromCode = 'RMQ';
           fromCity = '台中';
+        }
+
+        // 起降航點防呆：若起飛與降落相同（如 TPE->TPE）直接排除
+        if (fromCode === dest.code) {
+          continue;
         }
 
         // Extract duration / days

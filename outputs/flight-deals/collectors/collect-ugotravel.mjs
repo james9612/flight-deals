@@ -73,14 +73,15 @@ export async function collectUgoTravel() {
         const price = Number(item.TradePrice || item.DirectPrice) || 0;
         if (price < 3000) continue;
 
-        // Destination match
-        let dest = { name: '熱門航點', code: 'TYO', country: 'japan' };
+        // Destination match - 必須有確切目的地航點
+        let dest = null;
         for (const c of CITY_MAPPING) {
           if (c.match.test(name)) {
             dest = c;
             break;
           }
         }
+        if (!dest) continue;
 
         // Airline match
         let airline = '台灣虎航 / 樂桃航空';
