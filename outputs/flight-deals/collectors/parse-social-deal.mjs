@@ -1,7 +1,8 @@
 const cityCodeMap = {
   東京: 'TYO', 成田: 'NRT', 羽田: 'HND', 大阪: 'KIX', 關西: 'KIX',
-  沖繩: 'OKA', 那霸: 'OKA', 名古屋: 'NGO', 福岡: 'FUK', 札幌: 'CTS', 北海道: 'CTS', 新千歲: 'CTS',
-  函館: 'HKD', 仙台: 'SDJ', 小松: 'KMQ', 高松: 'TAK', 高知: 'KCZ', 石垣島: 'ISG', 福島: 'FKS', 廣島: 'HIJ',
+  沖繩: 'OKA', 那霸: 'OKA', 名古屋: 'NGO', 福岡: 'FUK',
+  新千歲: 'CTS', 千歲: 'CTS', 函館: 'HKD', 旭川: 'AKJ', 帶廣: 'OBO', 札幌: 'CTS', 北海道: 'CTS',
+  仙台: 'SDJ', 小松: 'KMQ', 高松: 'TAK', 高知: 'KCZ', 石垣島: 'ISG', 福島: 'FKS', 廣島: 'HIJ',
   岡山: 'OKJ', 大分: 'OIT', 佐賀: 'HSG',
   首爾: 'ICN', 仁川: 'ICN', 釜山: 'PUS', 大邱: 'TAE', 濟州: 'CJU', 清州: 'CJJ',
   曼谷: 'BKK', 清邁: 'CNX', 富國島: 'PQC', 峴港: 'DAD', 新加坡: 'SIN', 吉隆坡: 'KUL'
@@ -9,12 +10,30 @@ const cityCodeMap = {
 
 const countryMap = {
   東京: 'japan', 成田: 'japan', 羽田: 'japan', 大阪: 'japan', 關西: 'japan',
-  沖繩: 'japan', 那霸: 'japan', 名古屋: 'japan', 福岡: 'japan', 札幌: 'japan', 北海道: 'japan', 新千歲: 'japan',
-  函館: 'japan', 仙台: 'japan', 小松: 'japan', 高松: 'japan', 高知: 'japan', 石垣島: 'japan', 福島: 'japan', 廣島: 'japan',
+  沖繩: 'japan', 那霸: 'japan', 名古屋: 'japan', 福岡: 'japan',
+  新千歲: 'japan', 千歲: 'japan', 函館: 'japan', 旭川: 'japan', 帶廣: 'japan', 札幌: 'japan', 北海道: 'japan',
+  仙台: 'japan', 小松: 'japan', 高松: 'japan', 高知: 'japan', 石垣島: 'japan', 福島: 'japan', 廣島: 'japan',
   岡山: 'japan', 大分: 'japan', 佐賀: 'japan',
   首爾: 'korea', 仁川: 'korea', 釜山: 'korea', 大邱: 'korea', 濟州: 'korea', 清州: 'korea',
   曼谷: 'asia', 清邁: 'asia', 富國島: 'asia', 峴港: 'asia', 新加坡: 'asia', 吉隆坡: 'asia'
 };
+
+function resolveActualCity(matchedCity, contextText = '') {
+  if (matchedCity === '成田' || matchedCity === '羽田') return '東京';
+  if (matchedCity === '關西') return '大阪';
+  if (matchedCity === '那霸') return '沖繩';
+  if (matchedCity === '千歲' || matchedCity === '新千歲') return '新千歲';
+  if (matchedCity === '北海道' || matchedCity === '札幌') {
+    if (/函館|HKD|IT0?236|IT0?237/i.test(contextText)) return '函館';
+    if (/旭川|AKJ|IT0?238|IT0?239/i.test(contextText)) return '旭川';
+    if (/帶廣|OBO/i.test(contextText)) return '帶廣';
+    if (/新千歲|千歲|CTS|TR892|TR893|FD242|FD243|SL392|SL393|IT0?234|IT0?235|IT0?260|IT0?261|CI130|BR116|JX850/i.test(contextText)) {
+      return '新千歲';
+    }
+    return '新千歲';
+  }
+  return matchedCity;
+}
 
 /**
  * 擷取班機時間：支援「去程 IT0236 桃園 06:45 ➜ 函館 11:10 / 回程 IT0237 函館 12:20 ➜ 桃園 16:00」以及「早去晚回」等關鍵字
@@ -98,7 +117,7 @@ export function parseSocialDeals(rawText, sourceUrl = 'https://line.me/R/ti/p/%4
       blockCity = '精選航點';
       for (const c of Object.keys(cityCodeMap)) {
         if (line.includes(c)) {
-          blockCity = (c === '成田' || c === '羽田') ? '東京' : (c === '關西' ? '大阪' : (c === '那霸' ? '沖繩' : (c === '新千歲' ? '北海道' : c)));
+          blockCity = resolveActualCity(c, line);
           break;
         }
       }
@@ -179,7 +198,7 @@ export function parseSocialDeals(rawText, sourceUrl = 'https://line.me/R/ti/p/%4
       let city = '精選航點';
       for (const c of Object.keys(cityCodeMap)) {
         if (desc.includes(c)) {
-          city = (c === '成田' || c === '羽田') ? '東京' : (c === '關西' ? '大阪' : (c === '那霸' ? '沖繩' : (c === '新千歲' ? '北海道' : c)));
+          city = resolveActualCity(c, desc);
           break;
         }
       }
@@ -263,7 +282,7 @@ function parseSingleSocialDeals(rawText, sourceUrl) {
   let city = '精選航點';
   for (const c of Object.keys(cityCodeMap)) {
     if (text.includes(c)) {
-      city = (c === '成田' || c === '羽田') ? '東京' : (c === '關西' ? '大阪' : (c === '那霸' ? '沖繩' : (c === '新千歲' ? '北海道' : c)));
+      city = resolveActualCity(c, text);
       break;
     }
   }

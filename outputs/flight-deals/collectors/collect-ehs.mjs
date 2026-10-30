@@ -85,7 +85,10 @@ export async function collectEhs() {
     else if (title.includes('大阪') || title.includes('關西')) { city = '大阪'; code = 'OSA'; country = 'japan'; }
     else if (title.includes('名古屋')) { city = '名古屋'; code = 'NGO'; country = 'japan'; }
     else if (title.includes('福岡') || title.includes('九州')) { city = '福岡'; code = 'FUK'; country = 'japan'; }
-    else if (title.includes('北海道') || title.includes('札幌')) { city = '北海道'; code = 'CTS'; country = 'japan'; }
+    else if (title.includes('函館')) { city = '函館'; code = 'HKD'; country = 'japan'; }
+    else if (title.includes('旭川')) { city = '旭川'; code = 'AKJ'; country = 'japan'; }
+    else if (title.includes('新千歲') || title.includes('千歲')) { city = '新千歲'; code = 'CTS'; country = 'japan'; }
+    else if (title.includes('札幌') || title.includes('北海道')) { city = '新千歲'; code = 'CTS'; country = 'japan'; }
     else if (title.includes('首爾') || title.includes('仁川')) { city = '首爾'; code = 'ICN'; country = 'korea'; }
     else if (title.includes('釜山')) { city = '釜山'; code = 'PUS'; country = 'korea'; }
     else if (title.includes('曼谷')) { city = '曼谷'; code = 'BKK'; country = 'asia'; }

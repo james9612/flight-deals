@@ -14,8 +14,11 @@ const cityCodeMap = {
   '那霸': 'OKA',
   '名古屋': 'NGO',
   '福岡': 'FUK',
+  '新千歲': 'CTS',
   '札幌': 'CTS',
-  '北海道': 'HKD',
+  '函館': 'HKD',
+  '旭川': 'AKJ',
+  '北海道': 'CTS',
   '首爾': 'ICN',
   '釜山': 'PUS',
   '曼谷': 'BKK',
@@ -30,6 +33,10 @@ const countryMap = {
   '沖繩': 'japan',
   '名古屋': 'japan',
   '福岡': 'japan',
+  '新千歲': 'japan',
+  '札幌': 'japan',
+  '函館': 'japan',
+  '旭川': 'japan',
   '石垣島': 'japan',
   '首爾': 'korea',
   '釜山': 'korea',
@@ -39,7 +46,10 @@ const countryMap = {
 };
 
 function extractCity(productName) {
-  for (const city of ['東京', '大阪', '沖繩', '名古屋', '福岡', '北海道', '首爾', '釜山', '石垣島', '澳門', '曼谷']) {
+  if (productName.includes('函館')) return '函館';
+  if (productName.includes('旭川')) return '旭川';
+  if (productName.includes('新千歲') || productName.includes('千歲') || productName.includes('札幌') || productName.includes('北海道')) return '新千歲';
+  for (const city of ['東京', '大阪', '沖繩', '名古屋', '福岡', '首爾', '釜山', '石垣島', '澳門', '曼谷']) {
     if (productName.includes(city)) return city;
   }
   return '精選航點';

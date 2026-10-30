@@ -65,7 +65,8 @@ export async function collectFuntime() {
           else if (title.includes('石垣島') || title.includes('宮古島')) { city = '石垣島'; code = 'ISG'; country = 'japan'; }
           else if (title.includes('沖繩') || title.includes('那霸')) { city = '沖繩'; code = 'OKA'; country = 'japan'; }
           else if (title.includes('函館')) { city = '函館'; code = 'HKD'; country = 'japan'; }
-          else if (title.includes('北海道') || title.includes('札幌') || title.includes('千歲')) { city = '北海道'; code = 'CTS'; country = 'japan'; }
+          else if (title.includes('旭川')) { city = '旭川'; code = 'AKJ'; country = 'japan'; }
+          else if (title.includes('新千歲') || title.includes('千歲') || title.includes('札幌') || title.includes('北海道')) { city = '新千歲'; code = 'CTS'; country = 'japan'; }
           else if (title.includes('東京') || title.includes('成田') || title.includes('羽田')) { city = '東京'; code = 'TYO'; country = 'japan'; }
           else if (title.includes('大阪') || title.includes('關西')) { city = '大阪'; code = 'OSA'; country = 'japan'; }
           else if (title.includes('名古屋')) { city = '名古屋'; code = 'NGO'; country = 'japan'; }

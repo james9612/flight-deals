@@ -7,16 +7,36 @@ const now = new Date().toISOString();
 
 const cityCodeMap = {
   東京: 'TYO', 大阪: 'OSA', 沖繩: 'OKA', 首爾: 'ICN', 仁川: 'ICN',
-  釜山: 'PUS', 福岡: 'FUK', 名古屋: 'NGO', 石垣島: 'ISG', 函館: 'HKD',
-  高松: 'TAK', 小松: 'KMQ', 札幌: 'CTS', 北海道: 'CTS', 高知: 'KCZ', 清邁: 'CNX', 曼谷: 'BKK'
+  釜山: 'PUS', 福岡: 'FUK', 名古屋: 'NGO', 石垣島: 'ISG', 函館: 'HKD', 旭川: 'AKJ', 帶廣: 'OBO',
+  高松: 'TAK', 小松: 'KMQ', 新千歲: 'CTS', 札幌: 'CTS', 北海道: 'CTS', 高知: 'KCZ', 清邁: 'CNX', 曼谷: 'BKK'
 };
 
 const countryMap = {
   東京: 'japan', 大阪: 'japan', 沖繩: 'japan', 福岡: 'japan',
-  名古屋: 'japan', 石垣島: 'japan', 函館: 'japan', 高松: 'japan', 小松: 'japan', 札幌: 'japan', 北海道: 'japan', 高知: 'japan',
+  名古屋: 'japan', 石垣島: 'japan', 函館: 'japan', 旭川: 'japan', 帶廣: 'japan', 高松: 'japan', 小松: 'japan', 新千歲: 'japan', 札幌: 'japan', 北海道: 'japan', 高知: 'japan',
   首爾: 'korea', 釜山: 'korea', 仁川: 'korea',
   曼谷: 'asia', 清邁: 'asia'
 };
+
+function resolveHokkaidoLocation(deal) {
+  const combined = `${deal.title || ''} ${deal.flightTime || ''} ${deal.productCode || ''} ${deal.detail || ''}`;
+  if (/函館|HKD|IT0?236|IT0?237/i.test(combined)) {
+    deal.city = '函館';
+    deal.code = 'HKD';
+  } else if (/旭川|AKJ|IT0?238|IT0?239/i.test(combined)) {
+    deal.city = '旭川';
+    deal.code = 'AKJ';
+  } else if (/帶廣|OBO/i.test(combined)) {
+    deal.city = '帶廣';
+    deal.code = 'OBO';
+  } else if (
+    deal.city === '北海道' ||
+    /新千歲|千歲|\bCTS\b|TR892|TR893|FD242|FD243|SL392|SL393|IT0?234|IT0?235|IT0?260|IT0?261/i.test(combined)
+  ) {
+    deal.city = '新千歲';
+    deal.code = 'CTS';
+  }
+}
 
 function parsePlynetEvent(event) {
   const fullTitle = event.extendedProps?.listTitle || event.title || '';
@@ -37,7 +57,7 @@ function parsePlynetEvent(event) {
   }
 
   let city = '精選航點';
-  for (const c of ['東京', '大阪', '沖繩', '首爾', '仁川', '釜山', '福岡', '名古屋', '石垣島', '函館', '高松', '小松', '札幌', '北海道', '高知', '清邁', '曼谷']) {
+  for (const c of ['東京', '大阪', '沖繩', '首爾', '仁川', '釜山', '福岡', '名古屋', '石垣島', '函館', '旭川', '帶廣', '新千歲', '高松', '小松', '札幌', '北海道', '高知', '清邁', '曼谷']) {
     if (fullTitle.includes(c)) {
       city = c === '仁川' ? '首爾' : c;
       break;
@@ -49,9 +69,14 @@ function parsePlynetEvent(event) {
   else if (fullTitle.includes('樂桃')) airline = '樂桃航空';
   else if (fullTitle.includes('虎航')) airline = '台灣虎航';
   else if (fullTitle.includes('酷航')) airline = '酷航';
+  else if (fullTitle.includes('泰獅')) airline = '泰國獅航';
+  else if (fullTitle.includes('泰亞航') || fullTitle.includes('亞航')) airline = '亞洲航空';
   else if (fullTitle.includes('德威')) airline = '德威航空';
   else if (fullTitle.includes('濟州')) airline = '濟州航空';
   else if (fullTitle.includes('真航空')) airline = '真航空';
+  else if (fullTitle.includes('星宇')) airline = '星宇航空';
+  else if (fullTitle.includes('華航')) airline = '中華航空';
+  else if (fullTitle.includes('長榮')) airline = '長榮航空';
 
   const depart = event.start || '';
   let returnDate = '';
@@ -284,7 +309,7 @@ export async function collectPlynet() {
           }
         }
 
-        // 4. 將官方詳細資訊回填至每一筆機票
+        // 4. 將官方詳細資訊回填至每一筆機票並核實北海道實際機場航點
         for (const deal of collected) {
           const info = modalCache[deal.ticketId];
           if (info) {
@@ -292,6 +317,7 @@ export async function collectPlynet() {
             if (info.baggage) deal.baggage = info.baggage;
             if (info.productCode) deal.productCode = info.productCode;
           }
+          resolveHokkaidoLocation(deal);
         }
       }
     }
@@ -304,7 +330,16 @@ export async function collectPlynet() {
     try {
       const cached = JSON.parse(await readFile(outputFile, 'utf8'));
       if (Array.isArray(cached.deals) && cached.deals.length > 0) {
-        collected = cached.deals;
+        collected = cached.deals.map(deal => {
+          const info = modalCache[deal.ticketId];
+          if (info) {
+            if (info.flightTime) deal.flightTime = info.flightTime;
+            if (info.baggage) deal.baggage = info.baggage;
+            if (info.productCode) deal.productCode = info.productCode;
+          }
+          resolveHokkaidoLocation(deal);
+          return deal;
+        });
       }
     } catch {
       console.warn('[飛遊網] 無現成快取資料可用');

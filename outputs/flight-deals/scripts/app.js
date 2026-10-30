@@ -660,7 +660,7 @@ async function syncLiveLocalDeals() {
     let hasChanges = false;
     for (const ld of localDeals) {
       const existing = mergedMap.get(ld.id);
-      if (!existing || (ld.collectedAt && ld.collectedAt > (existing.collectedAt || '')) || (!existing.flightTime && ld.flightTime)) {
+      if (!existing || (ld.collectedAt && ld.collectedAt > (existing.collectedAt || '')) || (!existing.flightTime && ld.flightTime) || existing.city !== ld.city) {
         mergedMap.set(ld.id, ld);
         hasChanges = true;
       }

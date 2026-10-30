@@ -37,7 +37,8 @@ async function safeReadJson(fileUrl, fallback = []) {
 
 const countryByDestination = {
   東京: 'japan', 成田: 'japan', 羽田: 'japan', 大阪: 'japan', 關西: 'japan',
-  沖繩: 'japan', 名古屋: 'japan', 福岡: 'japan', 石垣島: 'japan', 函館: 'japan', 札幌: 'japan', 北海道: 'japan',
+  沖繩: 'japan', 名古屋: 'japan', 福岡: 'japan', 石垣島: 'japan',
+  新千歲: 'japan', 函館: 'japan', 旭川: 'japan', 帶廣: 'japan', 札幌: 'japan', 北海道: 'japan',
   高松: 'japan', 小松: 'japan', 高知: 'japan', 福島: 'japan', 廣島: 'japan', 岡山: 'japan', 大分: 'japan', 佐賀: 'japan',
   秋田: 'japan', 花卷: 'japan', 仙台: 'japan',
   首爾: 'korea', 釜山: 'korea', 仁川: 'korea', 濟州: 'korea', 大邱: 'korea', 清州: 'korea',
@@ -46,7 +47,8 @@ const countryByDestination = {
 
 const codeByDestination = {
   東京: 'TYO', 成田: 'NRT', 羽田: 'HND', 大阪: 'OSA', 關西: 'KIX',
-  沖繩: 'OKA', 名古屋: 'NGO', 福岡: 'FUK', 石垣島: 'ISG', 函館: 'HKD', 札幌: 'CTS', 北海道: 'CTS',
+  沖繩: 'OKA', 名古屋: 'NGO', 福岡: 'FUK', 石垣島: 'ISG',
+  新千歲: 'CTS', 函館: 'HKD', 旭川: 'AKJ', 帶廣: 'OBO', 札幌: 'CTS', 北海道: 'CTS',
   高松: 'TAK', 小松: 'KMQ', 高知: 'KCZ', 福島: 'FKS', 廣島: 'HIJ', 岡山: 'OKJ', 大分: 'OIT', 佐賀: 'HSG',
   秋田: 'AXT', 花卷: 'HNA', 仙台: 'SDJ',
   首爾: 'ICN', 釜山: 'PUS', 仁川: 'ICN', 濟州: 'CJU', 大邱: 'TAE', 清州: 'CJJ',
@@ -303,11 +305,27 @@ export async function mergeCollected() {
     // 8. 價格有效性檢查
     if (!deal.price || Number(deal.price) < 1000) continue;
 
-    const city = deal.city || deal.destination || '精選航點';
+    let city = deal.city || deal.destination || '精選航點';
+    let resolvedCode = deal.code || codeByDestination[city] || 'INT';
+    if (city === '北海道' || city === '札幌' || resolvedCode === 'SPK') {
+      if (/函館|HKD|IT0?236|IT0?237/i.test(`${fullText} ${deal.flightTime || ''}`)) {
+        city = '函館';
+        resolvedCode = 'HKD';
+      } else if (/旭川|AKJ|IT0?238|IT0?239/i.test(`${fullText} ${deal.flightTime || ''}`)) {
+        city = '旭川';
+        resolvedCode = 'AKJ';
+      } else if (/帶廣|OBO/i.test(`${fullText} ${deal.flightTime || ''}`)) {
+        city = '帶廣';
+        resolvedCode = 'OBO';
+      } else {
+        city = '新千歲';
+        resolvedCode = 'CTS';
+      }
+    }
     const normalized = {
       id: deal.id,
       city,
-      code: deal.code || codeByDestination[city] || 'INT',
+      code: resolvedCode,
       from: deal.from || '台北',
       fc: deal.fc || 'TPE',
       country: deal.country || countryByDestination[city] || 'asia',
