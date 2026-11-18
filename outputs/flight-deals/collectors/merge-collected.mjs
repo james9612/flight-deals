@@ -90,16 +90,21 @@ export async function mergeCollected() {
     (d.agency === '飛趣旅遊' && (!d.depart || Number(d.price) < 2500 || d.airline === '精選航空'));
 
 
-  const existingDeals = (await safeReadJson(dealsFile)).filter(d => !isGarbage(d));
+  const todayStrForFallback = new Date().toISOString().slice(0, 10);
+  const minDepartDateForFallback = new Date(Date.now() + 3 * 86400000).toISOString().slice(0, 10);
+  const isExpired = (d) => {
+    if (!d.depart) return false;
+    return d.agency === '飛趣旅遊' ? d.depart < todayStrForFallback : d.depart < minDepartDateForFallback;
+  };
+
+  const existingDeals = (await safeReadJson(dealsFile)).filter(d => !isGarbage(d) && !isExpired(d));
   if (existingDeals.length > 0) {
     if (!lionDeals.length) lionDeals = existingDeals.filter(d => d.agency === '雄獅旅遊');
     if (!flytourDeals.length) flytourDeals = existingDeals.filter(d => d.agency === '飛遊網');
-    if (!ezflyDeals.length) ezflyDeals = existingDeals.filter(d => d.agency === '易飛網');
-    // KKday 歷史硬編碼皆已售罄，若無新即時票則不從舊快取復原
+    // ezfly, extended, kkday 若無新即時票則不從舊快取復原，避免已售罄死票反覆殘留
     if (!ehsDeals.length) ehsDeals = existingDeals.filter(d => d.agency === '東森旅遊');
     if (!funtimeDeals.length) funtimeDeals = existingDeals.filter(d => d.agency === 'FunTime');
     if (!goflytripDeals.length) goflytripDeals = existingDeals.filter(d => d.agency === '飛趣旅遊');
-    if (!extendedDeals.length) extendedDeals = existingDeals.filter(d => ['燦星旅遊', '旅天下', '山富旅遊', '喜鴻假期'].includes(d.agency));
     if (!momoDeals.length) momoDeals = existingDeals.filter(d => (d.agency || '').includes('momo'));
     if (!ugoDeals.length) ugoDeals = existingDeals.filter(d => (d.agency || '').includes('旅天下'));
   }
@@ -266,8 +271,15 @@ export async function mergeCollected() {
   const todayStr = new Date().toISOString().slice(0, 10);
   const byId = new Map();
   for (const deal of allRawDeals) {
-    // 1. 過期機票自動排除（出發日期已小於今天）
-    if (deal.depart && deal.depart < todayStr) continue;
+    // 1. 出發日期過期與封艙檢查：傳統旅行社出發前 3 天停止線上訂購封艙，自動排除已截止之商品
+    const minDepartDate = new Date(Date.now() + 3 * 86400000).toISOString().slice(0, 10);
+    if (deal.depart) {
+      if (deal.agency === '飛趣旅遊') {
+        if (deal.depart < todayStr) continue;
+      } else {
+        if (deal.depart < minDepartDate) continue;
+      }
+    }
 
     // 2. 排除死連結或無效 URL（如已失效的舊版 404 搜尋頁）
     if (!deal.sourceUrl || deal.sourceUrl === '#' || deal.sourceUrl.includes('st_flight_inter_search.html')) continue;
@@ -275,9 +287,21 @@ export async function mergeCollected() {
     // 3. 排除已知售罄、無法購買、或死鏈之黑名單商品（如 KKday 247091 等舊行銷活動）
     if (isBlacklisted(deal)) continue;
 
-    // 4. 排除標題或說明中明確標記已售完、售罄、已額滿的項目
+    // 4. 排除標題或說明中明確標記已售完、售罄、已額滿、暫停販售的項目
     const textToCheck = `${deal.title || ''} ${deal.detail || ''} ${deal.availableDates || ''}`;
-    if (textToCheck.includes('已售完') || textToCheck.includes('已售罄') || textToCheck.includes('已額滿') || textToCheck.includes('此商品已下架') || textToCheck.includes('此商品目前無法購買')) {
+    if (
+      textToCheck.includes('已售完') ||
+      textToCheck.includes('已售罄') ||
+      textToCheck.includes('已額滿') ||
+      textToCheck.includes('行程已額滿') ||
+      textToCheck.includes('此商品已下架') ||
+      textToCheck.includes('此商品已暫停販售') ||
+      textToCheck.includes('暫停販售') ||
+      textToCheck.includes('已截止') ||
+      textToCheck.includes('此行程已截止') ||
+      textToCheck.includes('此商品目前無法購買') ||
+      textToCheck.includes('無團號資料')
+    ) {
       continue;
     }
 

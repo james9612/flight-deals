@@ -110,6 +110,9 @@ export async function collectLionTravel() {
         const baggage = extractBaggage(name);
         const days = Number(item.Days) || 5;
         const depart = item.GoDate || '';
+        const minDepartDate = new Date(Date.now() + 3 * 86400000).toISOString().slice(0, 10);
+        if (depart && depart < minDepartDate) continue;
+
         const returnDate = calculateReturnDate(depart, days);
         const code = cityCodeMap[city] || 'INT';
         const country = countryMap[city] || 'asia';

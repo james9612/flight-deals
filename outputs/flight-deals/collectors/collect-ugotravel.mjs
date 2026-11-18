@@ -69,7 +69,7 @@ export async function collectUgoTravel() {
         if (!isTicketOrPlan) continue;
         if (name.includes('不含機票') || name.includes('機票自理')) continue;
 
-        const directUrl = rawUrl.replace('travel.liontravel.com', 'travel.gounitravel.com');
+        const directUrl = rawUrl;
         const price = Number(item.TradePrice || item.DirectPrice) || 0;
         if (price < 3000) continue;
 
@@ -94,6 +94,9 @@ export async function collectUgoTravel() {
 
         const days = Number(item.Days) || 5;
         const depart = item.GoDate || '';
+        const minDepartDate = new Date(Date.now() + 3 * 86400000).toISOString().slice(0, 10);
+        if (depart && depart < minDepartDate) continue;
+
         let returnDate = '';
         if (depart) {
           const d = new Date(depart);

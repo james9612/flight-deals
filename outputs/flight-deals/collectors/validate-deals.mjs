@@ -7,9 +7,14 @@ const dealsFile = new URL('../data/deals.json', import.meta.url);
  * 回傳 { active: boolean, reason?: string, normalizedUrl?: string }
  */
 export async function isDealActive(deal, todayStr = new Date().toISOString().slice(0, 10)) {
-  // 1. 出發日期過期檢查（出發日在今天以前者直接下架）
-  if (deal.depart && deal.depart < todayStr) {
-    return { active: false, reason: `出發日期已過期 (${deal.depart} < ${todayStr})` };
+  // 1. 出發日期過期與封艙檢查（傳統旅行社出發前 3 天停止線上報名封艙，出發日小於 today + 3 天自動下架）
+  const minDepartDate = new Date(Date.now() + 3 * 86400000).toISOString().slice(0, 10);
+  if (deal.depart) {
+    if (deal.agency === '飛趣旅遊') {
+      if (deal.depart < todayStr) return { active: false, reason: `出發日期已過期 (${deal.depart} < ${todayStr})` };
+    } else {
+      if (deal.depart < minDepartDate) return { active: false, reason: `出發日期已截止或即將封艙 (${deal.depart} < ${minDepartDate})` };
+    }
   }
 
   // 2. 無效或死連結 URL 檢查
@@ -23,13 +28,18 @@ export async function isDealActive(deal, todayStr = new Date().toISOString().sli
     text.includes('已售完') ||
     text.includes('已售罄') ||
     text.includes('已額滿') ||
+    text.includes('行程已額滿') ||
     text.includes('此商品已下架') ||
+    text.includes('此商品已暫停販售') ||
+    text.includes('暫停販售') ||
+    text.includes('此行程已截止') ||
+    text.includes('已截止') ||
     text.includes('此商品目前無法購買') ||
     text.includes('無團號資料') ||
     text.includes('商品已不存在') ||
     text.includes('此商品已完售')
   ) {
-    return { active: false, reason: '標題或說明標註已售完或已下架' };
+    return { active: false, reason: '標題或說明標註已售完、下架或暫停販售' };
   }
 
   let normalizedUrl = deal.sourceUrl;
@@ -91,8 +101,17 @@ export async function isDealActive(deal, todayStr = new Date().toISOString().sli
         }
         if (resp.ok) {
           const html = await resp.text();
-          if (html.includes('此商品已售完') || html.includes('商品已下架') || html.includes('很抱歉，此商品已完售') || html.includes('此商品不存在')) {
-            return { active: false, reason: 'momo 商品頁面顯示已售完或已下架' };
+          if (
+            html.includes('此商品已暫停販售') ||
+            html.includes('暫停販售') ||
+            html.includes('此商品已售完') ||
+            html.includes('商品已下架') ||
+            html.includes('很抱歉，此商品已完售') ||
+            html.includes('此商品不存在') ||
+            html.includes('此商品暫不提供購買') ||
+            html.includes('已停售')
+          ) {
+            return { active: false, reason: 'momo 商品頁面顯示已售完、下架或暫停販售' };
           }
         }
       } catch (err) {

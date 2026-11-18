@@ -53,6 +53,16 @@ export async function collectFuntime() {
           if (rawUrl.includes('247091') || rawUrl.includes('travel.gounitravel.com') || rawUrl.includes('kkday.com/zh-tw/product/')) {
             continue;
           }
+
+          // 淨化 LionTravel 導購連結：移除特定的舊過期 GroupID，使其直接導向最新有效出發日曆，避免旅客點進去顯示「此行程已額滿」
+          let finalUrl = rawUrl;
+          if (rawUrl.includes('travel.liontravel.com')) {
+            try {
+              const u = new URL(rawUrl);
+              u.searchParams.delete('GroupID');
+              finalUrl = u.toString();
+            } catch {}
+          }
           index++;
           let city = b.sub_title || '精選航點';
           let code = 'TYO';
@@ -172,7 +182,7 @@ export async function collectFuntime() {
             tag: 'FunTime計畫機票',
             agency: 'FunTime',
             source: 'FunTime旅遊比價網（localtour）',
-            sourceUrl: g.url ? (g.url.startsWith('http') ? g.url : `https://www.funtime.com.tw${g.url}`) : 'https://www.funtime.com.tw/localtour/',
+            sourceUrl: finalUrl ? (finalUrl.startsWith('http') ? finalUrl : `https://www.funtime.com.tw${finalUrl}`) : 'https://www.funtime.com.tw/localtour/',
             detail: `${title}｜${airline}直飛，含稅金與行李。此為 FunTime 彙整之多梯次計畫機票，實際可售出發日與即時剩餘機位以跳轉後的供應商預訂頁為準。`,
             availableDates,
             checked: now.slice(0, 10),
