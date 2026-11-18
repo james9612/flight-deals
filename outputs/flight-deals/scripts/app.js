@@ -326,9 +326,17 @@ function renderDeals() {
     if (activeFilter === 'momo' && !src.includes('momo') && !agn.includes('momo')) return false;
     if (['japan', 'korea', 'asia'].includes(activeFilter) && deal.country !== activeFilter) return false;
 
-    // 過期機票自動過濾：出發日期已過（小於今天）自動排除
-    const todayStr = new Date().toLocaleDateString('en-CA');
-    if (deal.depart && deal.depart < todayStr) return false;
+    // 過期機票與封艙自動過濾：傳統旅行社出發前 3 天停止線上訂購封艙，自動排除已截止之商品
+    const now = new Date();
+    const todayStr = now.toLocaleDateString('en-CA');
+    const minDepartDate = new Date(now.getTime() + 3 * 86400000).toLocaleDateString('en-CA');
+    if (deal.depart) {
+      if (deal.agency === '飛趣旅遊') {
+        if (deal.depart < todayStr) return false;
+      } else {
+        if (deal.depart < minDepartDate) return false;
+      }
+    }
 
     // Form criteria
     if (originVal && deal.from !== originVal) return false;
